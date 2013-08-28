@@ -18,11 +18,12 @@
       "test": "make test"
     }
   , "dependencies": {
+        "type-detect": "0.1.0"
     }
   , "devDependencies": {
-        "chai": "*"
-      , "component": "*"
+        "component": "*"
       , "mocha": "*"
       , "mocha-phantomjs": "*"
+      , "simple-assert": "*"
     }
 }

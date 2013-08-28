@@ -6,7 +6,7 @@ REPORTER = spec
 # Tests
 # 
 
-test: test-node test-browser 
+test: test-node 
 
 test-node: 
 	@printf "\n  ==> [Node.js]"

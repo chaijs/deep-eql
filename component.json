@@ -10,6 +10,10 @@
   , "scripts": [
         "lib/eql.js"
     ]
-  , "dependencies": {}
-  , "development": {}
+  , "dependencies": {
+        "chaijs/type-detect": "0.1.0"
+    }
+  , "development": {
+        "chaijs/simple-assert": "1.0.0"
+    }
 }
