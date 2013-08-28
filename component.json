@@ -1,0 +1,15 @@
+{
+    "name": "deep-eql"
+  , "repo": "chaijs/deep-eql"
+  , "version": "0.0.0"
+  , "description": "Improved deep equality testing for Node.js and the browser."
+  , "license": "MIT"
+  , "keywords": [
+    ]
+  , "main": "lib/eql.js"
+  , "scripts": [
+        "lib/eql.js"
+    ]
+  , "dependencies": {}
+  , "development": {}
+}

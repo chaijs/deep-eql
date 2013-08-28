@@ -1,0 +1,28 @@
+{
+    "name": "deep-eql"
+  , "version": "0.0.0"
+  , "description": "Improved deep equality testing for Node.js and the browser."
+  , "author": "Jake Luer <jake@alogicalparadox.com>"
+  , "license": "MIT"
+  , "keywords": [
+    ]
+  , "repository": {
+        "type": "git"
+      , "url": "git@github.com:chaijs/deep-eql.git"
+    }
+  , "engines": {
+      "node": "*"
+    }
+  , "main": "./index"
+  , "scripts": {
+      "test": "make test"
+    }
+  , "dependencies": {
+    }
+  , "devDependencies": {
+        "chai": "*"
+      , "component": "*"
+      , "mocha": "*"
+      , "mocha-phantomjs": "*"
+    }
+}
