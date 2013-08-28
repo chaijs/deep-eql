@@ -5,17 +5,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="../../node_modules/mocha/mocha.css" />
     <script src="../../node_modules/mocha/mocha.js"></script>
-    <script src="../../node_modules/chai/chai.js"></script>
-    <script>
-      mocha.setup('bdd')
-      var should = chai.should();
-    </script>
     <script src="../../build/build.js"></script>
     <script>
       eql = require('deep-eql');
+      assert = require('simple-assert');
     </script>
-    <!-- <script src="../test.js"></script> -->
-    <script>onload = function () {
+    <script src="../eql.js"></script>
+    <script>
+    onload = function () {
       if (window.mochaPhantomJS) mochaPhantomJS.run()
       else mocha.run();
     }
