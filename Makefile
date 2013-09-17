@@ -1,12 +1,12 @@
 
 TESTS = test/*.js
-REPORTER = spec
+REPORTER = list
 
 #
 # Tests
 # 
 
-test: test-node 
+test: test-node test-browser
 
 test-node: 
 	@printf "\n  ==> [Node.js]"
@@ -16,10 +16,9 @@ test-node:
 		$(TESTS)
 
 test-browser: build
-	@printf "\n  ==> [Phantom.Js]"
-	@./node_modules/.bin/mocha-phantomjs \
-		--R ${REPORTER} \
-		./test/browser/index.html
+	@printf "\n  ==> [Karma]\n\n"
+	@./node_modules/.bin/karma start \
+		--single-run
 
 test-cov: lib-cov
 	@eql_COV=1 NODE_ENV=test ./node_modules/.bin/mocha \
@@ -27,6 +26,14 @@ test-cov: lib-cov
 		--reporter html-cov \
 		$(TESTS) \
 		> coverage.html
+
+test-travisci: test-node test-browser lib-cov
+	@echo TRAVIS_JOB_ID $(TRAVIS_JOB_ID)
+	@type_COV=1 NODE_ENV=test ./node_modules/.bin/mocha \
+		--require ./test/bootstrap \
+		--reporter mocha-lcov-reporter \
+		$(TESTS) \
+		| ./node_modules/coveralls/bin/coveralls.js
 
 #
 # Components
@@ -44,7 +51,7 @@ components: component.json
 
 lib-cov:
 	@rm -rf lib-cov
-	@jscoverage lib lib-cov
+	@./node_modules/.bin/jscoverage lib lib-cov
 
 #
 # Clean up

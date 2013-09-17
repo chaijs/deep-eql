@@ -5,6 +5,10 @@
   , "author": "Jake Luer <jake@alogicalparadox.com>"
   , "license": "MIT"
   , "keywords": [
+        "deep equal"
+      , "object equal"
+      , "testing"
+      , "chai util"
     ]
   , "repository": {
         "type": "git"
@@ -22,8 +26,12 @@
     }
   , "devDependencies": {
         "component": "*"
+      , "coveralls": "2.0.16"
+      , "jscoverage": "0.3.7"
+      , "karma": "0.10.x"
+      , "karma-mocha": "*"
       , "mocha": "*"
-      , "mocha-phantomjs": "*"
+      , "mocha-lcov-reporter": "0.0.1"
       , "simple-assert": "*"
     }
 }
