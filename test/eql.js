@@ -51,6 +51,15 @@ tests.push([ 'eql(/\\\s/g, /\\\s/g)', /\s/g, /\s/g ]);
 tests.push([ 'eql(/\\\s/g, /\\\[/g)', /\s/g, /\[/g, true ]);
 
 /*!
+ * Iteration
+ */
+
+tests.push([ 'eql([ 1, 2, 3 ], [ 1, 2, 3 ])', [ 1, 2, 3 ], [ 1, 2, 3 ] ]);
+tests.push([ 'eql([ 3, 2, 1 ], [ 1, 2, 3 ])', [ 3, 2, 1 ], [ 1, 2, 3 ], true ]);
+
+tests.push([ 'eql({ a: 1, b: 2, c: 3}, { a: 1, b: 2, c: 3 })', { a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 } ]);
+
+/*!
  * Test setup
  */
 
