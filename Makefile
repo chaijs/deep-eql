@@ -29,7 +29,7 @@ test-cov: lib-cov
 
 test-travisci: test-node test-browser lib-cov
 	@echo TRAVIS_JOB_ID $(TRAVIS_JOB_ID)
-	@type_COV=1 NODE_ENV=test ./node_modules/.bin/mocha \
+	@eql_COV=1 NODE_ENV=test ./node_modules/.bin/mocha \
 		--require ./test/bootstrap \
 		--reporter mocha-lcov-reporter \
 		$(TESTS) \
@@ -68,4 +68,6 @@ clean-cov:
 	@rm -f coverage.html
 
 
-.PHONY: clean clean-components clean-cov test test-cov test-node test-browser lib-cov
+.PHONY: clean clean-components clean-cov 
+.PHONY: test test-cov test-node test-browser test-travisci
+.PHONY: lib-cov
