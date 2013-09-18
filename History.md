@@ -1,4 +1,9 @@
 
+0.1.2 / 2013-09-18 
+==================
+
+ * bug: [fix] misnamed variable from code migration (reference error)
+
 0.1.1 / 2013-09-18 
 ==================
 

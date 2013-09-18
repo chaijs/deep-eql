@@ -1,6 +1,6 @@
 {
     "name": "deep-eql"
-  , "version": "0.1.1"
+  , "version": "0.1.2"
   , "description": "Improved deep equality testing for Node.js and the browser."
   , "author": "Jake Luer <jake@alogicalparadox.com>"
   , "license": "MIT"
