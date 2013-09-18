@@ -59,6 +59,7 @@ tests.push([ 'eql([ 3, 2, 1 ], [ 1, 2, 3 ])', [ 3, 2, 1 ], [ 1, 2, 3 ], true ]);
 
 tests.push([ 'eql({ a: 1, b: 2, c: 3}, { a: 1, b: 2, c: 3 })', { a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 } ]);
 tests.push([ 'eql({ foo: "bar" }, { foo: "baz" })', { foo: 'bar' }, { foo: 'baz' }, true ]);
+tests.push([ 'eql({ foo: { bar: "foo" }}, { foo: { bar: "baz" }})', { foo: { bar: 'foo' }}, { foo: { bar: 'baz' }}, true ]);
 
 /*!
  * Test setup
