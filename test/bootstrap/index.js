@@ -8,4 +8,6 @@ global.assert = require('simple-assert');
  * Import project
  */
 
-global.eql = require('../..');
+global.eql = process.env.eql_COV
+  ? require('../../lib-cov/eql')
+  : require('../../lib/eql');
