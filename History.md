@@ -1,4 +1,10 @@
 
+0.1.3 / 2013-10-10 
+==================
+
+ * pkg: update type-detect version
+ * index,test: conditional require in test bootstrap
+
 0.1.2 / 2013-09-18 
 ==================
 
