@@ -11,7 +11,7 @@
         "lib/eql.js"
     ]
   , "dependencies": {
-        "chaijs/type-detect": "0.1.0"
+        "chaijs/type-detect": "0.1.1"
     }
   , "development": {
         "chaijs/simple-assert": "1.0.0"

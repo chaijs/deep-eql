@@ -22,7 +22,7 @@
       "test": "make test"
     }
   , "dependencies": {
-        "type-detect": "0.1.0"
+        "type-detect": "0.1.1"
     }
   , "devDependencies": {
         "component": "*"
