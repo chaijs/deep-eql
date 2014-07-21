@@ -31,6 +31,7 @@
       , "karma": "*"
       , "karma-cli": "*"
       , "karma-mocha": "*"
+      , "karma-phantomjs-launcher": "*"
       , "mocha": "*"
       , "mocha-lcov-reporter": "0.0.1"
       , "simple-assert": "*"
