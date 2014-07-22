@@ -16,5 +16,6 @@ module.exports = function(config) {
     , browsers: [ 'PhantomJS' ]
     , captureTimeout: 60000
     , singleRun: false
+    , plugins : [ 'karma-mocha', 'karma-phantomjs-launcher' ]
   });
 };

@@ -22,14 +22,16 @@
       "test": "make test"
     }
   , "dependencies": {
-        "type-detect": "0.1.1"
+        "type-detect": "0.1.2"
     }
   , "devDependencies": {
         "component": "*"
       , "coveralls": "2.0.16"
       , "jscoverage": "0.3.7"
-      , "karma": "0.10.x"
+      , "karma": "*"
+      , "karma-cli": "*"
       , "karma-mocha": "*"
+      , "karma-phantomjs-launcher": "*"
       , "mocha": "*"
       , "mocha-lcov-reporter": "0.0.1"
       , "simple-assert": "*"
