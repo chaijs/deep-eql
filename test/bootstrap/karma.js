@@ -1,2 +1,2 @@
-global.assert = require('simple-assert');
-global.eql = require('deep-eql');
+assert = require('simple-assert');
+eql = require('deep-eql');
