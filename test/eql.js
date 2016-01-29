@@ -21,6 +21,18 @@ tests.push([ 'eql([], [])', [], [] ]);
 tests.push([ 'eql({}, {})', {}, {} ]);
 tests.push([ 'eql([], {})', [], {}, true ]);
 
+/*!
+ * object identity
+ */
+
+function Base1() {};
+function Base2() {};
+var object1 = new Base1();
+var object2 = new Base2();
+
+tests.push([ 'eql(object1, object1)', object1, object1 ]);
+tests.push([ 'eql(object1, object2)', object1, object2, true ]);
+
 (function() {
   tests.push([ 'eql([], arguments)', [], arguments, true ]);
 })();
