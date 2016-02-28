@@ -16,7 +16,19 @@
     "url": "git@github.com:chaijs/deep-eql.git"
   },
   "scripts": {
+    "lint": "eslint --ignore-path .gitignore .",
+    "pretest": "npm run lint",
     "test": "make test"
+  },
+  "eslintConfig": {
+    "extends": [
+      "strict/es5"
+    ],
+    "rules": {
+      "complexity": 0,
+      "spaced-comment": 0,
+      "no-use-before-define": 0
+    }
   },
   "dependencies": {
     "object-is": "^1.0.1",
@@ -25,6 +37,9 @@
   "devDependencies": {
     "component": "*",
     "coveralls": "2.0.16",
+    "eslint": "^2.4.0",
+    "eslint-config-strict": "^8.5.0",
+    "eslint-plugin-filenames": "^0.2.0",
     "jscoverage": "0.3.7",
     "karma": "*",
     "karma-cli": "*",
