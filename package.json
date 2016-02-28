@@ -2,27 +2,25 @@
   "name": "deep-eql",
   "version": "0.1.3",
   "description": "Improved deep equality testing for Node.js and the browser.",
-  "author": "Jake Luer <jake@alogicalparadox.com>",
-  "license": "MIT",
   "keywords": [
+    "chai util",
     "deep equal",
     "object equal",
-    "testing",
-    "chai util"
+    "testing"
   ],
+  "license": "MIT",
+  "author": "Jake Luer <jake@alogicalparadox.com>",
+  "main": "./index",
   "repository": {
     "type": "git",
     "url": "git@github.com:chaijs/deep-eql.git"
   },
-  "engines": {
-    "node": "*"
-  },
-  "main": "./index",
   "scripts": {
     "test": "make test"
   },
   "dependencies": {
-    "type-detect": "^1.0.0"
+    "object-is": "^1.0.1",
+    "type-detect": "1.0.0"
   },
   "devDependencies": {
     "component": "*",
@@ -35,5 +33,8 @@
     "mocha": "*",
     "mocha-lcov-reporter": "0.0.1",
     "simple-assert": "*"
+  },
+  "engines": {
+    "node": "*"
   }
 }
