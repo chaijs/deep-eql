@@ -182,10 +182,22 @@ describe('ES2015 Specific', function () {
       setA.add('a');
       setA.add('b');
       setA.add('c');
-      setB.add('c');
-      setB.add('b');
       setB.add('a');
+      setB.add('b');
+      setB.add('c');
       assert(eql(setA, setB), 'eql(Set { "a", "b", "c" }, Set { "a", "b", "c" })');
+    });
+
+    it('returns true for Sets with same entries in different order', function () {
+      var setA = new Set();
+      var setB = new Set();
+      setA.add('a');
+      setA.add('b');
+      setA.add('c');
+      setB.add('b');
+      setB.add('c');
+      setB.add('a');
+      assert(eql(setA, setB), 'eql(Set { "a", "b", "c" }, Set { "b", "c", "a" })');
     });
 
     it('returns false for Sets with different entries', function () {

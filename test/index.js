@@ -9,8 +9,18 @@ describe('Generic', function () {
       assert(eql('x', 'x'), 'eql("x", "x")');
     });
 
+    it('returns true for different instances with same values', function () {
+      assert(eql(new String('x'), new String('x')), 'eql(new String("x"), new String("x"))');
+    });
+
     it('returns false for literal vs instance with same value', function () {
       assert(eql('x', new String('x')) === false, 'eql("x", new String("x")) === false');
+      assert(eql(new String('x'), 'x') === false, 'eql(new String("x"), "x") === false');
+    });
+
+    it('returns false for different instances with different values', function () {
+      assert(eql(new String('x'), new String('y')) === false,
+        'eql(new String("x"), new String("y")) === false');
     });
 
     it('returns false for different values', function () {
@@ -25,9 +35,24 @@ describe('Generic', function () {
       assert(eql(true, true), 'eql(true, true)');
     });
 
+    it('returns true for instances with same value', function () {
+      assert(eql(new Boolean(true), new Boolean(true)), 'eql(new Boolean(true), new Boolean(true))');
+    });
+
     it('returns false for literal vs instance with same value', function () {
       assert(eql(true, new Boolean(true)) === false, 'eql(true, new Boolean(true)) === false');
-      assert(eql(false, new Boolean(false)) === false, 'eql(false, new Boolean(false)) === false');
+    });
+
+    it('returns false for literal vs instance with different values', function () {
+      assert(eql(false, new Boolean(true)) === false, 'eql(false, new Boolean(true)) === false');
+      assert(eql(new Boolean(false), true) === false, 'eql(new Boolean(false), true) === false');
+    });
+
+    it('returns false for instances with different values', function () {
+      assert(eql(new Boolean(false), new Boolean(true)) === false,
+      'eql(new Boolean(false), new Boolean(true)) === false');
+      assert(eql(new Boolean(true), new Boolean(false)) === false,
+      'eql(new Boolean(true), new Boolean(false)) === false');
     });
 
     it('returns false for different values', function () {
@@ -80,10 +105,21 @@ describe('Generic', function () {
       assert(eql(NaN, NaN), 'eql(NaN, NaN)');
     });
 
+    it('returns true for NaN instances', function () {
+      assert(eql(new Number(NaN), new Number(NaN)), 'eql(new Number(NaN), new Number(NaN))');
+    });
+
     it('returns false on numbers with different signs', function () {
       assert(eql(-1, 1) === false, 'eql(-1, 1) === false');
       assert(eql(-0, +0) === false, 'eql(-0, +0) === false');
       assert(eql(-Infinity, Infinity) === false, 'eql(-Infinity, +Infinity) === false');
+    });
+
+    it('returns false on instances with different signs', function () {
+      assert(eql(new Number(-1), new Number(1)) === false, 'eql(new Number(-1), new Number(1)) === false');
+      assert(eql(new Number(-0), new Number(+0)) === false, 'eql(new Number(-0), new Number(+0)) === false');
+      assert(eql(new Number(-Infinity), new Number(Infinity)) === false,
+        'eql(new Number(-Infinity), new Number(+Infinity)) === false');
     });
 
   });
@@ -93,6 +129,10 @@ describe('Generic', function () {
     it('returns true given two dates with the same time', function () {
       var dateA = new Date();
       assert(eql(dateA, new Date(dateA.getTime())), 'eql(dateA, new Date(dateA.getTime()))');
+    });
+
+    it('returns true given two invalid dates', function () {
+      assert(eql(new Date(NaN), new Date(NaN)), 'eql(new Date(NaN), new Date(NaN))');
     });
 
     it('returns false given two dates with the different times', function () {
@@ -113,6 +153,10 @@ describe('Generic', function () {
     it('returns false given two regexes with different source', function () {
       assert(eql(/^$/, /^/) === false, 'eql(/^$/, /^/) === false');
       assert(eql(/^$/, new RegExp('^')) === false, 'eql(/^$/, new RegExp("^"))');
+    });
+
+    it('returns false given two regexes with different flags', function () {
+      assert(eql(/^/m, /^/i) === false, 'eql(/^/m, /^/i) === false');
     });
 
   });
@@ -268,77 +312,6 @@ describe('Generic', function () {
     it('returns false for different errors', function () {
       assert(eql(new Error('foo'), new Error('foo')) === false,
         'eql(new Error("foo"), new Error("foo")) === false');
-    });
-
-  });
-
-  describe('@@iterator Sham', function () {
-    before(function () {
-      var globalObject = typeof window === 'undefined' ? global : window;
-      globalObject.Symbol = globalObject.Symbol || {};
-      if (!Symbol.iterator) {
-        Symbol.iterator = '__@@iterator__';
-      }
-    });
-
-    it('returns true for two objects with same [Symbol.iterator] entries', function () {
-      var testA = {};
-      Object.defineProperty(testA, Symbol.iterator, { value: function () {
-        var keys = [ 'a', 'b', 'c' ];
-        var values = [ 'a', 'b', 'c' ];
-        return {
-          next: function () {
-            if (keys.length) {
-              return { value: [ keys.shift(), values.shift() ], done: false };
-            }
-            return { done: true };
-          },
-        };
-      } });
-      var testB = {};
-      Object.defineProperty(testB, Symbol.iterator, { value: function () {
-        var keys = [ 'a', 'b', 'c' ];
-        var values = [ 'a', 'b', 'c' ];
-        return {
-          next: function () {
-            if (keys.length) {
-              return { value: [ keys.shift(), values.shift() ], done: false };
-            }
-            return { done: true };
-          },
-        };
-      } });
-      assert(eql(testA, testB), 'eql(testA, testB)');
-    });
-
-    it('returns false for two objects with different [Symbol.iterator] entries', function () {
-      var testA = {};
-      Object.defineProperty(testA, Symbol.iterator, { value: function () {
-        var keys = [ 'a', 'b', 'c' ];
-        var values = [ 'a', 'b', 'c' ];
-        return {
-          next: function () {
-            if (keys.length) {
-              return { value: [ keys.shift(), values.shift() ], done: false };
-            }
-            return { done: true };
-          },
-        };
-      } });
-      var testB = {};
-      Object.defineProperty(testB, Symbol.iterator, { value: function () {
-        var keys = [ 'a', 'b', 'c' ];
-        var values = [ 'd', 'e', 'f' ];
-        return {
-          next: function () {
-            if (keys.length) {
-              return { value: [ keys.shift(), values.shift() ], done: false };
-            }
-            return { done: true };
-          },
-        };
-      } });
-      assert(eql(testA, testB) === false, 'eql(testA, testB) === false');
     });
 
   });

@@ -24,6 +24,7 @@
     "url": "git@github.com:chaijs/deep-eql.git"
   },
   "scripts": {
+    "bench": "node bench",
     "build": "browserify $npm_pakcage_main --standalone deepEqual -o deep-eql.js",
     "lint": "eslint --ignore-path .gitignore .",
     "prepublish": "npm run build",
@@ -55,6 +56,7 @@
     "type-detect": "^2.0.0"
   },
   "devDependencies": {
+    "benchmark": "^2.1.0",
     "browserify": "^13.0.0",
     "browserify-istanbul": "^1.0.0",
     "component": "*",
@@ -70,7 +72,9 @@
     "karma-mocha": "^0.2.2",
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-sauce-launcher": "^0.3.1",
+    "kewlr": "^0.3.1",
     "lcov-result-merger": "^1.0.2",
+    "lodash.isequal": "^4.4.0",
     "mocha": "^2.4.5",
     "phantomjs-prebuilt": "^2.1.5",
     "semantic-release": "^4.3.5",
