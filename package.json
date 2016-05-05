@@ -18,7 +18,11 @@
   "scripts": {
     "lint": "eslint --ignore-path .gitignore .",
     "pretest": "npm run lint",
-    "test": "make test"
+    "test": "make test",
+    "test": "npm run test:node && npm run test:browser && npm run upload-coverage",
+    "test:node": "istanbul cover _mocha",
+    "test:browser": "karma start --singleRun=true",
+    "watch": "karma start --auto-watch --singleRun=false"
   },
   "eslintConfig": {
     "extends": [
@@ -41,13 +45,19 @@
     "eslint-config-strict": "^8.5.0",
     "eslint-plugin-filenames": "^0.2.0",
     "jscoverage": "0.3.7",
-    "karma": "*",
-    "karma-cli": "*",
-    "karma-mocha": "*",
-    "karma-phantomjs-launcher": "*",
-    "mocha": "*",
-    "mocha-lcov-reporter": "0.0.1",
-    "simple-assert": "*"
+    "mocha": "^2.4.5",
+    "browserify": "^13.0.0",
+    "browserify-istanbul": "^1.0.0",
+    "istanbul": "^0.4.2",
+    "karma": "^0.13.22",
+    "karma-browserify": "^5.0.2",
+    "karma-coverage": "^0.5.5",
+    "karma-mocha": "^0.2.2",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-sauce-launcher": "^0.3.1",
+    "phantomjs-prebuilt": "^2.1.5",
+    "simple-assert": "*",
+    "watchify": "^3.7.0"
   },
   "engines": {
     "node": "*"
