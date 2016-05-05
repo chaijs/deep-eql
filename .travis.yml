@@ -1,4 +1,20 @@
 language: node_js
 node_js:
-  - 0.10
-script: make test-travisci
+  - 0.1
+  - 4.3
+  - stable
+before_install:
+  - npm i -g npm
+script:
+  - npm t
+after_success:
+  - 'npm run upload-coverage'
+  - 'travis-after-all && npm run semantic-release'
+env:
+  global:
+    - secure: AgiUWRCNP2z0oHCjdm3lk4YawBOQz8Q4DOrzOR3tDt2fSWo2t40cynfGJlQwpFmTvec5G04lO9bEC9/yoW7xAS0ysu5p7utngXaKtKDoq3Zr0aYLLLsCv/0PAv1YstMyo/mRbRetxob76wUFcrbB3r5alIF5YW1JCmj/O9bvdUQ=
+    - secure: TepAZmznoPWUX12snu2eb7Sni+31tiOO6ZeU3wovrhCpGzykBNr6xAvUklr88L+uKtvfsTq8sipX0jtZvL7lcIEzujirTpjaj4QV5mUFiV2N40o+C3LdNmfmU9dhUcXRu9vMSs9uc7YfPers4We8X99UxTHxljK7VyJe39ULpRk=
+    - SAUCE_CONNECT_READY_FILE=/tmp/sauce-connect-ready
+    - LOGS_DIR=/tmp/chai-build/logs
+    - secure: fakflt6DaPW9NYFdUpTfQGoKFt5F1EZeSiGqWeTCZ3+VDiEC/d9rPf7JfHkDklpr4swEW7ovbfV4PHp+MeT+jje8eQAezbhdT8hAmChykeTKKfgvifMwQp6TD3DQVrf6cJqqZfkJkkzuYJjGivZ8FA4KXTglyBrjozM8KH675UU=
+    - secure: bE+qM+B4dA+oQSfHo4BM9NVU5LCdgkEmfThfmIp3kmX19RO/1R1dlu18M1rVyDUNaqFUwCsq/W/9a+Dv1r+7knmfmJoUKuXCcIjn6WBs4Pd2kPwjCjvQ+5RWTw67v44de78AFb3IH7dT2H+fhgeHrfaI3NIV27BlKx6OqTnqDRY=

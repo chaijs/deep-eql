@@ -19,10 +19,11 @@
     "build": "browserify $npm_pakcage_main --standalone deepEqual -o deep-eql.js",
     "lint": "eslint --ignore-path .gitignore .",
     "pretest": "npm run lint",
-    "test": "npm run test:node && npm run test:browser && npm run upload-coverage",
+    "test": "npm run test:node && npm run test:browser",
     "test:node": "istanbul cover _mocha",
     "test:browser": "karma start --singleRun=true",
-    "watch": "karma start --auto-watch --singleRun=false"
+    "watch": "karma start --auto-watch --singleRun=false",
+    "upload-coverage": "lcov-result-merger 'coverage/**/lcov.info' | coveralls; exit 0"
   },
   "eslintConfig": {
     "extends": [
@@ -42,10 +43,10 @@
     "browserify": "^13.0.0",
     "browserify-istanbul": "^1.0.0",
     "component": "*",
-    "coveralls": "2.0.16",
     "eslint": "^2.4.0",
     "eslint-config-strict": "^8.5.0",
     "eslint-plugin-filenames": "^0.2.0",
+    "coveralls": "2.11.8",
     "istanbul": "^0.4.2",
     "karma": "^0.13.22",
     "karma-browserify": "^5.0.2",
@@ -53,6 +54,7 @@
     "karma-mocha": "^0.2.2",
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-sauce-launcher": "^0.3.1",
+    "lcov-result-merger": "^1.0.2",
     "mocha": "^2.4.5",
     "phantomjs-prebuilt": "^2.1.5",
     "simple-assert": "*",
