@@ -1,6 +1,5 @@
 {
   "name": "deep-eql",
-  "version": "0.1.3",
   "description": "Improved deep equality testing for Node.js and the browser.",
   "keywords": [
     "chai util",
@@ -18,12 +17,19 @@
   "scripts": {
     "build": "browserify $npm_pakcage_main --standalone deepEqual -o deep-eql.js",
     "lint": "eslint --ignore-path .gitignore .",
+    "prepublish": "npm run build",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",
     "test:node": "istanbul cover _mocha",
     "test:browser": "karma start --singleRun=true",
     "watch": "karma start --auto-watch --singleRun=false",
     "upload-coverage": "lcov-result-merger 'coverage/**/lcov.info' | coveralls; exit 0"
+  },
+  "config": {
+    "ghooks": {
+      "commit-msg": "validate-commit-msg"
+    }
   },
   "eslintConfig": {
     "extends": [
@@ -43,10 +49,11 @@
     "browserify": "^13.0.0",
     "browserify-istanbul": "^1.0.0",
     "component": "*",
+    "coveralls": "2.11.8",
     "eslint": "^2.4.0",
     "eslint-config-strict": "^8.5.0",
     "eslint-plugin-filenames": "^0.2.0",
-    "coveralls": "2.11.8",
+    "ghooks": "^1.0.1",
     "istanbul": "^0.4.2",
     "karma": "^0.13.22",
     "karma-browserify": "^5.0.2",
@@ -57,7 +64,10 @@
     "lcov-result-merger": "^1.0.2",
     "mocha": "^2.4.5",
     "phantomjs-prebuilt": "^2.1.5",
+    "semantic-release": "^4.3.5",
     "simple-assert": "*",
+    "travis-after-all": "^1.4.4",
+    "validate-commit-msg": "^2.3.1",
     "watchify": "^3.7.0"
   },
   "engines": {
