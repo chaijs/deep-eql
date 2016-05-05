@@ -9,6 +9,11 @@
   ],
   "license": "MIT",
   "author": "Jake Luer <jake@alogicalparadox.com>",
+  "contributors": [
+    "Keith Cirkel (https://github.com/keithamus)",
+    "dougluce (https://github.com/dougluce)",
+    "Lorenz Leutgeb (https://github.com/flowlo)"
+  ],
   "main": "./index",
   "files": [
     "index.js",
