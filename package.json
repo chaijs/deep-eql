@@ -10,6 +10,10 @@
   "license": "MIT",
   "author": "Jake Luer <jake@alogicalparadox.com>",
   "main": "./index",
+  "files": [
+    "index.js",
+    "deep-eql.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:chaijs/deep-eql.git"
