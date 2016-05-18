@@ -86,9 +86,9 @@ describe('deep-equal', function() {
 
     it(title, function() {
       if (negate) {
-        assert(!eql(test[1], test[2]));
+        assert(!eql(test[1], test[2], test[4]));
       } else {
-        assert(eql(test[1], test[2]));
+        assert(eql(test[1], test[2], test[4]));
       }
     });
   });
