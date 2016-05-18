@@ -74,6 +74,13 @@ tests.push([ 'eql({ foo: "bar" }, { foo: "baz" })', { foo: 'bar' }, { foo: 'baz'
 tests.push([ 'eql({ foo: { bar: "foo" }}, { foo: { bar: "baz" }})', { foo: { bar: 'foo' }}, { foo: { bar: 'baz' }}, true ]);
 
 /*!
+ * Tolerance
+ */
+
+tests.push([ 'eql([ 1, 2, 3 ], [ 1.001, 2, 3 ], { tolerance: 0.001 })', [ 1, 2, 3 ], [ 1.001, 2, 3 ], false, { tolerance: 0.001 } ]);
+tests.push([ 'eql([ 1, 2, 3 ], [ 1.01, 2, 3 ], { tolerance: 0.001 })', [ 1, 2, 3 ], [ 1.01, 2, 3 ], true, { tolerance: 0.001 } ]);
+
+/*!
  * Test setup
  */
 
@@ -86,9 +93,9 @@ describe('deep-equal', function() {
 
     it(title, function() {
       if (negate) {
-        assert(!eql(test[1], test[2]));
+        assert(!eql(test[1], test[2], test[4]));
       } else {
-        assert(eql(test[1], test[2]));
+        assert(eql(test[1], test[2], test[4]));
       }
     });
   });
