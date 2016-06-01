@@ -66,10 +66,9 @@ function deepEqual(leftHandOperand, rightHandOperand, comparatorOrMemoize, memoi
       return dateEqual(leftHandOperand, rightHandOperand);
     case 'regexp':
       return regexpEqual(leftHandOperand, rightHandOperand);
-    case 'arguments':
-      return argumentsEqual(leftHandOperand, rightHandOperand, memoizeObject);
     case 'generator':
       return generatorEqual(leftHandOperand, rightHandOperand, memoizeObject);
+    case 'arguments':
     case 'int8array':
     case 'uint8array':
     case 'uint8clampedarray':
@@ -116,22 +115,6 @@ function regexpEqual(leftHandOperand, rightHandOperand) {
   return objectIs(leftHandOperand.toString(), rightHandOperand.toString());
 }
 
-/*!
- * Assert deep equality of two `arguments` objects.
- * Unfortunately, these must be sliced to arrays
- * prior to test to ensure no bad behavior.
- *
- * @param {Arguments} a
- * @param {Arguments} b
- * @param {Array} memoize (optional)
- * @return {Boolean} result
- */
-
-function argumentsEqual(leftHandOperand, rightHandOperand, memoizeObject) {
-  leftHandOperand = [].slice.call(leftHandOperand);
-  rightHandOperand = [].slice.call(rightHandOperand);
-  return deepEqual(leftHandOperand, rightHandOperand, memoizeObject);
-}
 
 /*!
  * Simple equality for flat iterable objects
