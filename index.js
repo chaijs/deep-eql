@@ -84,6 +84,8 @@ function deepEqual(leftHandOperand, rightHandOperand, comparatorOrMemoize, memoi
       return iterableEqual(new Uint8Array(leftHandOperand.buffer), new Uint8Array(rightHandOperand.buffer));
     case 'arraybuffer':
       return iterableEqual(new Uint8Array(leftHandOperand), new Uint8Array(rightHandOperand));
+    case 'set':
+      return setEqual(leftHandOperand, rightHandOperand, memoizeObject);
     default:
       return objectEqual(leftHandOperand, rightHandOperand, memoizeObject);
   }
@@ -115,6 +117,28 @@ function regexpEqual(leftHandOperand, rightHandOperand) {
   return objectIs(leftHandOperand.toString(), rightHandOperand.toString());
 }
 
+/*!
+ * Compare two sets by forEaching over them,
+ * and comparing the resulting array.
+ *
+ * Needed because IE11 doesn't support Set#entries or Set#@@iterator
+ *
+ * @param {Set} a
+ * @param {Set} b
+ * @return {Boolean} result
+ */
+
+function setEqual(leftHandOperand, rightHandOperand) {
+  var leftHandItems = [];
+  var rightHandItems = [];
+  leftHandOperand.forEach(function gatherSetEntries(entry) {
+    leftHandItems.push(entry);
+  });
+  rightHandOperand.forEach(function gatherSetEntries(entry) {
+    rightHandItems.push(entry);
+  });
+  return iterableEqual(leftHandItems.sort(), rightHandItems.sort());
+}
 
 /*!
  * Simple equality for flat iterable objects
