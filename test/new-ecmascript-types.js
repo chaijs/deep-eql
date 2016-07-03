@@ -582,17 +582,41 @@ describe('ES2015 Specific', function () {
         'eql(generatorA(), generatorB())');
     });
 
+    it('returns true for different generator function calls are at level of iteration with same results', function () {
+      var generatorA = eval('function * generatorA() { yield 1; yield 2; yield 3; }; generatorA');
+      var generatorB = eval('function * generatorB() { yield 6; yield 2; yield 3; }; generatorB');
+      var generatorAIterator = generatorA();
+      var generatorBIterator = generatorB();
+      generatorAIterator.next()
+      generatorBIterator.next()
+      assert(eql(generatorAIterator, generatorBIterator),
+        'eql(generatorAIterator, generatorBIterator');
+    });
+
     it('returns false for same generator function calls that return different results', function () {
       var generator = eval('var set = 0; function * generator() { yield set++; }; generator');
       assert(eql(generator(), generator()) === false,
         'eql(generator(), generator()) === false');
     });
 
-    it('returns false for different generator function calls that return different results', function () {
+    it('returns false for generators at different stages of iteration', function () {
       var generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
-      var generatorB = eval('function * generatorB() { yield 4; yield 5; }; generatorB');
-      assert(eql(generatorA(), generatorB()) === false,
-        'eql(generatorA(), generatorB()) === false');
+      var generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
+      var generatorBIterator = generatorB();
+      generatorBIterator.next()
+      assert(eql(generatorA(), generatorBIterator) === false,
+        'eql(generatorA(), generatorBIterator) === false');
+    });
+
+    it('returns false for generators if one is done', function () {
+      var generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
+      var generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
+      var generatorBIterator = generatorB();
+      generatorBIterator.next()
+      generatorBIterator.next()
+      generatorBIterator.next()
+      assert(eql(generatorA(), generatorBIterator) === false,
+        'eql(generatorA(), generatorBIterator) === false');
     });
 
   });

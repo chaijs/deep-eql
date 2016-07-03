@@ -172,9 +172,6 @@ function iterableEqual(leftHandOperand, rightHandOperand, memoizeObject) {
  */
 
 function generatorEqual(leftHandOperand, rightHandOperand, memoizeObject) {
-  if (leftHandOperand.done || rightHandOperand.done) {
-    return [];
-  }
   return iterableEqual(getGeneratorEntries(leftHandOperand), getGeneratorEntries(rightHandOperand), memoizeObject);
 }
 
