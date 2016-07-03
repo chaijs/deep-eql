@@ -587,8 +587,8 @@ describe('ES2015 Specific', function () {
       var generatorB = eval('function * generatorB() { yield 6; yield 2; yield 3; }; generatorB');
       var generatorAIterator = generatorA();
       var generatorBIterator = generatorB();
-      generatorAIterator.next()
-      generatorBIterator.next()
+      generatorAIterator.next();
+      generatorBIterator.next();
       assert(eql(generatorAIterator, generatorBIterator),
         'eql(generatorAIterator, generatorBIterator');
     });
@@ -603,7 +603,7 @@ describe('ES2015 Specific', function () {
       var generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
       var generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
       var generatorBIterator = generatorB();
-      generatorBIterator.next()
+      generatorBIterator.next();
       assert(eql(generatorA(), generatorBIterator) === false,
         'eql(generatorA(), generatorBIterator) === false');
     });
@@ -612,9 +612,9 @@ describe('ES2015 Specific', function () {
       var generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
       var generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
       var generatorBIterator = generatorB();
-      generatorBIterator.next()
-      generatorBIterator.next()
-      generatorBIterator.next()
+      generatorBIterator.next();
+      generatorBIterator.next();
+      generatorBIterator.next();
       assert(eql(generatorA(), generatorBIterator) === false,
         'eql(generatorA(), generatorBIterator) === false');
     });

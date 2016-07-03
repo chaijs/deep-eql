@@ -62,12 +62,6 @@ function deepEqual(leftHandOperand, rightHandOperand, comparatorOrMemoize, memoi
     case 'weakset':
     case 'error':
       return sameValue;
-    case 'date':
-      return dateEqual(leftHandOperand, rightHandOperand);
-    case 'regexp':
-      return regexpEqual(leftHandOperand, rightHandOperand);
-    case 'generator':
-      return generatorEqual(leftHandOperand, rightHandOperand, memoizeObject);
     case 'arguments':
     case 'int8array':
     case 'uint8array':
@@ -80,6 +74,12 @@ function deepEqual(leftHandOperand, rightHandOperand, comparatorOrMemoize, memoi
     case 'float64array':
     case 'array':
       return iterableEqual(leftHandOperand, rightHandOperand, memoizeObject);
+    case 'date':
+      return dateEqual(leftHandOperand, rightHandOperand);
+    case 'regexp':
+      return regexpEqual(leftHandOperand, rightHandOperand);
+    case 'generator':
+      return generatorEqual(leftHandOperand, rightHandOperand, memoizeObject);
     case 'dataview':
       return iterableEqual(new Uint8Array(leftHandOperand.buffer), new Uint8Array(rightHandOperand.buffer));
     case 'arraybuffer':
