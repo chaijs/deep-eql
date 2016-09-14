@@ -174,6 +174,9 @@ function deepEqual(leftHandOperand, rightHandOperand, options) {
     case 'set':
       result = setEqual(leftHandOperand, rightHandOperand, options);
       break;
+    case 'map':
+      result = mapEqual(leftHandOperand, rightHandOperand, options);
+      break;
     default:
       result = objectEqual(leftHandOperand, rightHandOperand, options);
   }
@@ -229,6 +232,43 @@ function setEqual(leftHandOperand, rightHandOperand, options) {
     rightHandItems.push(entry);
   });
   return iterableEqual(leftHandItems.sort(), rightHandItems.sort(), options);
+}
+
+/*!
+ * Compare two maps by forEaching over them,
+ * and comparing the resulting key/value pairs.
+ *
+ * Speed Optimization:
+ * Pre:
+ *   map                         x 320,939 ops/sec ±1.45% (81 runs sampled)
+ *   map (complex)               x 149,099 ops/sec ±1.55% (76 runs sampled)
+ *   map (differing)             x 251,749 ops/sec ±7.59% (73 runs sampled)
+ * Post:
+ *   map                         x 511,685 ops/sec ±1.70% (82 runs sampled)
+ *   map (complex)               x 247,723 ops/sec ±1.42% (81 runs sampled)
+ *   map (differing)             x 450,797 ops/sec ±1.74% (78 runs sampled)
+ * @param {Set} a
+ * @param {Set} b
+ * @return {Boolean} result
+ */
+
+function mapEqual(leftHandOperand, rightHandOperand, options) {
+  if (leftHandOperand.size !== rightHandOperand.size) {
+    return false;
+  }
+  var result = true;
+  leftHandOperand.forEach(function traverseLHMap(lhoKey, lhoValue) {
+    var found = false;
+    rightHandOperand.forEach(function traverseRHMap(rhoKey, rhoValue) {
+      if (deepEqual(lhoKey, rhoKey, options) && deepEqual(lhoValue, rhoValue, options)) {
+        found = true;
+      }
+    });
+    if (!found) {
+      result = false;
+    }
+  });
+  return result;
 }
 
 /*!
