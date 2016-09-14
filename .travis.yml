@@ -4,23 +4,23 @@ addons:
   sauce_connect: true
 cache:
   directories:
-    - node_modules
+  - node_modules
 node_js:
-  - 0.1
-  - 4.3
-  - stable
+- 0.1
+- 4.3
+- stable
 before_install:
-  - npm i -g npm
+- npm i -g npm
 script:
-  - npm t
+- npm t
 after_success:
-  - 'npm run upload-coverage'
-  - 'travis-after-all && npm run semantic-release'
+- npm run upload-coverage
+- travis-after-all && npm run semantic-release
 env:
   global:
-    - secure: AgiUWRCNP2z0oHCjdm3lk4YawBOQz8Q4DOrzOR3tDt2fSWo2t40cynfGJlQwpFmTvec5G04lO9bEC9/yoW7xAS0ysu5p7utngXaKtKDoq3Zr0aYLLLsCv/0PAv1YstMyo/mRbRetxob76wUFcrbB3r5alIF5YW1JCmj/O9bvdUQ=
-    - secure: TepAZmznoPWUX12snu2eb7Sni+31tiOO6ZeU3wovrhCpGzykBNr6xAvUklr88L+uKtvfsTq8sipX0jtZvL7lcIEzujirTpjaj4QV5mUFiV2N40o+C3LdNmfmU9dhUcXRu9vMSs9uc7YfPers4We8X99UxTHxljK7VyJe39ULpRk=
-    - SAUCE_CONNECT_READY_FILE=/tmp/sauce-connect-ready
-    - LOGS_DIR=/tmp/chai-build/logs
-    - secure: fakflt6DaPW9NYFdUpTfQGoKFt5F1EZeSiGqWeTCZ3+VDiEC/d9rPf7JfHkDklpr4swEW7ovbfV4PHp+MeT+jje8eQAezbhdT8hAmChykeTKKfgvifMwQp6TD3DQVrf6cJqqZfkJkkzuYJjGivZ8FA4KXTglyBrjozM8KH675UU=
-    - secure: bE+qM+B4dA+oQSfHo4BM9NVU5LCdgkEmfThfmIp3kmX19RO/1R1dlu18M1rVyDUNaqFUwCsq/W/9a+Dv1r+7knmfmJoUKuXCcIjn6WBs4Pd2kPwjCjvQ+5RWTw67v44de78AFb3IH7dT2H+fhgeHrfaI3NIV27BlKx6OqTnqDRY=
+  - SAUCE_CONNECT_READY_FILE=/tmp/sauce-connect-ready
+  - LOGS_DIR=/tmp/chai-build/logs
+  - secure: fOmukdZc9lwl/tfer01TAoPCcpafNbr1ZvUnjKmiP/r1cC2RWpF1JlYITtioLlvadzCTwi88SBzQLIi1/qCSao7vSsup5oC05brgUOR9uD7VE9IfIpyV5bthT/sX3IKNeIFKlow4H1f8RLlweqtor5AyHlG5cXOJybQMyAAfkWo=
+  - secure: XC9Uz7J9Yflf7NuSFAkWq2yb3UksnKe83l3npLhYWN/uNk74ukh1z3o+OcJ4ujNsMx+/AcKjlJPmu8ghrjxCo6ocWBNz2+TR2UOZjukS96BOAOvOTgJqEv6nGW7HNVhpDYZEPbhM2d67UnoAX3aZFDZdug2EHD2GFJYYD7LZpnM=
+  - secure: LsutIKfCxltpyJSW0h+L8EDQYC+Rh7w48ZBbbJq+jS19ejQTPfojvvw5NcucpNh0P+x27PikRGKNOAAUuPqZSA9l9OFPoPVxgUI8r8E7Kl6D0pi6hCz5bX+dG0VaI078GpaflsyOVjiiW844sR7IXpP1w3GP2fI1DBXOBUbsWNQ=
+  - secure: EqyK5QPQZ7eHu7RbRjj/1MJywBbsn7EiJXHm9jjDnsuLkMEhrBdV5bYsIEDIROIsOSl8OBw208rrIUNO73aSvfQgkCJMN3Mtjfqh/Yn1We90k0Gy9KZMsiheD/3qjsOQxQPludlU58EDlEItTVLb2Clfs7Qfv7M5p3xl54OCaN8=
