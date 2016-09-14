@@ -1,5 +1,5 @@
 'use strict';
-/* globals Symbol: true, Uint8Array: true */
+/* globals Symbol: true, Uint8Array: true, WeakMap: true */
 /*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
@@ -13,11 +13,76 @@
 var type = require('type-detect');
 var objectIs = Object.is || require('object-is'); // eslint-disable-line
 
+function FakeMap() {
+  this.clear();
+}
+FakeMap.prototype = {
+  clear: function clearMap() {
+    this.keys = [];
+    this.values = [];
+    return this;
+  },
+  set: function setMap(key, value) {
+    var index = this.keys.indexOf(key);
+    if (index >= 0) {
+      this.values[index] = value;
+    } else {
+      this.keys.push(key);
+      this.values.push(value);
+    }
+    return this;
+  },
+  get: function getMap(key) {
+    return this.values[this.keys.indexOf(key)];
+  },
+  delete: function deleteMap(key) {
+    var index = this.keys.indexOf(key);
+    if (index >= 0) {
+      this.values = this.values.slice(0, index).concat(this.values.slice(index + 1));
+      this.keys = this.keys.slice(0, index).concat(this.keys.slice(index + 1));
+    }
+    return this;
+  },
+};
+
+var MemoizeMap = null;
+if (typeof WeakMap === 'function') {
+  MemoizeMap = WeakMap;
+} else {
+  MemoizeMap = FakeMap;
+}
+
+function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
+  var leftHandMap = memoizeMap.get(leftHandOperand);
+  if (leftHandMap) {
+    var result = leftHandMap.get(rightHandOperand);
+    if (typeof result === 'boolean') {
+      return result;
+    }
+  }
+  return null;
+}
+
+function memoizeSet(leftHandOperand, rightHandOperand, memoizeMap, result) {
+  if (!memoizeMap) {
+    return;
+  }
+  var leftHandMap = memoizeMap.get(leftHandOperand);
+  if (leftHandMap) {
+    leftHandMap.set(rightHandOperand, result);
+  } else {
+    leftHandMap = new MemoizeMap();
+    leftHandMap.set(rightHandOperand, result);
+    memoizeMap.set(leftHandOperand, leftHandMap);
+  }
+}
+
 /*!
  * Primary Export
  */
 
 module.exports = deepEqual;
+module.exports.MemoizeMap = MemoizeMap;
 
 /**
  * Assert deeply nested sameValue equality between two objects of any type.
@@ -29,28 +94,44 @@ module.exports = deepEqual;
  * @return {Boolean} equal match
  */
 
-function deepEqual(leftHandOperand, rightHandOperand, comparatorOrMemoize, memoizeObject) {
-  memoizeObject = memoizeObject || [];
-  var comparator = comparatorOrMemoize;
-  if (type(comparatorOrMemoize) !== 'function') {
-    memoizeObject = comparatorOrMemoize || [];
-    comparator = false;
+function deepEqual(leftHandOperand, rightHandOperand, options) {
+  options = options || {};
+  options = {
+    comparator: options.comparator || objectIs,
+    memoize: options.memoize || true,
+  };
+  if (options.memoize === true) {
+    options.memoize = new MemoizeMap();
   }
 
-  if (comparator) {
-    return comparator(leftHandOperand, rightHandOperand);
+  var result = objectIs(leftHandOperand, rightHandOperand);
+  if (result) {
+    return true;
   }
 
-  var sameValue = objectIs(leftHandOperand, rightHandOperand);
-  if (sameValue) {
+  var memoizeResult = memoizeCompare(leftHandOperand, rightHandOperand, options.memoize);
+  if (typeof memoizeResult === 'boolean') {
+    return memoizeResult;
+  }
+
+  if (options.comparator.call(null, leftHandOperand, rightHandOperand)) {
+    memoizeSet(leftHandOperand, rightHandOperand, options.memoize, true);
+    memoizeSet(rightHandOperand, leftHandOperand, options.memoize, true);
     return true;
   }
 
   var leftHandType = type(leftHandOperand);
   if (leftHandType !== type(rightHandOperand)) {
+    memoizeSet(leftHandOperand, rightHandOperand, options.memoize, false);
+    memoizeSet(rightHandOperand, leftHandOperand, options.memoize, false);
     return false;
   }
 
+  // Temporarily set the operands in the memoize object to prevent blowing the stack
+  if (typeof leftHandOperand === 'object') {
+    memoizeSet(leftHandOperand, rightHandOperand, options.memoize, result);
+    memoizeSet(rightHandOperand, leftHandOperand, options.memoize, result);
+  }
   switch (leftHandType) {
     case 'string':
     case 'number':
@@ -61,7 +142,7 @@ function deepEqual(leftHandOperand, rightHandOperand, comparatorOrMemoize, memoi
     case 'weakmap':
     case 'weakset':
     case 'error':
-      return sameValue;
+      return result;
     case 'arguments':
     case 'int8array':
     case 'uint8array':
@@ -73,22 +154,32 @@ function deepEqual(leftHandOperand, rightHandOperand, comparatorOrMemoize, memoi
     case 'float32array':
     case 'float64array':
     case 'array':
-      return iterableEqual(leftHandOperand, rightHandOperand, memoizeObject);
+      result = iterableEqual(leftHandOperand, rightHandOperand, options);
+      break;
     case 'date':
-      return dateEqual(leftHandOperand, rightHandOperand);
+      result = dateEqual(leftHandOperand, rightHandOperand);
+      break;
     case 'regexp':
-      return regexpEqual(leftHandOperand, rightHandOperand);
+      result = regexpEqual(leftHandOperand, rightHandOperand);
+      break;
     case 'generator':
-      return generatorEqual(leftHandOperand, rightHandOperand, memoizeObject);
+      result = generatorEqual(leftHandOperand, rightHandOperand, options);
+      break;
     case 'dataview':
-      return iterableEqual(new Uint8Array(leftHandOperand.buffer), new Uint8Array(rightHandOperand.buffer));
+      result = iterableEqual(new Uint8Array(leftHandOperand.buffer), new Uint8Array(rightHandOperand.buffer), options);
+      break;
     case 'arraybuffer':
-      return iterableEqual(new Uint8Array(leftHandOperand), new Uint8Array(rightHandOperand));
+      result = iterableEqual(new Uint8Array(leftHandOperand), new Uint8Array(rightHandOperand), options);
+      break;
     case 'set':
-      return setEqual(leftHandOperand, rightHandOperand, memoizeObject);
+      result = setEqual(leftHandOperand, rightHandOperand, options);
+      break;
     default:
-      return objectEqual(leftHandOperand, rightHandOperand, memoizeObject);
+      result = objectEqual(leftHandOperand, rightHandOperand, options);
   }
+  memoizeSet(leftHandOperand, rightHandOperand, options.memoize, result);
+  memoizeSet(rightHandOperand, leftHandOperand, options.memoize, result);
+  return result;
 }
 
 /*!
@@ -128,7 +219,7 @@ function regexpEqual(leftHandOperand, rightHandOperand) {
  * @return {Boolean} result
  */
 
-function setEqual(leftHandOperand, rightHandOperand) {
+function setEqual(leftHandOperand, rightHandOperand, options) {
   var leftHandItems = [];
   var rightHandItems = [];
   leftHandOperand.forEach(function gatherSetEntries(entry) {
@@ -137,7 +228,7 @@ function setEqual(leftHandOperand, rightHandOperand) {
   rightHandOperand.forEach(function gatherSetEntries(entry) {
     rightHandItems.push(entry);
   });
-  return iterableEqual(leftHandItems.sort(), rightHandItems.sort());
+  return iterableEqual(leftHandItems.sort(), rightHandItems.sort(), options);
 }
 
 /*!
@@ -149,13 +240,13 @@ function setEqual(leftHandOperand, rightHandOperand) {
  * @return {Boolean} result
  */
 
-function iterableEqual(leftHandOperand, rightHandOperand, memoizeObject) {
+function iterableEqual(leftHandOperand, rightHandOperand, options) {
   var length = leftHandOperand.length;
   if (length !== rightHandOperand.length) {
     return false;
   }
   for (var i = 0; i < length; i += 1) {
-    if (deepEqual(leftHandOperand[i], rightHandOperand[i], memoizeObject) === false) {
+    if (deepEqual(leftHandOperand[i], rightHandOperand[i], options) === false) {
       return false;
     }
   }
@@ -171,8 +262,8 @@ function iterableEqual(leftHandOperand, rightHandOperand, memoizeObject) {
  * @return {Boolean} result
  */
 
-function generatorEqual(leftHandOperand, rightHandOperand, memoizeObject) {
-  return iterableEqual(getGeneratorEntries(leftHandOperand), getGeneratorEntries(rightHandOperand), memoizeObject);
+function generatorEqual(leftHandOperand, rightHandOperand, options) {
+  return iterableEqual(getGeneratorEntries(leftHandOperand), getGeneratorEntries(rightHandOperand), options);
 }
 
 /*!
@@ -231,10 +322,10 @@ function getGeneratorEntries(generator) {
  *
  *
  */
-function keysEqual(leftHandOperand, rightHandOperand, keys) {
+function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
   var length = keys.length;
   for (var i = 0; i < length; i += 1) {
-    if (deepEqual(leftHandOperand[keys[i]], rightHandOperand[keys[i]]) === false) {
+    if (deepEqual(leftHandOperand[keys[i]], rightHandOperand[keys[i]], options) === false) {
       return false;
     }
   }
@@ -252,7 +343,7 @@ function keysEqual(leftHandOperand, rightHandOperand, keys) {
  * @return {Boolean} result
  */
 
-function objectEqual(leftHandOperand, rightHandOperand) {
+function objectEqual(leftHandOperand, rightHandOperand, options) {
   if (Object.getPrototypeOf(leftHandOperand) !== Object.getPrototypeOf(rightHandOperand)) {
     return false;
   }
@@ -265,7 +356,7 @@ function objectEqual(leftHandOperand, rightHandOperand) {
     if (iterableEqual(leftHandKeys, rightHandKeys) === false) {
       return false;
     }
-    return keysEqual(leftHandOperand, rightHandOperand, leftHandKeys);
+    return keysEqual(leftHandOperand, rightHandOperand, leftHandKeys, options);
   }
 
   var leftHandEntries = getIteratorEntries(leftHandOperand);
@@ -273,7 +364,7 @@ function objectEqual(leftHandOperand, rightHandOperand) {
   if (leftHandEntries.length && leftHandEntries.length === rightHandEntries.length) {
     leftHandEntries.sort();
     rightHandEntries.sort();
-    return iterableEqual(leftHandEntries, rightHandEntries);
+    return iterableEqual(leftHandEntries, rightHandEntries, options);
   }
 
   if (leftHandKeys.length === 0 &&

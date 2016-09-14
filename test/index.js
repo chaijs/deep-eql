@@ -1,6 +1,7 @@
 'use strict';
 var assert = require('simple-assert');
 var eql = require('..');
+var MemoizeMap = require('..').MemoizeMap;
 describe('Generic', function () {
 
   describe('strings', function () {
@@ -272,6 +273,16 @@ describe('Generic', function () {
         'eql({ foo: { bar: "foo" }}, { foo: { bar: "foo" }})');
     });
 
+    it('returns true with objects with same circular reference', function () {
+      var objectA = { foo: 1 };
+      var objectB = { foo: 1 };
+      var objectC = { a: objectA, b: objectB };
+      objectA.bar = objectC;
+      objectB.bar = objectC;
+      assert(eql(objectA, objectB) === true,
+        'eql({ foo: 1, bar: objectC }, { foo: 1, bar: objectC }) === true');
+    });
+
     it('returns false with objects containing different literals', function () {
       assert(eql({ foo: 1, bar: 1 }, { foo: 1, bar: 2 }) === false,
         'eql({ foo: 1, bar: 2 }, { foo: 1, bar: 2 }) === false');
@@ -284,6 +295,15 @@ describe('Generic', function () {
       assert(eql({ foo: 1, bar: 1 }, { foo: 1, baz: 2 }) === false,
         'eql({ foo: 1, bar: 2 }, { foo: 1, baz: 2 }) === false');
       assert(eql({ foo: 'bar' }, { bar: 'baz' }) === false, 'eql({ foo: "bar" }, { foo: "baz" }) === false');
+    });
+
+    it('returns false with recursive objects of differing values', function () {
+      var objectA = { foo: 1 };
+      var objectB = { foo: 1 };
+      objectA.bar = objectB;
+      objectB.bar = objectA;
+      assert(eql(objectA, objectB) === false,
+        'eql({ foo: 1, bar: -> }, { foo: 1, bar: <- }) === false');
     });
 
   });
@@ -314,6 +334,122 @@ describe('Generic', function () {
         'eql(new Error("foo"), new Error("foo")) === false');
     });
 
+  });
+
+});
+
+describe('Memoize', function () {
+
+  it('returns true if MemoizeMap says so', function () {
+    var memoizeMap = new MemoizeMap();
+    var valueAMap = new MemoizeMap();
+    var valueA = {};
+    var valueB = { not: 'equal' };
+    valueAMap.set(valueB, true);
+    memoizeMap.set(valueA, valueAMap);
+    assert(eql(valueA, valueB, { memoize: memoizeMap }) === true,
+      'eql({}, {not:"equal"}, <memoizeMap>) === true');
+  });
+
+  it('returns false if MemoizeMap says so', function () {
+    var memoizeMap = new MemoizeMap();
+    var valueAMap = new MemoizeMap();
+    var valueA = {};
+    var valueB = {};
+    valueAMap.set(valueB, false);
+    memoizeMap.set(valueA, valueAMap);
+    assert(eql(valueA, valueB, { memoize: memoizeMap }) === false,
+      'eql({}, {}, <memoizeMap>) === false');
+  });
+
+  it('resorts to default behaviour if MemoizeMap has no answer (same objects)', function () {
+    var memoizeMap = new MemoizeMap();
+    var valueAMap = new MemoizeMap();
+    var valueA = {};
+    var valueB = {};
+    memoizeMap.set(valueA, valueAMap);
+    assert(eql(valueA, valueB, { memoize: memoizeMap }) === true,
+      'eql({}, {}, <memoizeMap>) === true');
+  });
+
+  it('resorts to default behaviour if MemoizeMap has no answer (different objects)', function () {
+    var memoizeMap = new MemoizeMap();
+    var valueAMap = new MemoizeMap();
+    var valueA = {};
+    var valueB = { not: 'equal' };
+    memoizeMap.set(valueA, valueAMap);
+    assert(eql(valueA, valueB, { memoize: memoizeMap }) === false,
+      'eql({}, {}, <memoizeMap>) === false');
+  });
+
+});
+
+describe('Comparator', function () {
+  function specialComparator(left, right) {
+    return left['@@specialValue'] === right['@@specialValue'];
+  }
+  function Matcher(func) {
+    this.func = func;
+  }
+  function matcherComparator(left, right) {
+    if (left instanceof Matcher) {
+      return left.func(right);
+    } else if (right instanceof Matcher) {
+      return right.func(left);
+    }
+    return null;
+  }
+  function falseComparator() {
+    return false;
+  }
+  function nullComparator() {
+    return null;
+  }
+
+  it('returns true if Comparator says so', function () {
+    var valueA = { '@@specialValue': 1, a: 1 };
+    var valueB = { '@@specialValue': 1, a: 2 };
+    assert(eql(valueA, valueB, { comparator: specialComparator }) === true,
+      'eql({@@specialValue:1,a:1}, {@@specialValue:1,a:2}, <comparator>) === true');
+  });
+
+  it('returns true if Comparator says so even on primitives', function () {
+    var valueA = {
+      a: new Matcher(function (value) {
+        return typeof value === 'number';
+      }),
+    };
+    var valueB = { a: 1 };
+    assert(eql(valueA, valueB, { comparator: matcherComparator }) === true,
+      'eql({a:value => typeof value === "number"}, {a:1}, <comparator>) === true');
+  });
+
+  it('returns true if Comparator says so (deep-equality)', function () {
+    var valueA = { a: { '@@specialValue': 1, a: 1 }, b: 1 };
+    var valueB = { a: { '@@specialValue': 1, a: 2 }, b: 1 };
+    assert(eql(valueA, valueB, { comparator: specialComparator }) === true,
+      'eql({a:{@@specialValue:1,a:1},b:1}, {a:{@@specialValue:2,a:2},b:1}, <comparator>) === true');
+  });
+
+  it('returns false if Comparator returns false (same objects)', function () {
+    var valueA = { a: 1 };
+    var valueB = { a: 1 };
+    assert(eql(valueA, valueB, { comparator: falseComparator }) === false,
+      'eql({}, {}, <falseComparator>) === false');
+  });
+
+  it('resorts to deep-eql if Comparator returns null (same objects)', function () {
+    var valueA = { a: 1 };
+    var valueB = { a: 1 };
+    assert(eql(valueA, valueB, { comparator: nullComparator }) === true,
+      'eql({}, {}, <nullComparator>) === true');
+  });
+
+  it('resorts to deep-eql behaviour if Comparator returns null (different objects)', function () {
+    var valueA = { a: 1 };
+    var valueB = { a: 2 };
+    assert(eql(valueA, valueB, { comparator: nullComparator }) === false,
+      'eql({}, {}, <nullComparator>) === false');
   });
 
 });

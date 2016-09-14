@@ -200,6 +200,25 @@ describe('ES2015 Specific', function () {
       assert(eql(setA, setB), 'eql(Set { "a", "b", "c" }, Set { "b", "c", "a" })');
     });
 
+    it('returns true for Sets with nested entries', function () {
+      var setA = new Set();
+      var setB = new Set();
+      setA.add([ [], [], [] ]);
+      setB.add([ [], [], [] ]);
+      assert(eql(setA, setB) === true, 'eql(Set [ [], [], [] ], Set [ [], [], [] ]) === true');
+    });
+
+    it('returns true for Sets with same circular references', function () {
+      var setA = new Set();
+      var setB = new Set();
+      var setC = new Set();
+      setA.add(setC);
+      setB.add(setC);
+      setC.add(setA);
+      setC.add(setB);
+      assert(eql(setA, setB) === true, 'eql(Set { setC }, Set { setC }) === true');
+    });
+
     it('returns false for Sets with different entries', function () {
       var setA = new Set();
       var setB = new Set();
@@ -210,6 +229,14 @@ describe('ES2015 Specific', function () {
       setB.add('e');
       setB.add('f');
       assert(eql(setA, setB) === false, 'eql(Set { "a", "b", "c" }, Set { "d", "e", "f" }) === false');
+    });
+
+    it('returns false for Sets with different circular references', function () {
+      var setA = new Set();
+      var setB = new Set();
+      setA.add(setB);
+      setB.add(setA);
+      assert(eql(setA, setB) === false, 'eql(Set { -> }, Set { <- }) === false');
     });
 
   });
