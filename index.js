@@ -94,7 +94,32 @@ module.exports.MemoizeMap = MemoizeMap;
  * @return {Boolean} equal match
  */
 
+// Fast comparisons go through this small function for optimisation
 function deepEqual(leftHandOperand, rightHandOperand, options) {
+  var leftHandType = typeof leftHandOperand;
+  if (
+    leftHandOperand === null ||
+    leftHandOperand === undefined || // eslint-disable-line no-undefined
+    leftHandType === 'boolean' ||
+    leftHandType === 'string'
+  ) {
+    return leftHandOperand === rightHandOperand;
+  }
+
+  if (leftHandType !== typeof rightHandOperand) {
+    return false;
+  }
+
+  // Deeper comparisons are pushed through to a larger function
+  return extensiveDeepEqual(leftHandOperand, rightHandOperand, options);
+}
+
+function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
+  var result = objectIs(leftHandOperand, rightHandOperand);
+  if (result) {
+    return true;
+  }
+
   options = options || {};
   options = {
     comparator: options.comparator || objectIs,
@@ -102,11 +127,6 @@ function deepEqual(leftHandOperand, rightHandOperand, options) {
   };
   if (options.memoize === true) {
     options.memoize = new MemoizeMap();
-  }
-
-  var result = objectIs(leftHandOperand, rightHandOperand);
-  if (result) {
-    return true;
   }
 
   var memoizeResult = memoizeCompare(leftHandOperand, rightHandOperand, options.memoize);
