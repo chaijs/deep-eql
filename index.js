@@ -11,8 +11,6 @@
  */
 
 var type = require('type-detect');
-var objectIs = Object.is || require('object-is'); // eslint-disable-line
-
 function FakeMap() {
   this.clear();
 }
@@ -52,7 +50,18 @@ if (typeof WeakMap === 'function') {
   MemoizeMap = FakeMap;
 }
 
+/*!
+ * Check to see if the MemoizeMap has recorded a result of the two operands
+ *
+ * @param {Mixed} leftHandOperand
+ * @param {Mixed} rightHandOperand
+ * @param {MemoizeMap} memoizeMap
+ * @returns {Boolean|null} result
+*/
 function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
+  if (!memoizeMap) {
+    return null;
+  }
   var leftHandMap = memoizeMap.get(leftHandOperand);
   if (leftHandMap) {
     var result = leftHandMap.get(rightHandOperand);
@@ -63,8 +72,16 @@ function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
   return null;
 }
 
+/*!
+ * Set the result of the equality into the MemoizeMap
+ *
+ * @param {Mixed} leftHandOperand
+ * @param {Mixed} rightHandOperand
+ * @param {MemoizeMap} memoizeMap
+ * @param {Boolean} result
+*/
 function memoizeSet(leftHandOperand, rightHandOperand, memoizeMap, result) {
-  if (!memoizeMap) {
+  if (!memoizeMap || typeof leftHandOperand !== 'object' || typeof rightHandOperand !== 'object') {
     return;
   }
   var leftHandMap = memoizeMap.get(leftHandOperand);
@@ -89,55 +106,68 @@ module.exports.MemoizeMap = MemoizeMap;
  *
  * @param {Mixed} leftHandOperand
  * @param {Mixed} rightHandOperand
- * @param {Array} [comparator] (optional) - Override default algo, determening custom equality
- * @param {Array} [memoize] (optional) - Memoize the results of complex objects for a speed boost
+ * @param {Object} [options] (optional) Additional options
+ * @param {Array} [options.comparator] (optional) Override default algorithm, determining custom equality.
+ * @param {Array} [options.memoize] (optional) Provide a custom memoization object which will cache the results of
+    complex objects for a speed boost. By passing `false` you can disable memoization, but this will cause circular
+    references to blow the stack.
  * @return {Boolean} equal match
  */
-
-// Fast comparisons go through this small function for optimisation
 function deepEqual(leftHandOperand, rightHandOperand, options) {
-  var leftHandType = typeof leftHandOperand;
-  if (
-    leftHandOperand === null ||
-    leftHandOperand === undefined || // eslint-disable-line no-undefined
-    leftHandType === 'boolean' ||
-    leftHandType === 'string'
-  ) {
-    return leftHandOperand === rightHandOperand;
+  // Equal references (except for Numbers) can be returned early
+  if (leftHandOperand === rightHandOperand) {
+    // Handle +-0 cases
+    return leftHandOperand !== 0 || 1 / leftHandOperand === 1 / rightHandOperand;
   }
 
-  if (leftHandType !== typeof rightHandOperand) {
-    return false;
+  // handle NaN cases
+  if (
+    leftHandOperand !== leftHandOperand && // eslint-disable-line no-self-compare
+    rightHandOperand !== rightHandOperand // eslint-disable-line no-self-compare
+  ) {
+    return true;
+  }
+
+  // Primitives/null/undefined can be checked for referential equality; returning early
+  if (
+    typeof leftHandOperand !== 'object' ||
+    leftHandOperand === null ||
+    leftHandOperand === undefined // eslint-disable-line no-undefined
+  ) {
+    return leftHandOperand === rightHandOperand;
   }
 
   // Deeper comparisons are pushed through to a larger function
   return extensiveDeepEqual(leftHandOperand, rightHandOperand, options);
 }
 
+/*!
+ * The main logic of the `deepEqual` function.
+ *
+ * @param {Mixed} leftHandOperand
+ * @param {Mixed} rightHandOperand
+ * @param {Object} [options] (optional) Additional options
+ * @param {Array} [options.comparator] (optional) Override default algorithm, determining custom equality.
+ * @param {Array} [options.memoize] (optional) Provide a custom memoization object which will cache the results of
+    complex objects for a speed boost. By passing `false` you can disable memoization, but this will cause circular
+    references to blow the stack.
+ * @return {Boolean} equal match
+*/
 function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
-  var result = objectIs(leftHandOperand, rightHandOperand);
-  if (result) {
-    return true;
-  }
-
   options = options || {};
-  options = {
-    comparator: options.comparator || objectIs,
-    memoize: options.memoize || true,
-  };
-  if (options.memoize === true) {
-    options.memoize = new MemoizeMap();
-  }
+  options.memoize = options.memoize === false ? false : options.memoize || new MemoizeMap();
+  var comparator = options && options.comparator;
 
   var memoizeResult = memoizeCompare(leftHandOperand, rightHandOperand, options.memoize);
-  if (typeof memoizeResult === 'boolean') {
+  if (memoizeResult !== null) {
     return memoizeResult;
   }
 
-  if (options.comparator.call(null, leftHandOperand, rightHandOperand)) {
-    memoizeSet(leftHandOperand, rightHandOperand, options.memoize, true);
-    memoizeSet(rightHandOperand, leftHandOperand, options.memoize, true);
-    return true;
+  var comparatorResult = comparator && comparator(leftHandOperand, rightHandOperand);
+  if (comparatorResult === false || comparatorResult === true) {
+    memoizeSet(leftHandOperand, rightHandOperand, options.memoize, comparatorResult);
+    memoizeSet(rightHandOperand, leftHandOperand, options.memoize, comparatorResult);
+    return comparatorResult;
   }
 
   var leftHandType = type(leftHandOperand);
@@ -148,155 +178,105 @@ function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
   }
 
   // Temporarily set the operands in the memoize object to prevent blowing the stack
-  if (typeof leftHandOperand === 'object') {
-    memoizeSet(leftHandOperand, rightHandOperand, options.memoize, result);
-    memoizeSet(rightHandOperand, leftHandOperand, options.memoize, result);
-  }
-  switch (leftHandType) {
-    case 'string':
-    case 'number':
-    case 'boolean':
-    case 'promise':
-    case 'symbol':
-    case 'function':
-    case 'weakmap':
-    case 'weakset':
-    case 'error':
-      return result;
-    case 'arguments':
-    case 'int8array':
-    case 'uint8array':
-    case 'uint8clampedarray':
-    case 'int16array':
-    case 'uint16array':
-    case 'int32array':
-    case 'uint32array':
-    case 'float32array':
-    case 'float64array':
-    case 'array':
-      result = iterableEqual(leftHandOperand, rightHandOperand, options);
-      break;
-    case 'date':
-      result = dateEqual(leftHandOperand, rightHandOperand);
-      break;
-    case 'regexp':
-      result = regexpEqual(leftHandOperand, rightHandOperand);
-      break;
-    case 'generator':
-      result = generatorEqual(leftHandOperand, rightHandOperand, options);
-      break;
-    case 'dataview':
-      result = iterableEqual(new Uint8Array(leftHandOperand.buffer), new Uint8Array(rightHandOperand.buffer), options);
-      break;
-    case 'arraybuffer':
-      result = iterableEqual(new Uint8Array(leftHandOperand), new Uint8Array(rightHandOperand), options);
-      break;
-    case 'set':
-      result = setEqual(leftHandOperand, rightHandOperand, options);
-      break;
-    case 'map':
-      result = mapEqual(leftHandOperand, rightHandOperand, options);
-      break;
-    default:
-      result = objectEqual(leftHandOperand, rightHandOperand, options);
-  }
+  memoizeSet(leftHandOperand, rightHandOperand, options.memoize, false);
+  memoizeSet(rightHandOperand, leftHandOperand, options.memoize, false);
+
+  var result = extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandType, options);
   memoizeSet(leftHandOperand, rightHandOperand, options.memoize, result);
   memoizeSet(rightHandOperand, leftHandOperand, options.memoize, result);
   return result;
 }
 
-/*!
- * Compare two Date objects by asserting that
- * the time values are equal using `saveValue`.
- *
- * @param {Date} a
- * @param {Date} b
- * @return {Boolean} result
- */
-
-function dateEqual(leftHandOperand, rightHandOperand) {
-  return objectIs(leftHandOperand.getTime(), rightHandOperand.getTime());
+function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandType, options) {
+  switch (leftHandType) {
+    case 'String':
+    case 'Number':
+    case 'Boolean':
+    case 'Date':
+      // If these types are their instance types (e.g. `new Number`) then re-deepEqual against their values
+      return deepEqual(leftHandOperand.valueOf(), rightHandOperand.valueOf());
+    case 'Promise':
+    case 'Symbol':
+    case 'function':
+    case 'WeakMap':
+    case 'WeakSet':
+    case 'Error':
+      return leftHandOperand === rightHandOperand;
+    case 'Arguments':
+    case 'Int8Array':
+    case 'Uint8Array':
+    case 'Uint8ClampedArray':
+    case 'Int16Array':
+    case 'Uint16Array':
+    case 'Int32Array':
+    case 'Uint32Array':
+    case 'Float32Array':
+    case 'Float64Array':
+    case 'Array':
+      return iterableEqual(leftHandOperand, rightHandOperand, options);
+    case 'RegExp':
+      return regexpEqual(leftHandOperand, rightHandOperand);
+    case 'Generator':
+      return generatorEqual(leftHandOperand, rightHandOperand, options);
+    case 'DataView':
+      return iterableEqual(new Uint8Array(leftHandOperand.buffer), new Uint8Array(rightHandOperand.buffer), options);
+    case 'ArrayBuffer':
+      return iterableEqual(new Uint8Array(leftHandOperand), new Uint8Array(rightHandOperand), options);
+    case 'Set':
+      return entriesEqual(leftHandOperand, rightHandOperand, options);
+    case 'Map':
+      return entriesEqual(leftHandOperand, rightHandOperand, options);
+    default:
+      return objectEqual(leftHandOperand, rightHandOperand, options);
+  }
 }
 
 /*!
- * Compare two regular expressions by converting them
- * to string and checking for `sameValue`.
+ * Compare two Regular Expressions for equality.
  *
- * @param {RegExp} a
- * @param {RegExp} b
+ * @param {RegExp} leftHandOperand
+ * @param {RegExp} rightHandOperand
  * @return {Boolean} result
  */
 
 function regexpEqual(leftHandOperand, rightHandOperand) {
-  return objectIs(leftHandOperand.toString(), rightHandOperand.toString());
+  return leftHandOperand.toString() === rightHandOperand.toString();
 }
 
 /*!
- * Compare two sets by forEaching over them,
- * and comparing the resulting array.
+ * Compare two Sets/Maps for equality. Faster than other equality functions.
  *
- * Needed because IE11 doesn't support Set#entries or Set#@@iterator
- *
- * @param {Set} a
- * @param {Set} b
+ * @param {Set} leftHandOperand
+ * @param {Set} rightHandOperand
+ * @param {Object} [options] (Optional)
  * @return {Boolean} result
  */
 
-function setEqual(leftHandOperand, rightHandOperand, options) {
+function entriesEqual(leftHandOperand, rightHandOperand, options) {
+  // IE11 doesn't support Set#entries or Set#@@iterator, so we need manually populate using Set#forEach
+  if (leftHandOperand.size !== rightHandOperand.size) {
+    return false;
+  }
+  if (leftHandOperand.size === 0) {
+    return true;
+  }
   var leftHandItems = [];
   var rightHandItems = [];
-  leftHandOperand.forEach(function gatherSetEntries(entry) {
-    leftHandItems.push(entry);
+  leftHandOperand.forEach(function gatherEntries(key, value) {
+    leftHandItems.push([ key, value ]);
   });
-  rightHandOperand.forEach(function gatherSetEntries(entry) {
-    rightHandItems.push(entry);
+  rightHandOperand.forEach(function gatherEntries(key, value) {
+    rightHandItems.push([ key, value ]);
   });
   return iterableEqual(leftHandItems.sort(), rightHandItems.sort(), options);
 }
 
 /*!
- * Compare two maps by forEaching over them,
- * and comparing the resulting key/value pairs.
- *
- * Speed Optimization:
- * Pre:
- *   map                         x 320,939 ops/sec ±1.45% (81 runs sampled)
- *   map (complex)               x 149,099 ops/sec ±1.55% (76 runs sampled)
- *   map (differing)             x 251,749 ops/sec ±7.59% (73 runs sampled)
- * Post:
- *   map                         x 511,685 ops/sec ±1.70% (82 runs sampled)
- *   map (complex)               x 247,723 ops/sec ±1.42% (81 runs sampled)
- *   map (differing)             x 450,797 ops/sec ±1.74% (78 runs sampled)
- * @param {Set} a
- * @param {Set} b
- * @return {Boolean} result
- */
-
-function mapEqual(leftHandOperand, rightHandOperand, options) {
-  if (leftHandOperand.size !== rightHandOperand.size) {
-    return false;
-  }
-  var result = true;
-  leftHandOperand.forEach(function traverseLHMap(lhoKey, lhoValue) {
-    var found = false;
-    rightHandOperand.forEach(function traverseRHMap(rhoKey, rhoValue) {
-      if (deepEqual(lhoKey, rhoKey, options) && deepEqual(lhoValue, rhoValue, options)) {
-        found = true;
-      }
-    });
-    if (!found) {
-      result = false;
-    }
-  });
-  return result;
-}
-
-/*!
- * Simple equality for flat iterable objects
- * such as Arrays, TypedArrays or Node.js buffers.
+ * Simple equality for flat iterable objects such as Arrays, TypedArrays or Node.js buffers.
  *
  * @param {Iterable} leftHandOperand
  * @param {Iterable} rightHandOperand
+ * @param {Object} [options] (Optional)
  * @return {Boolean} result
  */
 
@@ -305,8 +285,12 @@ function iterableEqual(leftHandOperand, rightHandOperand, options) {
   if (length !== rightHandOperand.length) {
     return false;
   }
-  for (var i = 0; i < length; i += 1) {
-    if (deepEqual(leftHandOperand[i], rightHandOperand[i], options) === false) {
+  if (length === 0) {
+    return true;
+  }
+  var index = -1;
+  while (++index < length) {
+    if (deepEqual(leftHandOperand[index], rightHandOperand[index], options) === false) {
       return false;
     }
   }
@@ -314,11 +298,11 @@ function iterableEqual(leftHandOperand, rightHandOperand, options) {
 }
 
 /*!
- * Simple equality for generator objects
- * such as those returned by generator functions.
+ * Simple equality for generator objects such as those returned by generator functions.
  *
  * @param {Iterable} leftHandOperand
  * @param {Iterable} rightHandOperand
+ * @param {Object} [options] (Optional)
  * @return {Boolean} result
  */
 
@@ -327,22 +311,10 @@ function generatorEqual(leftHandOperand, rightHandOperand, options) {
 }
 
 /*!
+ * Determine if the given object has an @@iterator function.
  *
- *
- *
- */
-function getEnumerableKeys(target) {
-  try {
-    return Object.keys(target);
-  } catch (keysError) {
-    return [];
-  }
-}
-
-/*!
- *
- *
- *
+ * @param {Object} target
+ * @return {Boolean} `true` if the object has an @@iterator function.
  */
 function hasIteratorFunction(target) {
   return typeof Symbol !== 'undefined' &&
@@ -352,9 +324,11 @@ function hasIteratorFunction(target) {
 }
 
 /*!
+ * Gets all iterator entries from the given Object. If the Object has no @@iterator function, returns an empty array.
+ * This will consume the iterator - which could have side effects depending on the @@iterator implementation.
  *
- *
- *
+ * @param {Object} target
+ * @returns {Array} an array of entries from the @@iterator function
  */
 function getIteratorEntries(target) {
   if (hasIteratorFunction(target)) {
@@ -367,6 +341,12 @@ function getIteratorEntries(target) {
   return [];
 }
 
+/*!
+ * Gets all entries from a Generator. This will consume the generator - which could have side effects.
+ *
+ * @param {Generator} target
+ * @returns {Array} an array of entries from the Generator.
+ */
 function getGeneratorEntries(generator) {
   var generatorResult = generator.next();
   var accumulator = [ generatorResult.value ];
@@ -378,12 +358,20 @@ function getGeneratorEntries(generator) {
 }
 
 /*!
+ * Determines if two objects have matching values, given a set of keys. Defers to deepEqual for the equality check of
+ * each key. If any value of the given key is not equal, the function will return false (early).
  *
- *
- *
+ * @param {Mixed} leftHandOperand
+ * @param {Mixed} rightHandOperand
+ * @param {Array} keys An array of keys to compare the values of leftHandOperand and rightHandOperand against
+ * @param {Object} [options] (Optional)
+ * @return {Boolean} result
  */
 function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
   var length = keys.length;
+  if (length === 0) {
+    return true;
+  }
   for (var i = 0; i < length; i += 1) {
     if (deepEqual(leftHandOperand[keys[i]], rightHandOperand[keys[i]], options) === false) {
       return false;
@@ -393,13 +381,12 @@ function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
 }
 
 /*!
- * Recursively check the equality of two objects.
- * Once basic sameness has been established it will
- * defer to `deepEqual` for each enumerable key
- * in the object.
+ * Recursively check the equality of two Objects. Once basic sameness has been established it will defer to `deepEqual`
+ * for each enumerable key in the object.
  *
- * @param {Mixed} a
- * @param {Mixed} b
+ * @param {Mixed} leftHandOperand
+ * @param {Mixed} rightHandOperand
+ * @param {Object} [options] (Optional)
  * @return {Boolean} result
  */
 
@@ -408,8 +395,8 @@ function objectEqual(leftHandOperand, rightHandOperand, options) {
     return false;
   }
 
-  var leftHandKeys = getEnumerableKeys(leftHandOperand);
-  var rightHandKeys = getEnumerableKeys(rightHandOperand);
+  var leftHandKeys = Object.keys(leftHandOperand);
+  var rightHandKeys = Object.keys(rightHandOperand);
   if (leftHandKeys.length && leftHandKeys.length === rightHandKeys.length) {
     leftHandKeys.sort();
     rightHandKeys.sort();

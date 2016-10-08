@@ -52,8 +52,7 @@
     }
   },
   "dependencies": {
-    "object-is": "^1.0.1",
-    "type-detect": "^2.0.0"
+    "type-detect": "^3.0.0"
   },
   "devDependencies": {
     "benchmark": "^2.1.0",
