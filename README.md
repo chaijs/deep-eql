@@ -96,7 +96,7 @@ The primary export of `deep-eql` is function that can be given two objects to co
 
 ### Rules
 
-- Strict equality for non-traversable nodes according to [egal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
+- Strict equality for non-traversable nodes according to [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is).
   - `eql(NaN, NaN).should.be.true;`
   - `eql(-0, +0).should.be.false;`
 - Arguments are not Arrays:
