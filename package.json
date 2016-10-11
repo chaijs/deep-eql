@@ -74,7 +74,7 @@
     "kewlr": "^0.3.1",
     "lcov-result-merger": "^1.0.2",
     "lodash.isequal": "^4.4.0",
-    "mocha": "^2.4.5",
+    "mocha": "^3.1.2",
     "phantomjs-prebuilt": "^2.1.5",
     "semantic-release": "^4.3.5",
     "simple-assert": "^1.0.0",
