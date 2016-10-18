@@ -192,6 +192,15 @@ describe('Generic', function () {
       assert(eql(new BaseA(1), new BaseA(1)), 'eql(new BaseA(1), new BaseA(1))');
     });
 
+    it('returns true given two class instances with deeply equal bases', function () {
+      function BaseA() {}
+      function BaseB() {}
+      BaseA.prototype.foo = { a: 1 };
+      BaseB.prototype.foo = { a: 1 };
+      assert(eql(new BaseA(), new BaseB()) === true,
+        'eql(new <base with .prototype.foo = { a: 1 }>, new <base with .prototype.foo = { a: 1 }>) === true');
+    });
+
     it('returns false given two class instances with different properties', function () {
       function BaseA(prop) {
         this.prop = prop;
@@ -199,10 +208,13 @@ describe('Generic', function () {
       assert(eql(new BaseA(1), new BaseA(2)) === false, 'eql(new BaseA(1), new BaseA(2)) === false');
     });
 
-    it('returns false given two different empty class instances', function () {
+    it('returns false given two class instances with deeply unequal bases', function () {
       function BaseA() {}
       function BaseB() {}
-      assert(eql(new BaseA(), new BaseB()) === false, 'eql(new BaseA(), new BaseB()) === false');
+      BaseA.prototype.foo = { a: 1 };
+      BaseB.prototype.foo = { a: 2 };
+      assert(eql(new BaseA(), new BaseB()) === false,
+        'eql(new <base with .prototype.foo = { a: 1 }>, new <base with .prototype.foo = { a: 2 }>) === false');
     });
 
   });
@@ -283,6 +295,13 @@ describe('Generic', function () {
         'eql({ foo: 1, bar: objectC }, { foo: 1, bar: objectC }) === true');
     });
 
+    it('returns true with objects with deeply equal prototypes', function () {
+      var objectA = Object.create({ foo: { a: 1 } });
+      var objectB = Object.create({ foo: { a: 1 } });
+      assert(eql(objectA, objectB) === true,
+        'eql(Object.create({ foo: { a: 1 } }), Object.create({ foo: { a: 1 } })) === true');
+    });
+
     it('returns false with objects containing different literals', function () {
       assert(eql({ foo: 1, bar: 1 }, { foo: 1, bar: 2 }) === false,
         'eql({ foo: 1, bar: 2 }, { foo: 1, bar: 2 }) === false');
@@ -304,6 +323,13 @@ describe('Generic', function () {
       objectB.bar = objectA;
       assert(eql(objectA, objectB) === false,
         'eql({ foo: 1, bar: -> }, { foo: 1, bar: <- }) === false');
+    });
+
+    it('returns false with objects with deeply unequal prototypes', function () {
+      var objectA = Object.create({ foo: { a: 1 } });
+      var objectB = Object.create({ foo: { a: 2 } });
+      assert(eql(objectA, objectB) === false,
+        'eql(Object.create({ foo: { a: 1 } }), Object.create({ foo: { a: 2 } })) === false');
     });
 
   });
