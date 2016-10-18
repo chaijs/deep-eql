@@ -99,6 +99,9 @@ The primary export of `deep-eql` is function that can be given two objects to co
 - Strict equality for non-traversable nodes according to [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is).
   - `eql(NaN, NaN).should.be.true;`
   - `eql(-0, +0).should.be.false;`
+- All own and inherited enumerable properties are considered:
+  - `eql(Object.create({ foo: { a: 1 } }), Object.create({ foo: { a: 1 } })).should.be.true;`
+  - `eql(Object.create({ foo: { a: 1 } }), Object.create({ foo: { a: 2 } })).should.be.false;`
 - Arguments are not Arrays:
   - `eql([], arguments).should.be.false;`
   - `eql([], Array.prototype.slice.call(arguments)).should.be.true;`
