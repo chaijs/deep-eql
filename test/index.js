@@ -2,6 +2,9 @@
 var assert = require('simple-assert');
 var eql = require('..');
 var MemoizeMap = require('..').MemoizeMap;
+function describeIf(condition) {
+  return condition ? describe : describe.skip;
+}
 describe('Generic', function () {
 
   describe('strings', function () {
@@ -358,6 +361,24 @@ describe('Generic', function () {
     it('returns false for different errors', function () {
       assert(eql(new Error('foo'), new Error('foo')) === false,
         'eql(new Error("foo"), new Error("foo")) === false');
+    });
+
+  });
+
+});
+
+describe('Node Specific', function () {
+
+  describeIf(typeof Buffer === 'function')('buffers', function () {
+
+    it('returns true for same buffers', function () {
+      assert(eql(new Buffer([ 1 ]), new Buffer([ 1 ])) === true,
+        'eql(new Buffer([ 1 ]), new Buffer([ 1 ])) === true');
+    });
+
+    it('returns false for different buffers', function () {
+      assert(eql(new Buffer([ 1 ]), new Buffer([ 2 ])) === false,
+        'eql(new Buffer([ 1 ]), new Buffer([ 2 ])) === false');
     });
 
   });
