@@ -231,12 +231,12 @@ describe('ES2015 Specific', function () {
       assert(eql(setA, setB) === false, 'eql(Set { "a", "b", "c" }, Set { "d", "e", "f" }) === false');
     });
 
-    it('returns false for Sets with different circular references', function () {
+    it('returns true for circular Sets', function () {
       var setA = new Set();
       var setB = new Set();
       setA.add(setB);
       setB.add(setA);
-      assert(eql(setA, setB) === false, 'eql(Set { -> }, Set { <- }) === false');
+      assert(eql(setA, setB) === true, 'eql(Set { -> }, Set { <- }) === true');
     });
 
   });

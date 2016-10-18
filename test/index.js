@@ -316,13 +316,13 @@ describe('Generic', function () {
       assert(eql({ foo: 'bar' }, { bar: 'baz' }) === false, 'eql({ foo: "bar" }, { foo: "baz" }) === false');
     });
 
-    it('returns false with recursive objects of differing values', function () {
+    it('returns true with circular objects', function () {
       var objectA = { foo: 1 };
       var objectB = { foo: 1 };
       objectA.bar = objectB;
       objectB.bar = objectA;
-      assert(eql(objectA, objectB) === false,
-        'eql({ foo: 1, bar: -> }, { foo: 1, bar: <- }) === false');
+      assert(eql(objectA, objectB) === true,
+        'eql({ foo: 1, bar: -> }, { foo: 1, bar: <- }) === true');
     });
 
     it('returns false with objects with deeply unequal prototypes', function () {

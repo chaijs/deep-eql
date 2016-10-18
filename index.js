@@ -178,8 +178,8 @@ function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
   }
 
   // Temporarily set the operands in the memoize object to prevent blowing the stack
-  memoizeSet(leftHandOperand, rightHandOperand, options.memoize, false);
-  memoizeSet(rightHandOperand, leftHandOperand, options.memoize, false);
+  memoizeSet(leftHandOperand, rightHandOperand, options.memoize, true);
+  memoizeSet(rightHandOperand, leftHandOperand, options.memoize, true);
 
   var result = extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandType, options);
   memoizeSet(leftHandOperand, rightHandOperand, options.memoize, result);
