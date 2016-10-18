@@ -358,6 +358,20 @@ function getGeneratorEntries(generator) {
 }
 
 /*!
+ * Gets all own and inherited enumerable keys from a target.
+ *
+ * @param {Object} target
+ * @returns {Array} an array of own and inherited enumerable keys from the target.
+ */
+function getEnumerableKeys(target) {
+  var keys = [];
+  for (var key in target) {
+    keys.push(key);
+  }
+  return keys;
+}
+
+/*!
  * Determines if two objects have matching values, given a set of keys. Defers to deepEqual for the equality check of
  * each key. If any value of the given key is not equal, the function will return false (early).
  *
@@ -391,12 +405,8 @@ function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
  */
 
 function objectEqual(leftHandOperand, rightHandOperand, options) {
-  if (Object.getPrototypeOf(leftHandOperand) !== Object.getPrototypeOf(rightHandOperand)) {
-    return false;
-  }
-
-  var leftHandKeys = Object.keys(leftHandOperand);
-  var rightHandKeys = Object.keys(rightHandOperand);
+  var leftHandKeys = getEnumerableKeys(leftHandOperand);
+  var rightHandKeys = getEnumerableKeys(rightHandOperand);
   if (leftHandKeys.length && leftHandKeys.length === rightHandKeys.length) {
     leftHandKeys.sort();
     rightHandKeys.sort();
