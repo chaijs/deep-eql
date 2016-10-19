@@ -405,6 +405,13 @@ function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
  */
 
 function objectEqual(leftHandOperand, rightHandOperand, options) {
+  // This block can be removed once support for Node v0.10 is dropped because
+  // buffers are properly detected as iterables in later versions.
+  if (typeof Buffer === 'function' &&
+      typeof Buffer.isBuffer === 'function' &&
+      Buffer.isBuffer(leftHandOperand)) {
+    return iterableEqual(leftHandOperand, rightHandOperand, options);
+  }
   var leftHandKeys = getEnumerableKeys(leftHandOperand);
   var rightHandKeys = getEnumerableKeys(rightHandOperand);
   if (leftHandKeys.length && leftHandKeys.length === rightHandKeys.length) {
