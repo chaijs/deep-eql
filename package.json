@@ -83,6 +83,6 @@
     "watchify": "^3.7.0"
   },
   "engines": {
-    "node": "*"
+    "node": ">= 4"
   }
 }
