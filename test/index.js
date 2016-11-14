@@ -76,6 +76,10 @@ describe('Generic', function () {
       assert(eql(null, undefined) === false, 'eql(null, undefined) === false');
     });
 
+    it('doesn\'t crash on weakmap key error (#33)', function () {
+      assert(eql({}, null) === false, 'eql({}, null) === false');
+    });
+
   });
 
   describe('undefined', function () {
@@ -469,6 +473,17 @@ describe('Comparator', function () {
     var valueB = { a: 1 };
     assert(eql(valueA, valueB, { comparator: matcherComparator }) === true,
       'eql({a:value => typeof value === "number"}, {a:1}, <comparator>) === true');
+  });
+
+  it('returns true if Comparator says so even on primitives (switch arg order)', function () {
+    var valueA = { a: 1 };
+    var valueB = {
+      a: new Matcher(function (value) {
+        return typeof value === 'number';
+      }),
+    };
+    assert(eql(valueA, valueB, { comparator: matcherComparator }) === true,
+      'eql({a:1}, {a:value => typeof value === "number"}, <comparator>) === true');
   });
 
   it('returns true if Comparator says so (deep-equality)', function () {

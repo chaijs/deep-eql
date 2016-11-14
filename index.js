@@ -59,7 +59,8 @@ if (typeof WeakMap === 'function') {
  * @returns {Boolean|null} result
 */
 function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
-  if (!memoizeMap) {
+  // Technically, WeakMap keys can *only* be objects, not primitives.
+  if (!memoizeMap || isPrimitive(leftHandOperand) || isPrimitive(rightHandOperand)) {
     return null;
   }
   var leftHandMap = memoizeMap.get(leftHandOperand);
@@ -81,7 +82,8 @@ function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
  * @param {Boolean} result
 */
 function memoizeSet(leftHandOperand, rightHandOperand, memoizeMap, result) {
-  if (!memoizeMap || typeof leftHandOperand !== 'object' || typeof rightHandOperand !== 'object') {
+  // Technically, WeakMap keys can *only* be objects, not primitives.
+  if (!memoizeMap || isPrimitive(leftHandOperand) || isPrimitive(rightHandOperand)) {
     return;
   }
   var leftHandMap = memoizeMap.get(leftHandOperand);
@@ -114,6 +116,27 @@ module.exports.MemoizeMap = MemoizeMap;
  * @return {Boolean} equal match
  */
 function deepEqual(leftHandOperand, rightHandOperand, options) {
+  // If we have a comparator, we can't assume anything; so bail to its check first.
+  if (options && options.comparator) {
+    return extensiveDeepEqual(leftHandOperand, rightHandOperand, options);
+  }
+
+  var simpleResult = simpleEqual(leftHandOperand, rightHandOperand);
+  if (simpleResult !== null) {
+    return simpleResult;
+  }
+
+  // Deeper comparisons are pushed through to a larger function
+  return extensiveDeepEqual(leftHandOperand, rightHandOperand, options);
+}
+
+/**
+ * Many comparisons can be canceled out early via simple equality or primitive checks.
+ * @param {Mixed} leftHandOperand
+ * @param {Mixed} rightHandOperand
+ * @return {Boolean|null} equal match
+ */
+function simpleEqual(leftHandOperand, rightHandOperand) {
   // Equal references (except for Numbers) can be returned early
   if (leftHandOperand === rightHandOperand) {
     // Handle +-0 cases
@@ -128,17 +151,13 @@ function deepEqual(leftHandOperand, rightHandOperand, options) {
     return true;
   }
 
-  // Primitives/null/undefined can be checked for referential equality; returning early
-  if (
-    typeof leftHandOperand !== 'object' ||
-    leftHandOperand === null ||
-    leftHandOperand === undefined // eslint-disable-line no-undefined
-  ) {
-    return leftHandOperand === rightHandOperand;
+  // Anything that is not an 'object', i.e. symbols, functions, booleans, numbers,
+  // strings, and undefined, can be compared by reference.
+  if (isPrimitive(leftHandOperand) || isPrimitive(rightHandOperand)) {
+    // Easy out b/c it would have passed the first equality check
+    return false;
   }
-
-  // Deeper comparisons are pushed through to a larger function
-  return extensiveDeepEqual(leftHandOperand, rightHandOperand, options);
+  return null;
 }
 
 /*!
@@ -158,32 +177,44 @@ function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
   options.memoize = options.memoize === false ? false : options.memoize || new MemoizeMap();
   var comparator = options && options.comparator;
 
-  var memoizeResult = memoizeCompare(leftHandOperand, rightHandOperand, options.memoize);
-  if (memoizeResult !== null) {
-    return memoizeResult;
+  // Check if a memoized result exists.
+  var memoizeResultLeft = memoizeCompare(leftHandOperand, rightHandOperand, options.memoize);
+  if (memoizeResultLeft !== null) {
+    return memoizeResultLeft;
+  }
+  var memoizeResultRight = memoizeCompare(rightHandOperand, leftHandOperand, options.memoize);
+  if (memoizeResultRight !== null) {
+    return memoizeResultRight;
   }
 
-  var comparatorResult = comparator && comparator(leftHandOperand, rightHandOperand);
-  if (comparatorResult === false || comparatorResult === true) {
-    memoizeSet(leftHandOperand, rightHandOperand, options.memoize, comparatorResult);
-    memoizeSet(rightHandOperand, leftHandOperand, options.memoize, comparatorResult);
-    return comparatorResult;
+  // If a comparator is present, use it.
+  if (comparator) {
+    var comparatorResult = comparator(leftHandOperand, rightHandOperand);
+    // Comparators may return null, in which case we want to go back to default behavior.
+    if (comparatorResult === false || comparatorResult === true) {
+      memoizeSet(leftHandOperand, rightHandOperand, options.memoize, comparatorResult);
+      return comparatorResult;
+    }
+    // To allow comparators to override *any* behavior, we ran them first. Since it didn't decide
+    // what to do, we need to make sure to return the basic tests first before we move on.
+    var simpleResult = simpleEqual(leftHandOperand, rightHandOperand);
+    if (simpleResult !== null) {
+      // Don't memoize this, it takes longer to set/retrieve than to just compare.
+      return simpleResult;
+    }
   }
 
   var leftHandType = type(leftHandOperand);
   if (leftHandType !== type(rightHandOperand)) {
     memoizeSet(leftHandOperand, rightHandOperand, options.memoize, false);
-    memoizeSet(rightHandOperand, leftHandOperand, options.memoize, false);
     return false;
   }
 
   // Temporarily set the operands in the memoize object to prevent blowing the stack
   memoizeSet(leftHandOperand, rightHandOperand, options.memoize, true);
-  memoizeSet(rightHandOperand, leftHandOperand, options.memoize, true);
 
   var result = extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandType, options);
   memoizeSet(leftHandOperand, rightHandOperand, options.memoize, result);
-  memoizeSet(rightHandOperand, leftHandOperand, options.memoize, result);
   return result;
 }
 
@@ -432,4 +463,17 @@ function objectEqual(leftHandOperand, rightHandOperand, options) {
   }
 
   return false;
+}
+
+/*!
+ * Returns true if the argument is a primitive.
+ *
+ * This intentionally returns true for all objects that can be compared by reference,
+ * including functions and symbols.
+ *
+ * @param {Mixed} value
+ * @return {Boolean} result
+ */
+function isPrimitive(value) {
+  return value === null || typeof value !== 'object';
 }
