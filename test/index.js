@@ -278,6 +278,24 @@ describe('Generic', function () {
       assert(eql(new Array(1), new Array(100)) === false, 'eql(new Array(1), new Array(100)) === false');
     });
 
+    it('returns true for arrays with the same custom properties', function () {
+      var one = [ 1, 2, 'str' ];
+      var two = [ 1, 2, 'str' ];
+      one.foo = 'bar';
+      two.foo = 'bar';
+
+      assert(eql(one, two), 'eql([ 0: 1, 1: 2, 2: "str", foo: "bar" ], [ 0: 1, 1: 2, 2: "str", foo: "bar" ])');
+    });
+
+    it('returns false for arrays with different custom properties', function () {
+      var one = [ 1, 2, 'str' ];
+      var two = [ 1, 2, 'str' ];
+      one.foo = 'bar';
+      two.foo = 'baz';
+
+      assert(eql(one, two) === false,
+        'eql([ 0: 1, 1: 2, 2: "str", foo: "bar" ], [ 0: 1, 1: 2, 2: "str", foo: "baz" ]) === false');
+    });
   });
 
   describe('objects', function () {
