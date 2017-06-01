@@ -6,9 +6,9 @@ cache:
   directories:
   - node_modules
 node_js:
- - 0.12 # to be removed 2016-12-31
  - 4 # to be removed 2018-04-01
  - 6 # to be removed 2019-04-01
+ - 7 # to be removed 2017-06-30
  - lts/* # safety net; don't remove
  - node # safety net; don't remove
 before_install:
