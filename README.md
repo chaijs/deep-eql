@@ -107,5 +107,5 @@ The primary export of `deep-eql` is function that can be given two objects to co
   - `eql([], arguments).should.be.false;`
   - `eql([], Array.prototype.slice.call(arguments)).should.be.true;`
 - Error objects are compared by reference (see https://github.com/chaijs/chai/issues/608):
-  - `eql(new Error('msg'), new Error('msg')).shoule.be.false;`
-  - `var err = new Error('msg'); eql(err, err).shoule.be.true;`
+  - `eql(new Error('msg'), new Error('msg')).should.be.false;`
+  - `var err = new Error('msg'); eql(err, err).should.be.true;`
