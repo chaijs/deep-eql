@@ -12,21 +12,22 @@
 
 var type = require('type-detect');
 function FakeMap() {
-  var wmKey = 'chai/deep-eql__' + Math.random() + Date.now();
-  return {
-    get: function getMap(key) {
-      return key[wmKey];
-    },
-    set: function setMap(key, value) {
-      if (!Object.isFrozen(key)) {
-        Object.defineProperty(key, wmKey, {
-          value: value,
-          configurable: true,
-        });
-      }
-    },
-  };
+  this._key = 'chai/deep-eql__' + Math.random() + Date.now();
 }
+
+FakeMap.prototype = {
+  get: function getMap(key) {
+    return key[this._key];
+  },
+  set: function setMap(key, value) {
+    if (!Object.isFrozen(key)) {
+      Object.defineProperty(key, this._key, {
+        value: value,
+        configurable: true,
+      });
+    }
+  },
+};
 
 var MemoizeMap = typeof WeakMap === 'function' ? WeakMap : FakeMap;
 /*!

@@ -48,6 +48,7 @@
     "rules": {
       "complexity": 0,
       "spaced-comment": 0,
+      "no-underscore-dangle": 0,
       "no-use-before-define": 0
     }
   },
