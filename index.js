@@ -6,10 +6,6 @@
  * MIT Licensed
  */
 
-/*!
- * Module dependencies
- */
-
 var type = require('type-detect');
 function FakeMap() {
   this._key = 'chai/deep-eql__' + Math.random() + Date.now();
