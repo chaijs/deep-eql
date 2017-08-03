@@ -57,8 +57,8 @@ var fixtures = {
 };
 try {
   fixtures['arrow function (differing) '] = [
-    eval('() => {}'), // eslint-disable-line no-eval
-    eval('() => {}'), // eslint-disable-line no-eval
+    eval('() => {}'),
+    eval('() => {}'),
     false,
   ];
 } catch (error) {
