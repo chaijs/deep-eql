@@ -1,5 +1,5 @@
 'use strict';
-/* globals Symbol: true, Uint8Array: true, WeakMap: true */
+/* globals Symbol: false, Uint8Array: false, WeakMap: false */
 /*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
