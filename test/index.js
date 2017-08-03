@@ -332,6 +332,13 @@ describe('Generic', function () {
         'eql({ foo: 1, bar: -> }, { foo: 1, bar: <- }) === true');
     });
 
+    it('returns true with frozen objects', function () {
+      var objectA = Object.freeze({ foo: 1 });
+      var objectB = Object.freeze({ foo: 1 });
+      assert(eql(objectA, objectB) === true,
+        'eql(Object.freeze({ foo: 1 }), Object.freeze({ foo: 1 })) === true');
+    });
+
     it('returns false with objects with deeply unequal prototypes', function () {
       var objectA = Object.create({ foo: { a: 1 } });
       var objectB = Object.create({ foo: { a: 2 } });
