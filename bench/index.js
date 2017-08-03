@@ -66,8 +66,8 @@ try {
 }
 try {
   fixtures['generator func (differing) '] = [
-    eval('function * generator() {}; generator'), // eslint-disable-line no-eval
-    eval('function * generator() {}; generator'), // eslint-disable-line no-eval
+    eval('(function* () {})'),
+    eval('(function* () {})'),
     false,
   ];
 } catch (error) {
