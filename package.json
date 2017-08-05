@@ -52,7 +52,7 @@
     }
   },
   "dependencies": {
-    "type-detect": "^3.0.0"
+    "type-detect": "^4.0.0"
   },
   "devDependencies": {
     "benchmark": "^2.1.0",
