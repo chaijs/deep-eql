@@ -57,8 +57,8 @@ var fixtures = {
 };
 try {
   fixtures['arrow function (differing) '] = [
-    eval('() => {}'), // eslint-disable-line no-eval
-    eval('() => {}'), // eslint-disable-line no-eval
+    eval('() => {}'),
+    eval('() => {}'),
     false,
   ];
 } catch (error) {
@@ -66,8 +66,8 @@ try {
 }
 try {
   fixtures['generator func (differing) '] = [
-    eval('function * generator() {}; generator'), // eslint-disable-line no-eval
-    eval('function * generator() {}; generator'), // eslint-disable-line no-eval
+    eval('(function* () {})'),
+    eval('(function* () {})'),
     false,
   ];
 } catch (error) {
@@ -78,7 +78,7 @@ function prepareBenchMark(test, name, assert) {
   assert = assert || deepEql;
   var leftHand = test[0];
   var rightHand = test[1];
-  var expectedResult = Boolean(2 in test ? test[2] : true);
+  var expectedResult = 2 in test ? test[2] : true;
   var invocationString = 'deepEql(' + inspect(leftHand) + ', ' + inspect(rightHand) + ') === ' + expectedResult;
   benches.push(new Benchmark(name, {
     fn: function () {
