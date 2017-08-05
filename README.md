@@ -44,6 +44,11 @@
       alt="devDependencies:?"
       src="https://img.shields.io/david/chaijs/deep-eql.svg?style=flat-square"
     />
+  </a><a href="https://github.com/nodejs/LTS#lts-schedule1">
+    <img
+      alt="Supported Node Version: 4+"
+      src="https://img.shields.io/badge/node-4+-43853d.svg?style=flat-square"
+    />
   </a>
   <br/>
   <a href="https://saucelabs.com/u/chaijs-deep-eql">
