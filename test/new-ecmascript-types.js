@@ -338,14 +338,23 @@ describe('ES2015 Specific', function () {
       assert(eql(promiseResolve, promiseResolve), 'eql(promiseResolve, promiseResolve)');
       assert(eql(promiseReject, promiseReject), 'eql(promiseReject, promiseReject)');
       assert(eql(promisePending, promisePending), 'eql(promisePending, promisePending)');
+
+      promiseReject.catch(function () {});
     });
 
 
     it('returns false for different promises', function () {
       assert(eql(Promise.resolve(), Promise.resolve()) === false,
         'eql(Promise.resolve(), Promise.resolve()) === false');
-      assert(eql(Promise.reject(), Promise.reject()) === false,
+
+      var promiseRejectA = Promise.reject();
+      var promiseRejectB = Promise.reject();
+      assert(eql(promiseRejectA, promiseRejectB) === false,
         'eql(Promise.reject(), Promise.reject()) === false');
+
+      promiseRejectA.catch(function () {});
+      promiseRejectB.catch(function () {});
+
       assert(eql(new Promise(emptyFunction), new Promise(emptyFunction)) === false,
         'eql(new Promise(emptyFunction), new Promise(emptyFunction)) === false');
     });
