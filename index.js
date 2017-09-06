@@ -16,7 +16,7 @@ FakeMap.prototype = {
     return key[this._key];
   },
   set: function setMap(key, value) {
-    if (!Object.isFrozen(key)) {
+    if (Object.isExtensible(key)) {
       Object.defineProperty(key, this._key, {
         value: value,
         configurable: true,
