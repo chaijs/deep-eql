@@ -301,6 +301,20 @@ function iterableEqual(leftHandOperand, rightHandOperand, options) {
       return false;
     }
   }
+
+  var leftHandProps = Object.keys(leftHandOperand);
+  var rightHandProps = Object.keys(rightHandOperand);
+  if (leftHandProps.length !== rightHandProps.length) {
+    return false;
+  }
+
+  for (var prop in rightHandProps) {
+    var propName = rightHandProps[prop];
+    if (deepEqual(leftHandOperand[propName], rightHandOperand[propName], options) === false) {
+      return false;
+    }
+  }
+
   return true;
 }
 
