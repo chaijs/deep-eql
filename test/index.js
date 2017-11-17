@@ -7,6 +7,31 @@ function describeIf(condition) {
 }
 describe('Generic', function () {
 
+  describe('ANY', function () {
+
+    it('always returns true', function () {
+      assert(eql(undefined, eql.ANY), 'eql(undefined, eql.ANY)');
+      assert(eql(null, eql.ANY), 'eql(null, eql.ANY)');
+      assert(eql(false, eql.ANY), 'eql(false, eql.ANY)');
+      assert(eql(true, eql.ANY), 'eql(true, eql.ANY)');
+      assert(eql(1, eql.ANY), 'eql(1, eql.ANY)');
+      assert(eql(1.0, eql.ANY), 'eql(1.0, eql.ANY)');
+      assert(eql(new Number(1), eql.ANY), 'eql(new Number(1), eql.ANY)');
+      assert(eql('x', eql.ANY), 'eql("x", eql.ANY)');
+      assert(eql(new String('x'), eql.ANY), 'eql(new String("x"), eql.ANY)');
+      assert(eql({ x: 1 }, eql.ANY), 'eql({ x: 1 }, eql.ANY)');
+      assert(eql([ 1, 2, 3 ], eql.ANY), 'eql([ 1, 2, 3 ], eql.ANY)');
+      assert(eql(new Object(), eql.ANY), 'eql(new Object(), eql.ANY)');
+      assert(eql(eql.ANY, eql.ANY), 'eql(eql.ANY, eql.ANY)');
+    });
+
+    it('works on deep comparisons', function () {
+      assert(eql([ 1, eql.ANY, 3 ], [ 1, 2, 3 ]), 'eql([ 1, eql.ANY, 3 ], [ 1, 2, 3 ])');
+      assert(eql([ { x: 1, y: eql.ANY } ], [ { x: 1, y: 2 } ]), 'eql([{ x: 1, y: ANY }], [{ x: 1, y: 2 }])');
+    });
+
+  });
+
   describe('strings', function () {
 
     it('returns true for same values', function () {

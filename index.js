@@ -6,6 +6,8 @@
  * MIT Licensed
  */
 
+var ANY = typeof Symbol === 'function' ? Symbol() : Math.random() + Date.now();
+
 var type = require('type-detect');
 function FakeMap() {
   this._key = 'chai/deep-eql__' + Math.random() + Date.now();
@@ -78,6 +80,7 @@ function memoizeSet(leftHandOperand, rightHandOperand, memoizeMap, result) {
 
 module.exports = deepEqual;
 module.exports.MemoizeMap = MemoizeMap;
+module.exports.ANY = ANY;
 
 /**
  * Assert deeply nested sameValue equality between two objects of any type.
@@ -113,6 +116,10 @@ function deepEqual(leftHandOperand, rightHandOperand, options) {
  * @return {Boolean|null} equal match
  */
 function simpleEqual(leftHandOperand, rightHandOperand) {
+  if (leftHandOperand === ANY || rightHandOperand === ANY) {
+    return true;
+  }
+
   // Equal references (except for Numbers) can be returned early
   if (leftHandOperand === rightHandOperand) {
     // Handle +-0 cases
