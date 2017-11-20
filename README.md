@@ -1,6 +1,6 @@
 <h1 align=center>
   <a href="http://chaijs.com" title="Chai Documentation">
-    <img alt="ChaiJS" src="http://chaijs.com/img/chai-logo.png"/> deep-eql
+    <img alt="deep-eql" src="https://raw.githubusercontent.com/chaijs/deep-eql/add-deep-eql-logo-readme/deep-eql-logo.svg"/>
   </a>
 </h1>
 
