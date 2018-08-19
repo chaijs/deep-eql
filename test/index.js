@@ -199,13 +199,11 @@ describe('Generic', function () {
       assert(eql(new BaseA(1), new BaseA(1)), 'eql(new BaseA(1), new BaseA(1))');
     });
 
-    it('returns true given two class instances with deeply equal bases', function () {
+    it('returns false given two class instances with different constructors', function () {
       function BaseA() {}
       function BaseB() {}
-      BaseA.prototype.foo = { a: 1 };
-      BaseB.prototype.foo = { a: 1 };
-      assert(eql(new BaseA(), new BaseB()) === true,
-        'eql(new <base with .prototype.foo = { a: 1 }>, new <base with .prototype.foo = { a: 1 }>) === true');
+      assert(eql(new BaseA(), new BaseB()) === false,
+        'eql(new BaseA(), new BaseB()) === false');
     });
 
     it('returns false given two class instances with different properties', function () {
@@ -213,15 +211,6 @@ describe('Generic', function () {
         this.prop = prop;
       }
       assert(eql(new BaseA(1), new BaseA(2)) === false, 'eql(new BaseA(1), new BaseA(2)) === false');
-    });
-
-    it('returns false given two class instances with deeply unequal bases', function () {
-      function BaseA() {}
-      function BaseB() {}
-      BaseA.prototype.foo = { a: 1 };
-      BaseB.prototype.foo = { a: 2 };
-      assert(eql(new BaseA(), new BaseB()) === false,
-        'eql(new <base with .prototype.foo = { a: 1 }>, new <base with .prototype.foo = { a: 2 }>) === false');
     });
 
   });
@@ -383,9 +372,36 @@ describe('Generic', function () {
       assert(eql(error, error), 'eql(error, error)');
     });
 
-    it('returns false for different errors', function () {
-      assert(eql(new Error('foo'), new Error('foo')) === false,
-        'eql(new Error("foo"), new Error("foo")) === false');
+    it('returns true for errors with same constructor and message', function () {
+      assert(eql(new Error('foo'), new Error('foo')),
+        'eql(new Error("foo"), new Error("foo"))');
+    });
+
+    it('returns false for errors with same constructor but different messages', function () {
+      assert(eql(new Error('foo'), new Error('bar')) === false,
+        'eql(new Error("foo"), new Error("bar")) === false');
+    });
+
+    it('returns false for errors with same message but different constructors', function () {
+      assert(eql(new Error('foo'), new TypeError('foo')) === false,
+        'eql(new Error("foo"), new TypeError("foo")) === false');
+    });
+
+    it('returns true for errors with same custom property', function () {
+      assert(eql(
+        Object.assign(new Error('foo'), { code: 42 }),
+        Object.assign(new Error('foo'), { code: 42 })
+      ), 'eql(Object.assign(new Error("foo"), { code: 42 }), Object.assign(new Error("foo"), { code: 42 }))');
+    });
+
+    it('returns false for errors with different custom property', function () {
+      assert(
+        eql(
+          Object.assign(new Error('foo'), { code: 42 }),
+          Object.assign(new Error('foo'), { code: 13 })
+        ) === false,
+        'eql(Object.assign(new Error("foo"), { code: 42 }), Object.assign(new Error("foo"), { code: 13 })) === false'
+      );
     });
 
   });
