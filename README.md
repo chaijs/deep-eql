@@ -108,9 +108,11 @@ The primary export of `deep-eql` is function that can be given two objects to co
 - All own and inherited enumerable properties are considered:
   - `eql(Object.create({ foo: { a: 1 } }), Object.create({ foo: { a: 1 } })).should.be.true;`
   - `eql(Object.create({ foo: { a: 1 } }), Object.create({ foo: { a: 2 } })).should.be.false;`
+- When comparing `Error` objects, `name` and `message` properties are also considered, regardless of enumerability:
+  - `eql(Error('foo'), Error('foo')).should.be.true;`
+  - `eql(Error('foo'), Error('bar')).should.be.false;`
+  - `eql(Error('foo'), TypeError('foo')).should.be.false;`
+  - `eql(Object.assign(Error('foo'), { code: 42 }), Object.assign(Error('foo'), { code: 13 })).should.be.false;`
 - Arguments are not Arrays:
   - `eql([], arguments).should.be.false;`
   - `eql([], Array.prototype.slice.call(arguments)).should.be.true;`
-- Error objects are compared by reference (see https://github.com/chaijs/chai/issues/608):
-  - `eql(new Error('msg'), new Error('msg')).should.be.false;`
-  - `var err = new Error('msg'); eql(err, err).should.be.true;`
