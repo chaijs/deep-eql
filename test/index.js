@@ -379,13 +379,57 @@ describe('Generic', function () {
   describe('errors', function () {
 
     it('returns true for same errors', function () {
-      var error = new Error('foo');
+      var error = Error('foo');
       assert(eql(error, error), 'eql(error, error)');
     });
 
-    it('returns false for different errors', function () {
-      assert(eql(new Error('foo'), new Error('foo')) === false,
-        'eql(new Error("foo"), new Error("foo")) === false');
+    it('returns true for errors with same name and message', function () {
+      assert(eql(Error('foo'), Error('foo')),
+        'eql(Error("foo"), Error("foo"))');
+    });
+
+    it('returns true for errors with same name and message despite different constructors', function () {
+      var err1 = Error('foo');
+      var err2 = TypeError('foo');
+      err2.name = 'Error';
+      assert(eql(err1, err2),
+        'eql(Error("foo"), Object.assign(TypeError("foo"), { name: "Error" }))');
+    });
+
+    it('returns false for errors with same name but different messages', function () {
+      assert(eql(Error('foo'), Error('bar')) === false,
+        'eql(Error("foo"), Error("bar")) === false');
+    });
+
+    it('returns false for errors with same message but different names', function () {
+      assert(eql(Error('foo'), TypeError('foo')) === false,
+        'eql(Error("foo"), TypeError("foo")) === false');
+    });
+
+    it('returns false for errors with same message but different names despite same constructors', function () {
+      var err1 = Error('foo');
+      var err2 = Error('foo');
+      err2.name = 'TypeError';
+      assert(eql(err1, err2) === false,
+        'eql(Error("foo"), Object.assign(Error("foo"), { name: "TypeError" })) === false');
+    });
+
+    it('returns true for errors with same custom property', function () {
+      var err1 = Error('foo');
+      var err2 = Error('foo');
+      err1.code = 42;
+      err2.code = 42;
+      assert(eql(err1, err2),
+        'eql(Object.assign(Error("foo"), { code: 42 }), Object.assign(Error("foo"), { code: 42 }))');
+    });
+
+    it('returns false for errors with different custom property', function () {
+      var err1 = Error('foo');
+      var err2 = Error('foo');
+      err1.code = 42;
+      err2.code = 13;
+      assert(eql(err1, err2) === false,
+        'eql(Object.assign(new Error("foo"), { code: 42 }), Object.assign(new Error("foo"), { code: 13 })) === false');
     });
 
   });
