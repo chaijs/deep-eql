@@ -208,6 +208,8 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'WeakMap':
     case 'WeakSet':
       return leftHandOperand === rightHandOperand;
+    case 'Error':
+      return keysEqual(leftHandOperand, rightHandOperand, [ 'name', 'message', 'code' ], options);
     case 'Arguments':
     case 'Int8Array':
     case 'Uint8Array':
@@ -233,7 +235,7 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Map':
       return entriesEqual(leftHandOperand, rightHandOperand, options);
     default:
-      return objectEqual(leftHandOperand, rightHandOperand, leftHandType, options);
+      return objectEqual(leftHandOperand, rightHandOperand, options);
   }
 }
 
@@ -378,21 +380,6 @@ function getEnumerableKeys(target) {
 }
 
 /*!
- * Adds `Error`-specific keys to an array of object keys. We want to include these keys when comparing `Error` objects
- * despite these keys being non-enumerable by default (and thus not added by `getEnumerableKeys`).
- *
- * @param {Array} keys An array of keys
- */
-function addExtraErrorKeys(keys) {
-  if (keys.indexOf('name') === -1) { // eslint-disable-line no-magic-numbers
-    keys.push('name');
-  }
-  if (keys.indexOf('message') === -1) { // eslint-disable-line no-magic-numbers
-    keys.push('message');
-  }
-}
-
-/*!
  * Determines if two objects have matching values, given a set of keys. Defers to deepEqual for the equality check of
  * each key. If any value of the given key is not equal, the function will return false (early).
  *
@@ -417,22 +404,16 @@ function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
 
 /*!
  * Recursively check the equality of two Objects. Once basic sameness has been established it will defer to `deepEqual`
- * for each enumerable key in the object. For `Error` objects, also compare `name` and `message` keys, regardless of
- * enumerability.
+ * for each enumerable key in the object.
  *
  * @param {Mixed} leftHandOperand
  * @param {Mixed} rightHandOperand
- * @param {String} type of leftHandOperand
  * @param {Object} [options] (Optional)
  * @return {Boolean} result
  */
-function objectEqual(leftHandOperand, rightHandOperand, leftHandType, options) {
+function objectEqual(leftHandOperand, rightHandOperand, options) {
   var leftHandKeys = getEnumerableKeys(leftHandOperand);
   var rightHandKeys = getEnumerableKeys(rightHandOperand);
-  if (leftHandType === 'Error') {
-    addExtraErrorKeys(leftHandKeys);
-    addExtraErrorKeys(rightHandKeys);
-  }
   if (leftHandKeys.length && leftHandKeys.length === rightHandKeys.length) {
     leftHandKeys.sort();
     rightHandKeys.sort();

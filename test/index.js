@@ -414,7 +414,7 @@ describe('Generic', function () {
         'eql(Error("foo"), Object.assign(Error("foo"), { name: "TypeError" })) === false');
     });
 
-    it('returns true for errors with same custom property', function () {
+    it('returns true for errors with same code', function () {
       var err1 = Error('foo');
       var err2 = Error('foo');
       err1.code = 42;
@@ -423,13 +423,22 @@ describe('Generic', function () {
         'eql(Object.assign(Error("foo"), { code: 42 }), Object.assign(Error("foo"), { code: 42 }))');
     });
 
-    it('returns false for errors with different custom property', function () {
+    it('returns false for errors with different code', function () {
       var err1 = Error('foo');
       var err2 = Error('foo');
       err1.code = 42;
       err2.code = 13;
       assert(eql(err1, err2) === false,
         'eql(Object.assign(new Error("foo"), { code: 42 }), Object.assign(new Error("foo"), { code: 13 })) === false');
+    });
+
+    it('returns true for errors with same name and message despite different otherProp', function () {
+      var err1 = Error('foo');
+      var err2 = Error('foo');
+      err1.otherProp = 42;
+      err2.otherProp = 13;
+      assert(eql(err1, err2),
+        'eql(Object.assign(Error("foo"), { otherProp: 42 }), Object.assign(Error("foo"), { otherProp: 13 }))');
     });
 
   });
