@@ -22,7 +22,12 @@ env:
   global:
   - SAUCE_CONNECT_READY_FILE=/tmp/sauce-connect-ready
   - LOGS_DIR=/tmp/chai-build/logs
-  - secure: fOmukdZc9lwl/tfer01TAoPCcpafNbr1ZvUnjKmiP/r1cC2RWpF1JlYITtioLlvadzCTwi88SBzQLIi1/qCSao7vSsup5oC05brgUOR9uD7VE9IfIpyV5bthT/sX3IKNeIFKlow4H1f8RLlweqtor5AyHlG5cXOJybQMyAAfkWo=
-  - secure: XC9Uz7J9Yflf7NuSFAkWq2yb3UksnKe83l3npLhYWN/uNk74ukh1z3o+OcJ4ujNsMx+/AcKjlJPmu8ghrjxCo6ocWBNz2+TR2UOZjukS96BOAOvOTgJqEv6nGW7HNVhpDYZEPbhM2d67UnoAX3aZFDZdug2EHD2GFJYYD7LZpnM=
-  - secure: LsutIKfCxltpyJSW0h+L8EDQYC+Rh7w48ZBbbJq+jS19ejQTPfojvvw5NcucpNh0P+x27PikRGKNOAAUuPqZSA9l9OFPoPVxgUI8r8E7Kl6D0pi6hCz5bX+dG0VaI078GpaflsyOVjiiW844sR7IXpP1w3GP2fI1DBXOBUbsWNQ=
-  - secure: EqyK5QPQZ7eHu7RbRjj/1MJywBbsn7EiJXHm9jjDnsuLkMEhrBdV5bYsIEDIROIsOSl8OBw208rrIUNO73aSvfQgkCJMN3Mtjfqh/Yn1We90k0Gy9KZMsiheD/3qjsOQxQPludlU58EDlEItTVLb2Clfs7Qfv7M5p3xl54OCaN8=
+
+    # SAUCE_USERNAME
+  - secure: FNulH4KLpwQGttsxyu4jpjdclkKBgvUBO25ED1hcFvRESUxVjefTYpU6EhSTTNCTTF3wIRClhXjWAffvo4aG0VuOLqxvEiDYiJmcuR2I4oI6f+FgSIW2/4qmIb1GddvvNOxvFC9j2fV2TEDX2+SX1V93OjuVQxOdekO19ldK/Xo=
+    # SAUCE_ACCESS_KEY
+  - secure: fnfedefBCwAZi6pONa4ogEimc4rK/f3sd1gHIbv9evifdn8LkLEagR3LOInxmbdBIZ2a9NmIyeZAveVr5ox6xa3BFTqs5HxweOh7gl3ur38ySRftJWf/Lj/fNptDbm1eVUblXwCxbADlIQ3KdElhNN02G3giRVkSYHSz7XthI6A=
+    # GH_TOKEN deep-eql travis 
+  - secure: rljXmWTNLbjPZ+CDO1FQt20AX4ED4UKMrKXK3eLQj2ZuWi1jQdek6WYqnmPra2aR+NkLmRIru2tdyDqHfUSPGdNiPlf/yEQ0GADXdrfkohEmXJGyVdcQQIeyvKeLvVf+c5kLU3c5gstoZ9eE4VbT0ANUv5sxtg/bc3eJOwPbCNA=
+    # NPM_TOKEN 54d3......c356
+  - secure: FPBrJPIEDzQwNcRtaEil/3DRB/oZthfClJVIwnhUeIDG73sB2rK49+7lVdNa/qOMSgK2f0GQsquDgHWwsL6ezfyf5VgsrqGA/LhGR4mZdVDQt4Jjn+pynXH7XyVDbqPg/mIO5J+HKvZV1n8DVT4fgmhrNT+4+kSHKHMWY5Cl/X4=
