@@ -13,6 +13,7 @@ node_js:
  - node # safety net; don't remove
 before_install:
 - npm i -g npm
+- echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> ~/.npmrc
 - npm whoami
 script:
 - npm t
