@@ -72,7 +72,7 @@
     "karma-mocha": "^2.0.1",
     "karma-sauce-launcher": "^4.3.6",
     "kewlr": "^0.4.1",
-    "lcov-result-merger": "^1.0.2",
+    "lcov-result-merger": "^3.1.0",
     "lodash.isequal": "^4.4.0",
     "mocha": "^9.1.1",
     "semantic-release": "^18.0.0",
