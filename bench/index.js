@@ -1,18 +1,17 @@
-'use strict';
-
-var deepEql = require('../');
-var lodashDeepEql = require('lodash.isequal');
-var assertDeepeql = require('assert').deepEql;
-var kewlrDeepeql = require('kewlr').chai;
-var inspect = require('util').inspect;
-var Benchmark = require('benchmark');
-var benches = [];
-var mapObjRefA = {};
-var mapObjRefB = {};
-function getArguments() {
-  return arguments;
+/* eslint-disable prefer-arrow-callback, prefer-template */
+const deepEql = require('../');
+const lodashDeepEql = require('lodash.isequal');
+const assertDeepeql = require('assert').deepEql;
+const kewlrDeepeql = require('kewlr').chai;
+const inspect = require('util').inspect;
+const Benchmark = require('benchmark');
+const benches = [];
+const mapObjRefA = {};
+const mapObjRefB = {};
+function getArguments(...args) {
+  return args;
 }
-var fixtures = {
+const fixtures = {
   'equal references           ': [ mapObjRefA, mapObjRefA ],
   'string literal             ': [ 'abc', 'abc' ],
   'array literal              ': [ [ 1, 2, 3 ], [ 1, 2, 3 ] ],
@@ -67,17 +66,17 @@ try {
 
 function prepareBenchMark(test, name, assert) {
   assert = assert || deepEql;
-  var leftHand = test[0];
-  var rightHand = test[1];
-  var expectedResult = 2 in test ? test[2] : true;
-  var invocationString = 'deepEql(' + inspect(leftHand) + ', ' + inspect(rightHand) + ') === ' + expectedResult;
+  const leftHand = test[0];
+  const rightHand = test[1];
+  const expectedResult = 2 in test ? test[2] : true;
+  const invocationString = `deepEql(${ inspect(leftHand) }, ${ inspect(rightHand) }) === ${ expectedResult }`;
   benches.push(new Benchmark(name, {
-    fn: function () {
+    fn() {
       if (assert(leftHand, rightHand) !== expectedResult) {
-        throw new Error('failing test: ' + invocationString);
+        throw new Error(`failing test: ${ invocationString }`);
       }
     },
-    onCycle: function (event) {
+    onCycle(event) {
       process.stdout.clearLine();
       process.stdout.cursorTo(0);
       process.stdout.write(event.target.toString());
@@ -85,12 +84,12 @@ function prepareBenchMark(test, name, assert) {
   }));
 }
 
-var filter = process.argv.slice(2).filter(function (arg) {
+const filter = process.argv.slice(2).filter(function (arg) {
   return arg[0] !== '-';
 })[0] || '';
-var lodash = process.argv.indexOf('--lodash') !== -1;
-var nodeassert = process.argv.indexOf('--nodeassert') !== -1;
-var kewlr = process.argv.indexOf('--kewlr') !== -1;
+const lodash = process.argv.indexOf('--lodash') !== -1;
+const nodeassert = process.argv.indexOf('--nodeassert') !== -1;
+const kewlr = process.argv.indexOf('--kewlr') !== -1;
 Object.keys(fixtures).filter(function (key) {
   return key.indexOf(filter) !== -1;
 }).forEach(function (testName) {

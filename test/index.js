@@ -1,8 +1,7 @@
-'use strict';
-
-var assert = require('simple-assert');
-var eql = require('..');
-var MemoizeMap = require('..').MemoizeMap;
+/* eslint-disable prefer-arrow-callback */
+import assert from 'simple-assert';
+import eql from '../index.js';
+import { MemoizeMap } from '../index.js';
 function describeIf(condition) {
   return condition ? describe : describe.skip;
 }
@@ -136,7 +135,7 @@ describe('Generic', function () {
   describe('dates', function () {
 
     it('returns true given two dates with the same time', function () {
-      var dateA = new Date();
+      const dateA = new Date();
       assert(eql(dateA, new Date(dateA.getTime())), 'eql(dateA, new Date(dateA.getTime()))');
     });
 
@@ -145,7 +144,7 @@ describe('Generic', function () {
     });
 
     it('returns false given two dates with the different times', function () {
-      var dateA = new Date();
+      const dateA = new Date();
       assert(eql(dateA, new Date(dateA.getTime() + 1)) === false,
         'eql(dateA, new Date(dateA.getTime() + 1)) === false');
     });
@@ -228,34 +227,34 @@ describe('Generic', function () {
   });
 
   describe('arguments', function () {
-    function getArguments() {
-      return arguments;
+    function getArguments(...args) {
+      return args;
     }
 
     it('returns true given two arguments', function () {
-      var argumentsA = getArguments();
-      var argumentsB = getArguments();
+      const argumentsA = getArguments();
+      const argumentsB = getArguments();
       assert(eql(argumentsA, argumentsB), 'eql(argumentsA, argumentsB)');
     });
 
     it('returns true given two arguments with same properties', function () {
-      var argumentsA = getArguments(1, 2);
-      var argumentsB = getArguments(1, 2);
+      const argumentsA = getArguments(1, 2);
+      const argumentsB = getArguments(1, 2);
       assert(eql(argumentsA, argumentsB), 'eql(argumentsA, argumentsB)');
     });
 
     it('returns false given two arguments with different properties', function () {
-      var argumentsA = getArguments(1, 2);
-      var argumentsB = getArguments(3, 4);
+      const argumentsA = getArguments(1, 2);
+      const argumentsB = getArguments(3, 4);
       assert(eql(argumentsA, argumentsB) === false, 'eql(argumentsA, argumentsB) === false');
     });
 
-    it('returns false given an array', function () {
-      assert(eql([], arguments) === false, 'eql([], arguments) === false');
+    it('returns false given an array', function (...args) {
+      assert(eql([], args) === false, 'eql([], arguments) === false');
     });
 
-    it('returns false given an object', function () {
-      assert(eql({}, arguments) === false, 'eql({}, arguments) === false');
+    it('returns false given an object', function (...args) {
+      assert(eql({}, args) === false, 'eql({}, arguments) === false');
     });
 
   });
@@ -294,9 +293,9 @@ describe('Generic', function () {
     });
 
     it('returns true with objects with same circular reference', function () {
-      var objectA = { foo: 1 };
-      var objectB = { foo: 1 };
-      var objectC = { a: objectA, b: objectB };
+      const objectA = { foo: 1 };
+      const objectB = { foo: 1 };
+      const objectC = { a: objectA, b: objectB };
       objectA.bar = objectC;
       objectB.bar = objectC;
       assert(eql(objectA, objectB) === true,
@@ -304,8 +303,8 @@ describe('Generic', function () {
     });
 
     it('returns true with objects with deeply equal prototypes', function () {
-      var objectA = Object.create({ foo: { a: 1 } });
-      var objectB = Object.create({ foo: { a: 1 } });
+      const objectA = Object.create({ foo: { a: 1 } });
+      const objectB = Object.create({ foo: { a: 1 } });
       assert(eql(objectA, objectB) === true,
         'eql(Object.create({ foo: { a: 1 } }), Object.create({ foo: { a: 1 } })) === true');
     });
@@ -325,8 +324,8 @@ describe('Generic', function () {
     });
 
     it('returns true with circular objects', function () {
-      var objectA = { foo: 1 };
-      var objectB = { foo: 1 };
+      const objectA = { foo: 1 };
+      const objectB = { foo: 1 };
       objectA.bar = objectB;
       objectB.bar = objectA;
       assert(eql(objectA, objectB) === true,
@@ -334,29 +333,29 @@ describe('Generic', function () {
     });
 
     it('returns true with non-extensible objects', function () {
-      var objectA = Object.preventExtensions({ foo: 1 });
-      var objectB = Object.preventExtensions({ foo: 1 });
+      const objectA = Reflect.preventExtensions({ foo: 1 });
+      const objectB = Reflect.preventExtensions({ foo: 1 });
       assert(eql(objectA, objectB) === true,
         'eql(Object.preventExtensions({ foo: 1 }), Object.preventExtensions({ foo: 1 })) === true');
     });
 
     it('returns true with sealed objects', function () {
-      var objectA = Object.seal({ foo: 1 });
-      var objectB = Object.seal({ foo: 1 });
+      const objectA = Object.seal({ foo: 1 });
+      const objectB = Object.seal({ foo: 1 });
       assert(eql(objectA, objectB) === true,
         'eql(Object.seal({ foo: 1 }), Object.seal({ foo: 1 })) === true');
     });
 
     it('returns true with frozen objects', function () {
-      var objectA = Object.freeze({ foo: 1 });
-      var objectB = Object.freeze({ foo: 1 });
+      const objectA = Object.freeze({ foo: 1 });
+      const objectB = Object.freeze({ foo: 1 });
       assert(eql(objectA, objectB) === true,
         'eql(Object.freeze({ foo: 1 }), Object.freeze({ foo: 1 })) === true');
     });
 
     it('returns false with objects with deeply unequal prototypes', function () {
-      var objectA = Object.create({ foo: { a: 1 } });
-      var objectB = Object.create({ foo: { a: 2 } });
+      const objectA = Object.create({ foo: { a: 1 } });
+      const objectB = Object.create({ foo: { a: 2 } });
       assert(eql(objectA, objectB) === false,
         'eql(Object.create({ foo: { a: 1 } }), Object.create({ foo: { a: 2 } })) === false');
     });
@@ -460,7 +459,7 @@ describe('Generic', function () {
   describe('errors', function () {
 
     it('returns true for same errors', function () {
-      var error = Error('foo');
+      const error = Error('foo');
       assert(eql(error, error), 'eql(error, error)');
     });
 
@@ -470,8 +469,8 @@ describe('Generic', function () {
     });
 
     it('returns true for errors with same name and message despite different constructors', function () {
-      var err1 = Error('foo');
-      var err2 = TypeError('foo');
+      const err1 = Error('foo');
+      const err2 = TypeError('foo');
       err2.name = 'Error';
       assert(eql(err1, err2),
         'eql(Error("foo"), Object.assign(TypeError("foo"), { name: "Error" }))');
@@ -488,16 +487,16 @@ describe('Generic', function () {
     });
 
     it('returns false for errors with same message but different names despite same constructors', function () {
-      var err1 = Error('foo');
-      var err2 = Error('foo');
+      const err1 = Error('foo');
+      const err2 = Error('foo');
       err2.name = 'TypeError';
       assert(eql(err1, err2) === false,
         'eql(Error("foo"), Object.assign(Error("foo"), { name: "TypeError" })) === false');
     });
 
     it('returns true for errors with same code', function () {
-      var err1 = Error('foo');
-      var err2 = Error('foo');
+      const err1 = Error('foo');
+      const err2 = Error('foo');
       err1.code = 42;
       err2.code = 42;
       assert(eql(err1, err2),
@@ -505,8 +504,8 @@ describe('Generic', function () {
     });
 
     it('returns false for errors with different code', function () {
-      var err1 = Error('foo');
-      var err2 = Error('foo');
+      const err1 = Error('foo');
+      const err2 = Error('foo');
       err1.code = 42;
       err2.code = 13;
       assert(eql(err1, err2) === false,
@@ -514,8 +513,8 @@ describe('Generic', function () {
     });
 
     it('returns true for errors with same name and message despite different otherProp', function () {
-      var err1 = Error('foo');
-      var err2 = Error('foo');
+      const err1 = Error('foo');
+      const err2 = Error('foo');
       err1.otherProp = 42;
       err2.otherProp = 13;
       assert(eql(err1, err2),
@@ -547,10 +546,10 @@ describe('Node Specific', function () {
 describe('Memoize', function () {
 
   it('returns true if MemoizeMap says so', function () {
-    var memoizeMap = new MemoizeMap();
-    var valueAMap = new MemoizeMap();
-    var valueA = {};
-    var valueB = { not: 'equal' };
+    const memoizeMap = new MemoizeMap();
+    const valueAMap = new MemoizeMap();
+    const valueA = {};
+    const valueB = { not: 'equal' };
     valueAMap.set(valueB, true);
     memoizeMap.set(valueA, valueAMap);
     assert(eql(valueA, valueB, { memoize: memoizeMap }) === true,
@@ -558,10 +557,10 @@ describe('Memoize', function () {
   });
 
   it('returns false if MemoizeMap says so', function () {
-    var memoizeMap = new MemoizeMap();
-    var valueAMap = new MemoizeMap();
-    var valueA = {};
-    var valueB = {};
+    const memoizeMap = new MemoizeMap();
+    const valueAMap = new MemoizeMap();
+    const valueA = {};
+    const valueB = {};
     valueAMap.set(valueB, false);
     memoizeMap.set(valueA, valueAMap);
     assert(eql(valueA, valueB, { memoize: memoizeMap }) === false,
@@ -569,20 +568,20 @@ describe('Memoize', function () {
   });
 
   it('resorts to default behaviour if MemoizeMap has no answer (same objects)', function () {
-    var memoizeMap = new MemoizeMap();
-    var valueAMap = new MemoizeMap();
-    var valueA = {};
-    var valueB = {};
+    const memoizeMap = new MemoizeMap();
+    const valueAMap = new MemoizeMap();
+    const valueA = {};
+    const valueB = {};
     memoizeMap.set(valueA, valueAMap);
     assert(eql(valueA, valueB, { memoize: memoizeMap }) === true,
       'eql({}, {}, <memoizeMap>) === true');
   });
 
   it('resorts to default behaviour if MemoizeMap has no answer (different objects)', function () {
-    var memoizeMap = new MemoizeMap();
-    var valueAMap = new MemoizeMap();
-    var valueA = {};
-    var valueB = { not: 'equal' };
+    const memoizeMap = new MemoizeMap();
+    const valueAMap = new MemoizeMap();
+    const valueA = {};
+    const valueB = { not: 'equal' };
     memoizeMap.set(valueA, valueAMap);
     assert(eql(valueA, valueB, { memoize: memoizeMap }) === false,
       'eql({}, {}, <memoizeMap>) === false');
@@ -613,26 +612,26 @@ describe('Comparator', function () {
   }
 
   it('returns true if Comparator says so', function () {
-    var valueA = { '@@specialValue': 1, a: 1 };
-    var valueB = { '@@specialValue': 1, a: 2 };
+    const valueA = { '@@specialValue': 1, a: 1 };
+    const valueB = { '@@specialValue': 1, a: 2 };
     assert(eql(valueA, valueB, { comparator: specialComparator }) === true,
       'eql({@@specialValue:1,a:1}, {@@specialValue:1,a:2}, <comparator>) === true');
   });
 
   it('returns true if Comparator says so even on primitives', function () {
-    var valueA = {
+    const valueA = {
       a: new Matcher(function (value) {
         return typeof value === 'number';
       }),
     };
-    var valueB = { a: 1 };
+    const valueB = { a: 1 };
     assert(eql(valueA, valueB, { comparator: matcherComparator }) === true,
       'eql({a:value => typeof value === "number"}, {a:1}, <comparator>) === true');
   });
 
   it('returns true if Comparator says so even on primitives (switch arg order)', function () {
-    var valueA = { a: 1 };
-    var valueB = {
+    const valueA = { a: 1 };
+    const valueB = {
       a: new Matcher(function (value) {
         return typeof value === 'number';
       }),
@@ -642,29 +641,29 @@ describe('Comparator', function () {
   });
 
   it('returns true if Comparator says so (deep-equality)', function () {
-    var valueA = { a: { '@@specialValue': 1, a: 1 }, b: 1 };
-    var valueB = { a: { '@@specialValue': 1, a: 2 }, b: 1 };
+    const valueA = { a: { '@@specialValue': 1, a: 1 }, b: 1 };
+    const valueB = { a: { '@@specialValue': 1, a: 2 }, b: 1 };
     assert(eql(valueA, valueB, { comparator: specialComparator }) === true,
       'eql({a:{@@specialValue:1,a:1},b:1}, {a:{@@specialValue:2,a:2},b:1}, <comparator>) === true');
   });
 
   it('returns false if Comparator returns false (same objects)', function () {
-    var valueA = { a: 1 };
-    var valueB = { a: 1 };
+    const valueA = { a: 1 };
+    const valueB = { a: 1 };
     assert(eql(valueA, valueB, { comparator: falseComparator }) === false,
       'eql({}, {}, <falseComparator>) === false');
   });
 
   it('resorts to deep-eql if Comparator returns null (same objects)', function () {
-    var valueA = { a: 1 };
-    var valueB = { a: 1 };
+    const valueA = { a: 1 };
+    const valueB = { a: 1 };
     assert(eql(valueA, valueB, { comparator: nullComparator }) === true,
       'eql({}, {}, <nullComparator>) === true');
   });
 
   it('resorts to deep-eql behaviour if Comparator returns null (different objects)', function () {
-    var valueA = { a: 1 };
-    var valueB = { a: 2 };
+    const valueA = { a: 1 };
+    const valueB = { a: 2 };
     assert(eql(valueA, valueB, { comparator: nullComparator }) === false,
       'eql({}, {}, <nullComparator>) === false');
   });
