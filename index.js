@@ -12,10 +12,10 @@ function FakeMap() {
 }
 
 FakeMap.prototype = {
-  get: function getMap(key) {
+  get: function get(key) {
     return key[this._key];
   },
-  set: function setMap(key, value) {
+  set: function set(key, value) {
     if (Object.isExtensible(key)) {
       Object.defineProperty(key, this._key, {
         value: value,

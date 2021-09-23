@@ -1,4 +1,5 @@
 'use strict';
+
 var assert = require('simple-assert');
 var eql = require('..');
 var MemoizeMap = require('..').MemoizeMap;
@@ -54,9 +55,9 @@ describe('Generic', function () {
 
     it('returns false for instances with different values', function () {
       assert(eql(new Boolean(false), new Boolean(true)) === false,
-      'eql(new Boolean(false), new Boolean(true)) === false');
+        'eql(new Boolean(false), new Boolean(true)) === false');
       assert(eql(new Boolean(true), new Boolean(false)) === false,
-      'eql(new Boolean(true), new Boolean(false)) === false');
+        'eql(new Boolean(true), new Boolean(false)) === false');
     });
 
     it('returns false for different values', function () {
@@ -450,12 +451,12 @@ describe('Node Specific', function () {
   describeIf(typeof Buffer === 'function')('buffers', function () {
 
     it('returns true for same buffers', function () {
-      assert(eql(new Buffer([ 1 ]), new Buffer([ 1 ])) === true,
+      assert(eql(Buffer.from([ 1 ]), Buffer.from([ 1 ])) === true,
         'eql(new Buffer([ 1 ]), new Buffer([ 1 ])) === true');
     });
 
     it('returns false for different buffers', function () {
-      assert(eql(new Buffer([ 1 ]), new Buffer([ 2 ])) === false,
+      assert(eql(Buffer.from([ 1 ]), Buffer.from([ 2 ])) === false,
         'eql(new Buffer([ 1 ]), new Buffer([ 2 ])) === false');
     });
 
