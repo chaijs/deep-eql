@@ -19,7 +19,9 @@
     "dougluce (https://github.com/dougluce)",
     "Lorenz Leutgeb (https://github.com/flowlo)"
   ],
+  "type": "module",
   "main": "./index",
+  "module": "./index",
   "files": [
     "index.js",
     "deep-eql.js"
@@ -74,6 +76,6 @@
     "simple-assert": "^1.0.0"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=12"
   }
 }
