@@ -226,8 +226,9 @@ describe('Generic', function () {
   });
 
   describe('arguments', function () {
-    function getArguments(...args) {
-      return args;
+    function getArguments() {
+      // eslint-disable-next-line prefer-rest-params
+      return arguments;
     }
 
     it('returns true given two arguments', function () {
@@ -248,12 +249,14 @@ describe('Generic', function () {
       assert(eql(argumentsA, argumentsB) === false, 'eql(argumentsA, argumentsB) === false');
     });
 
-    it('returns false given an array', function (...args) {
-      assert(eql([], args) === false, 'eql([], arguments) === false');
+    it('returns false given an array', function () {
+      // eslint-disable-next-line prefer-rest-params
+      assert(eql([], arguments) === false, 'eql([], arguments) === false');
     });
 
-    it('returns false given an object', function (...args) {
-      assert(eql({}, args) === false, 'eql({}, arguments) === false');
+    it('returns false given an object', function () {
+      // eslint-disable-next-line prefer-rest-params
+      assert(eql({}, arguments) === false, 'eql({}, arguments) === false');
     });
 
   });
