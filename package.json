@@ -20,6 +20,7 @@
     "Lorenz Leutgeb (https://github.com/flowlo)"
   ],
   "type": "module",
+  "sourceType": "module",
   "main": "./index",
   "module": "./index",
   "files": [
