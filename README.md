@@ -19,10 +19,10 @@
       alt="tag:?"
       src="https://img.shields.io/github/tag/chaijs/deep-eql.svg?style=flat-square"
     />
-  </a><a href="https://travis-ci.org/chaijs/deep-eql">
+  </a><a href="https://github.com/chaijs/deep-eql/actions">
     <img
       alt="build:?"
-      src="https://img.shields.io/travis/chaijs/deep-eql/master.svg?style=flat-square"
+      src="https://github.com/chaijs/deep-eql/workflows/Build/badge.svg"
     />
   </a><a href="https://coveralls.io/r/chaijs/deep-eql">
     <img

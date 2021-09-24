@@ -71,20 +71,17 @@ module.exports = function configureKarma(config) {
   });
 
   if (process.env.SAUCE_ACCESS_KEY && process.env.SAUCE_USERNAME) {
-    var branch = process.env.TRAVIS_BRANCH || 'local';
+    var branch = 'local';
     var build = 'localbuild';
-    if (process.env.TRAVIS_JOB_NUMBER) {
-      build = 'travis@' + process.env.TRAVIS_JOB_NUMBER;
-    }
     config.reporters.push('saucelabs');
     config.set({
       customLaunchers: sauceLabsBrowsers,
       browsers: localBrowsers.concat(Object.keys(sauceLabsBrowsers)),
       sauceLabs: {
         testName: packageJson.name,
-        tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER || new Date().getTime(),
+        tunnelIdentifier: new Date().getTime(),
         recordVideo: true,
-        startConnect: ('TRAVIS' in process.env) === false,
+        startConnect: true,
         tags: [
           'typeDetect_' + packageJson.version,
           process.env.SAUCE_USERNAME + '@' + branch,
