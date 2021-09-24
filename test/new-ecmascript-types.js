@@ -1,4 +1,5 @@
 'use strict';
+
 /* eslint-disable no-eval */
 var assert = require('simple-assert');
 var eql = require('..');
@@ -333,6 +334,7 @@ describe('ES2015 Specific', function () {
 
     it('returns true for the same promises', function () {
       var promiseResolve = Promise.resolve();
+      // eslint-disable-next-line prefer-promise-reject-errors
       var promiseReject = Promise.reject();
       var promisePending = new Promise(emptyFunction);
       assert(eql(promiseResolve, promiseResolve), 'eql(promiseResolve, promiseResolve)');
@@ -347,7 +349,9 @@ describe('ES2015 Specific', function () {
       assert(eql(Promise.resolve(), Promise.resolve()) === false,
         'eql(Promise.resolve(), Promise.resolve()) === false');
 
+      // eslint-disable-next-line prefer-promise-reject-errors
       var promiseRejectA = Promise.reject();
+      // eslint-disable-next-line prefer-promise-reject-errors
       var promiseRejectB = Promise.reject();
       assert(eql(promiseRejectA, promiseRejectB) === false,
         'eql(Promise.reject(), Promise.reject()) === false');

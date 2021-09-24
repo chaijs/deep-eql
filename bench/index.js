@@ -1,4 +1,5 @@
 'use strict';
+
 var deepEql = require('../');
 var lodashDeepEql = require('lodash.isequal');
 var assertDeepeql = require('assert').deepEql;
@@ -22,13 +23,11 @@ var fixtures = {
   'number literal             ': [ 1, 1 ],
   'null                       ': [ null, null ],
   'undefined                  ': [ undefined, undefined ],
-  'buffer                     ': [ new Buffer('hello world'), new Buffer('hello world') ],
+  'buffer                     ': [ Buffer.from('hello world'), Buffer.from('hello world') ],
   'date                       ': [ new Date(123), new Date(123) ],
   'map                        ': [ new Map().set('a', 1), new Map().set('a', 1) ],
-  'map (complex)              ': [
-    new Map().set(mapObjRefA, new Map().set(mapObjRefB, 1)),
-    new Map().set(mapObjRefA, new Map().set(mapObjRefB, 1)),
-  ],
+  // eslint-disable-next-line max-len
+  'map (complex)              ': [ new Map().set(mapObjRefA, new Map().set(mapObjRefB, 1)), new Map().set(mapObjRefA, new Map().set(mapObjRefB, 1)) ],
   'regex constructor          ': [ new RegExp('abc'), new RegExp('abc') ],
   'set                        ': [ new Set().add(1), new Set().add(1) ],
   'string constructor         ': [ new String(), new String() ],
@@ -42,7 +41,7 @@ var fixtures = {
   'regex literal (differing)  ': [ /^abc$/, /^def$/, false ],
   'number literal (differing) ': [ 1, 2, false ],
   'null & undefined           ': [ null, undefined, false ],
-  'buffer (differing)         ': [ new Buffer(123), new Buffer(456), false ],
+  'buffer (differing)         ': [ Buffer.from(123), Buffer.from(456), false ],
   'date (differing)           ': [ new Date(123), new Date(456), false ],
   'error                      ': [ new Error(''), new Error(''), false ],
   'map (differing)            ': [ new Map().set('a', 1), new Map().set('a', 2), false ],
@@ -56,20 +55,12 @@ var fixtures = {
   'promise                    ': [ Promise.resolve(), Promise.resolve(), false ],
 };
 try {
-  fixtures['arrow function (differing) '] = [
-    eval('() => {}'),
-    eval('() => {}'),
-    false,
-  ];
+  fixtures['arrow function (differing) '] = [ eval('() => {}'), eval('() => {}'), false ];
 } catch (error) {
   console.error('cannot benchmark arrow functions');
 }
 try {
-  fixtures['generator func (differing) '] = [
-    eval('(function* () {})'),
-    eval('(function* () {})'),
-    false,
-  ];
+  fixtures['generator func (differing) '] = [ eval('(function* () {})'), eval('(function* () {})'), false ];
 } catch (error) {
   console.error('cannot benchmark generator functions');
 }
