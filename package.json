@@ -35,10 +35,10 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",
-    "test:browser": "karma start karma.config.cjs --singleRun=true",
+    "test:browser": "karma start karma.conf.cjs --singleRun=true",
     "test:node": "istanbul cover _mocha",
     "upload-coverage": "lcov-result-merger 'coverage/**/lcov.info' | coveralls; exit 0",
-    "watch": "karma start karma.config.cjs --auto-watch --singleRun=false"
+    "watch": "karma start karma.conf.cjs --auto-watch --singleRun=false"
   },
   "eslintConfig": {
     "extends": [
