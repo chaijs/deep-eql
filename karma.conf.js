@@ -38,6 +38,7 @@ module.exports = function configureKarma(config) {
   config.set({
     basePath: '',
     browsers: localBrowsers,
+    // eslint-disable-next-line no-process-env
     logLevel: process.env.npm_config_debug ? config.LOG_DEBUG : config.LOG_INFO,
     frameworks: [ 'browserify', 'mocha' ],
     files: [ 'test/*.js' ],
@@ -65,6 +66,7 @@ module.exports = function configureKarma(config) {
     singleRun: true,
   });
 
+  // eslint-disable-next-line no-process-env
   if (process.env.SAUCE_ACCESS_KEY && process.env.SAUCE_USERNAME) {
     const branch = 'local';
     const build = 'localbuild';
@@ -77,6 +79,7 @@ module.exports = function configureKarma(config) {
         tunnelIdentifier: new Date().getTime(),
         recordVideo: true,
         startConnect: true,
+        // eslint-disable-next-line no-process-env
         tags: [ `typeDetect_${ packageJson.version }`, `${ process.env.SAUCE_USERNAME }@${ branch }`, build ],
       },
     });

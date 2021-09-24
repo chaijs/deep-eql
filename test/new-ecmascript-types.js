@@ -317,12 +317,14 @@ describe('ES2015 Specific', function () {
   describeIf(typeof Symbol === 'function')('symbol', function () {
 
     it('returns true for the same symbols', function () {
+      // eslint-disable-next-line symbol-description
       const sym = Symbol();
       assert(eql(sym, sym), 'eql(sym, sym)');
       assert(eql(Symbol.iterator, Symbol.iterator), 'eql(Symbol.iterator, Symbol.iterator)');
     });
 
     it('returns false for different symbols', function () {
+      // eslint-disable-next-line symbol-description
       assert(eql(Symbol(), Symbol()) === false, 'eql(Symbol(), Symbol()) === false');
     });
 

@@ -1,7 +1,6 @@
 /* eslint-disable prefer-arrow-callback */
 import assert from 'simple-assert';
-import eql from '../index.js';
-import { MemoizeMap } from '../index.js';
+import eql, { MemoizeMap } from '../index.js';
 function describeIf(condition) {
   return condition ? describe : describe.skip;
 }

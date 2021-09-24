@@ -3,7 +3,7 @@ const deepEql = require('../');
 const lodashDeepEql = require('lodash.isequal');
 const assertDeepeql = require('assert').deepEql;
 const kewlrDeepeql = require('kewlr').chai;
-const inspect = require('util').inspect;
+const { inspect } = require('util');
 const Benchmark = require('benchmark');
 const benches = [];
 const mapObjRefA = {};
@@ -66,8 +66,7 @@ try {
 
 function prepareBenchMark(test, name, assert) {
   assert = assert || deepEql;
-  const leftHand = test[0];
-  const rightHand = test[1];
+  const [ leftHand, rightHand ] = test;
   const expectedResult = 2 in test ? test[2] : true;
   const invocationString = `deepEql(${ inspect(leftHand) }, ${ inspect(rightHand) }) === ${ expectedResult }`;
   benches.push(new Benchmark(name, {
