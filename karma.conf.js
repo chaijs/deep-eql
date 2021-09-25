@@ -6,7 +6,7 @@ var packageJson = require('./package.json');
 var defaultTimeout = 120000;
 var browserifyIstanbul = require('browserify-istanbul');
 module.exports = function configureKarma(config) {
-  var localBrowsers = [ 'PhantomJS' ];
+  var localBrowsers = [ 'ChromeHeadless' ];
   var sauceLabsBrowsers = {
     SauceChromeLatest: {
       base: 'SauceLabs',
