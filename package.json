@@ -79,8 +79,7 @@
     "phantomjs-prebuilt": "^2.1.5",
     "semantic-release": "^4.3.5",
     "simple-assert": "^1.0.0",
-    "validate-commit-msg": "^2.3.1",
-    "watchify": "^3.7.0"
+    "validate-commit-msg": "^2.3.1"
   },
   "engines": {
     "node": ">=6"
