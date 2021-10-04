@@ -12,12 +12,14 @@
   "contributors": [
     "Keith Cirkel (https://github.com/keithamus)",
     "dougluce (https://github.com/dougluce)",
-    "Lorenz Leutgeb (https://github.com/flowlo)"
+    "Lorenz Leutgeb (https://github.com/flowlo)",
+    "Kristján Oddsson (https://github.com/koddsson)"
   ],
-  "main": "./index",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "files": [
-    "index.js",
-    "deep-eql.js"
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -25,7 +27,7 @@
   },
   "scripts": {
     "bench": "node bench",
-    "build": "browserify $npm_package_main --standalone deepEqual -o deep-eql.js",
+    "build": "tsc",
     "lint": "eslint --ignore-path .gitignore .",
     "prepublish": "npm run build",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
@@ -77,9 +79,10 @@
     "mocha": "^9.1.1",
     "semantic-release": "^18.0.0",
     "simple-assert": "^1.0.0",
+    "typescript": "^4.4.3",
     "validate-commit-msg": "^2.3.1"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=12"
   }
 }
