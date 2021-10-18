@@ -5,7 +5,7 @@
 var packageJson = require('./package.json');
 var defaultTimeout = 120000;
 module.exports = function configureKarma(config) {
-  var localBrowsers = [ 'Chrome' ];
+  var localBrowsers = [ 'ChromeHeadless' ];
   var sauceLabsBrowsers = {
     SauceChromeLatest: {
       base: 'SauceLabs',

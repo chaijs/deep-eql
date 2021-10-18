@@ -19,3 +19,5 @@ npm-debug.log
 coverage/
 
 deep-eql.js
+
+dist/

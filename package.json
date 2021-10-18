@@ -45,7 +45,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "strict/es5"
+      "strict/es6"
     ],
     "rules": {
       "complexity": 0,
