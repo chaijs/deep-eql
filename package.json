@@ -34,8 +34,8 @@
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",
     "test:node": "istanbul cover _mocha",
-    "test:browser": "karma start --singleRun=true",
-    "watch": "karma start --auto-watch --singleRun=false",
+    "test:browser": "karma start karma.conf.cjs --singleRun=true",
+    "watch": "karma start karma.conf.cjs --auto-watch --singleRun=false",
     "upload-coverage": "lcov-result-merger 'coverage/**/lcov.info' | coveralls; exit 0"
   },
   "config": {

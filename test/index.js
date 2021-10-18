@@ -1,5 +1,10 @@
-import assert from 'simple-assert'
 import {deepEqual as eql} from '../dist/index.js'
+
+function assert (expr, msg) {
+  if (!expr) {
+    throw new Error(msg || 'Assertion Failed');
+  }
+}
 
 function describeIf(condition) {
   return condition ? describe : describe.skip;

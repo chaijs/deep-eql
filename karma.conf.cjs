@@ -4,9 +4,8 @@
 
 var packageJson = require('./package.json');
 var defaultTimeout = 120000;
-var browserifyIstanbul = require('browserify-istanbul');
 module.exports = function configureKarma(config) {
-  var localBrowsers = [ 'ChromeHeadless' ];
+  var localBrowsers = [ 'Chrome' ];
   var sauceLabsBrowsers = {
     SauceChromeLatest: {
       base: 'SauceLabs',
@@ -40,20 +39,11 @@ module.exports = function configureKarma(config) {
     },
   };
   config.set({
-    basePath: '',
     browsers: localBrowsers,
     logLevel: process.env.npm_config_debug ? config.LOG_DEBUG : config.LOG_INFO,
-    frameworks: [ 'browserify', 'mocha' ],
-    files: [ 'test/*.js' ],
+    frameworks: [ 'mocha' ],
+    files: [ { pattern: 'dist/*.js', type: 'module' }, { pattern: 'test/*.js', type: 'module' } ],
     exclude: [],
-    preprocessors: {
-      'test/*.js': [ 'browserify' ],
-    },
-    browserify: {
-      debug: true,
-      bare: true,
-      transform: [ browserifyIstanbul({ ignore: [ '**/node_modules/**', '**/test/**' ] }) ],
-    },
     reporters: [ 'progress', 'coverage' ],
     coverageReporter: {
       type: 'lcov',

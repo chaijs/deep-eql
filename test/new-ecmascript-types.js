@@ -1,6 +1,11 @@
 /* eslint-disable no-eval */
-import assert from 'simple-assert'
 import {deepEqual as eql} from '../dist/index.js'
+
+export function assert (expr, msg) {
+  if (!expr) {
+    throw new Error(msg || 'Assertion Failed');
+  }
+}
 
 var emptyFunction = Function.prototype;
 var symbolExists = typeof Symbol === 'function';
