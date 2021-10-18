@@ -159,7 +159,7 @@ function deepEqual(left: unknown, right: unknown, comparator = Object.is): boole
     return false
   }
 
-  // 8. ???
+  // 8. TODO
   for (const item of leftMap) {
     if (!deepEqual(item[1], rightMap.get(item[0]), comparator)) {
       map.get(right as object)?.set(left as object, false)
@@ -167,24 +167,6 @@ function deepEqual(left: unknown, right: unknown, comparator = Object.is): boole
       return false
     }
   }
-  
-
-  // 8. TODO: What is this?
-  // for (const item of leftMap) {
-  //   const a = item[1]
-  //   const b = rightMap.get(item[0])
-
-
-  //   if (typeof a !== 'object' || typeof b !== 'object') {
-  //     if (!deepEqual(a, b, comparator)) {
-  //       map.get(right)?.set(left, false)
-  //       map.get(left)?.set(right, false)
-  //       return false
-  //     } else  {
-  //       continue
-  //     }
-  //   }
-  // }
 
   map.get(right)?.set(left, true)
   map.get(left)?.set(right, true)
