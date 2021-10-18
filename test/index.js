@@ -334,7 +334,7 @@ describe('Generic', () => {
       assert(eql({ foo: 'bar' }, { bar: 'baz' }) === false, 'eql({ foo: "bar" }, { foo: "baz" }) === false');
     });
 
-    it.skip('returns true with circular objects', () => {
+    it('returns true with circular objects', () => {
       const objectA = { foo: 1 };
       const objectB = { foo: 1 };
       objectA.bar = objectB;

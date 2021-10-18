@@ -236,7 +236,7 @@ describe('ES2015 Specific', () => {
       assert(eql(setA, setB) === false, 'eql(Set { "a", "b", "c" }, Set { "d", "e", "f" }) === false');
     });
 
-    it.skip('returns true for circular Sets', () => {
+    it('returns true for circular Sets', () => {
       const setA = new Set();
       const setB = new Set();
       setA.add(setB);
