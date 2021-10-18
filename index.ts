@@ -24,7 +24,6 @@ function deepEqual(left: unknown, right: unknown, comparator = Object.is): boole
 
   const results = map.get(right)?.get(left)
   if (typeof results === 'boolean') {
-    console.log('returning early', results)
     return results
   }
 
@@ -162,11 +161,6 @@ function deepEqual(left: unknown, right: unknown, comparator = Object.is): boole
 
   // 8. ???
   for (const item of leftMap) {
-    console.log(left)
-    console.log(  right)
-    console.log(  item[0])
-    console.log(  item[1])
-    console.log(  rightMap.get(item[0]))
     if (!deepEqual(item[1], rightMap.get(item[0]), comparator)) {
       map.get(right as object)?.set(left as object, false)
       map.get(left as object)?.set(right as object, false)
