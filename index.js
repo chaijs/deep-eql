@@ -379,6 +379,11 @@ function getEnumerableKeys(target) {
   return keys;
 }
 
+function getNonEnumerableSymbols(target) {
+  var keys = Object.getOwnPropertySymbols(target);
+  return keys;
+}
+
 /*!
  * Determines if two objects have matching values, given a set of keys. Defers to deepEqual for the equality check of
  * each key. If any value of the given key is not equal, the function will return false (early).
@@ -414,6 +419,14 @@ function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
 function objectEqual(leftHandOperand, rightHandOperand, options) {
   var leftHandKeys = getEnumerableKeys(leftHandOperand);
   var rightHandKeys = getEnumerableKeys(rightHandOperand);
+  var leftHandSymbols = getNonEnumerableSymbols(leftHandOperand);
+  var rightHandSymbols = getNonEnumerableSymbols(rightHandOperand);
+  if (leftHandSymbols) {
+    leftHandKeys = leftHandKeys.concat(leftHandSymbols);
+  }
+  if (rightHandSymbols) {
+    rightHandKeys = rightHandKeys.concat(rightHandSymbols);
+  }
   if (leftHandKeys.length && leftHandKeys.length === rightHandKeys.length) {
     leftHandKeys.sort();
     rightHandKeys.sort();
