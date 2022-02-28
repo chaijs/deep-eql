@@ -377,6 +377,48 @@ describe('Generic', function () {
 
   });
 
+  describe('Symbols', function () {
+
+    it('returns true for same symbols', function () {
+      var symb = Symbol('a');
+      var objectA = { [symb]: 'a' };
+      var objectB = { [symb]: 'a' };
+      assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
+    });
+
+    it('returns false for different values', function () {
+      var symb = Symbol('a');
+      var objectA = { [symb]: 'a' };
+      var objectB = { [symb]: 'b' };
+      assert(eql(objectA, objectB) === false, 'eql(obj, obj) === false');
+    });
+
+    it('returns false for different symbols', function () {
+      var symb = Symbol('a');
+      var symb2 = Symbol('b');
+      var objectA = { [symb]: 'a' };
+      var objectB = { [symb2]: 'a' };
+      assert(eql(objectA, objectB) === false, 'eql(obj, obj) === false');
+    });
+
+    it('returns true for same nested symbols', function () {
+      var symb = Symbol('a');
+      var symb2 = Symbol('b');
+      var objectA = { [symb]: { [symb2]: 'a' } };
+      var objectB = { [symb]: { [symb2]: 'a' } };
+      assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
+    });
+
+    it('returns false for different nested symbols', function () {
+      var symb = Symbol('a');
+      var symb2 = Symbol('b');
+      var objectA = { [symb]: { [symb2]: 'a' } };
+      var objectB = { [symb]: { [symb]: 'a' } };
+      assert(eql(objectA, objectB) === false, 'eql(obj, obj) === false');
+    });
+  });
+
+
   describe('errors', function () {
 
     it('returns true for same errors', function () {
