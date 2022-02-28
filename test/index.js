@@ -423,6 +423,27 @@ describe('Generic', function () {
       var objectB = { [symb]: 'a', b: 2 };
       assert(eql(objectA, objectB) === true, 'eql(obj, obj) === true');
     });
+
+    it('works for multiple symbols', function () {
+      var symb = Symbol('a');
+      var symb2 = Symbol('a');
+      var objectA = { [symb]: 'a', [symb2]: 'b' };
+      var objectB = { [symb]: 'a', [symb2]: 'b' };
+      assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
+
+      objectA = { [symb]: 'a', [symb2]: 'b' };
+      objectB = { [symb2]: 'b', [symb]: 'a' };
+      assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
+
+      objectA = { [symb]: 'a', [symb2]: 'b' };
+      objectB = { [symb2]: 'a', [symb]: 'b' };
+      assert(eql(objectA, objectB) === false, 'eql(obj, obj) === false');
+
+      var symb3 = Symbol();
+      objectA = { [symb3]: 'a', [symb2]: 'b' };
+      objectB = { [symb3]: 'a', [symb2]: 'b' };
+      assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
+    });
   });
 
 
