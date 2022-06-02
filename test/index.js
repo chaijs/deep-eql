@@ -416,6 +416,14 @@ describe('Generic', function () {
       var objectB = { [symb]: { [symb]: 'a' } };
       assert(eql(objectA, objectB) === false, 'eql(obj, obj) === false');
     });
+
+    it('issues#85', function () {
+      var objectA = new URL('https://github.com/');
+      var objectB = new URL('https://github.com/');
+      var objectC = new URL('https://github.com/chaijs/deep-eql');
+      assert(eql(objectA, objectB) === true, 'eql(obj, obj) === true');
+      assert(eql(objectA, objectC) === false, 'eql(obj, obj) === false');
+    });
   });
 
 

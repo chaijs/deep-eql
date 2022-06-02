@@ -53,6 +53,7 @@
     }
   },
   "dependencies": {
+    "default-compare-with-symbol": "^1.0.1",
     "type-detect": "^4.0.0"
   },
   "devDependencies": {
