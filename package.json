@@ -14,10 +14,34 @@
     "dougluce (https://github.com/dougluce)",
     "Lorenz Leutgeb (https://github.com/flowlo)"
   ],
-  "main": "./index",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json",
+    "./src/*": "./src/*",
+    "./deep-eql.js": "./dist/index.umd.production.min.cjs"
+  },
+  "main": "dist/index.cjs",
+  "unpkg": "dist/index.umd.production.min.cjs",
+  "module": "dist/index.esm.mjs",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "files": [
-    "index.js",
-    "deep-eql.js"
+    "dist/index.cjs",
+    "dist/index.cjs.development.cjs",
+    "dist/index.cjs.development.cjs.map",
+    "dist/index.cjs.production.min.cjs",
+    "dist/index.cjs.production.min.cjs.map",
+    "dist/index.esm.mjs",
+    "dist/index.esm.mjs.map",
+    "dist/index.umd.development.cjs",
+    "dist/index.umd.development.cjs.map",
+    "dist/index.umd.production.min.cjs",
+    "dist/index.umd.production.min.cjs.map"
   ],
   "repository": {
     "type": "git",
@@ -25,7 +49,7 @@
   },
   "scripts": {
     "bench": "node bench",
-    "build": "browserify $npm_package_main --standalone deepEqual -o deep-eql.js",
+    "build": "tsdx build --name deepEqual",
     "lint": "eslint --ignore-path .gitignore .",
     "prepublish": "npm run build",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
@@ -56,6 +80,8 @@
     "type-detect": "^4.0.0"
   },
   "devDependencies": {
+    "@bluelovers/tsconfig": "^1.0.30",
+    "@bluelovers/tsdx": "^2.2.1",
     "benchmark": "^2.1.0",
     "browserify": "^17.0.0",
     "browserify-istanbul": "^3.0.1",
