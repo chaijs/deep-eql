@@ -234,6 +234,19 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
       return entriesEqual(leftHandOperand, rightHandOperand, options);
     case 'Map':
       return entriesEqual(leftHandOperand, rightHandOperand, options);
+    case 'Temporal.PlainDate':
+    case 'Temporal.PlainTime':
+    case 'Temporal.PlainDateTime':
+    case 'Temporal.Instant':
+    case 'Temporal.ZonedDateTime':
+    case 'Temporal.PlainYearMonth':
+    case 'Temporal.PlainMonthDay':
+      return leftHandOperand.equals(rightHandOperand);
+    case 'Temporal.Duration':
+      return leftHandOperand.total('nanoseconds') === rightHandOperand.total('nanoseconds');
+    case 'Temporal.TimeZone':
+    case 'Temporal.Calendar':
+      return leftHandOperand.toString() === rightHandOperand.toString();
     default:
       return objectEqual(leftHandOperand, rightHandOperand, options);
   }

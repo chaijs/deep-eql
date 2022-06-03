@@ -56,6 +56,7 @@
     "type-detect": "^4.0.0"
   },
   "devDependencies": {
+    "@js-temporal/polyfill": "^0.4.1",
     "benchmark": "^2.1.0",
     "browserify": "^17.0.0",
     "browserify-istanbul": "^3.0.1",
