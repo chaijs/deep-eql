@@ -7,6 +7,7 @@
  */
 
 var type = require('type-detect');
+var compareFn = require('default-compare-with-symbol').defaultCompareWithSymbol;
 function FakeMap() {
   this._key = 'chai/deep-eql__' + Math.random() + Date.now();
 }
@@ -289,7 +290,7 @@ function entriesEqual(leftHandOperand, rightHandOperand, options) {
   rightHandOperand.forEach(function gatherEntries(key, value) {
     rightHandItems.push([ key, value ]);
   });
-  return iterableEqual(leftHandItems.sort(), rightHandItems.sort(), options);
+  return iterableEqual(leftHandItems.sort(compareFn), rightHandItems.sort(compareFn), options);
 }
 
 /*!
@@ -441,8 +442,8 @@ function objectEqual(leftHandOperand, rightHandOperand, options) {
     rightHandKeys = rightHandKeys.concat(rightHandSymbols);
   }
   if (leftHandKeys.length && leftHandKeys.length === rightHandKeys.length) {
-    leftHandKeys.sort();
-    rightHandKeys.sort();
+    leftHandKeys.sort(compareFn);
+    rightHandKeys.sort(compareFn);
     if (iterableEqual(leftHandKeys, rightHandKeys) === false) {
       return false;
     }
@@ -452,8 +453,8 @@ function objectEqual(leftHandOperand, rightHandOperand, options) {
   var leftHandEntries = getIteratorEntries(leftHandOperand);
   var rightHandEntries = getIteratorEntries(rightHandOperand);
   if (leftHandEntries.length && leftHandEntries.length === rightHandEntries.length) {
-    leftHandEntries.sort();
-    rightHandEntries.sort();
+    leftHandEntries.sort(compareFn);
+    rightHandEntries.sort(compareFn);
     return iterableEqual(leftHandEntries, rightHandEntries, options);
   }
 
