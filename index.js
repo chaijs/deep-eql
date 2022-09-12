@@ -434,7 +434,7 @@ function objectEqual(leftHandOperand, rightHandOperand, options) {
   var rightHandKeys = getEnumerableKeys(rightHandOperand).sort();
   var leftHandSymbols = getNonEnumerableSymbols(leftHandOperand).sort();
   var rightHandSymbols = getNonEnumerableSymbols(rightHandOperand).sort();
-  
+
   leftHandKeys = leftHandKeys.concat(leftHandSymbols);
   rightHandKeys = rightHandKeys.concat(rightHandSymbols);
 
