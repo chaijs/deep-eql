@@ -419,8 +419,8 @@ describe('Generic', function () {
 
     it('handles objects that have both symbol keys and string keys', function () {
       var symb = Symbol('a');
-      var objectA = {[symb]: 'a', b: 2};
-      var objectB = {[symb]: 'a', b: 2};
+      var objectA = { [symb]: 'a', b: 2 };
+      var objectB = { [symb]: 'a', b: 2 };
       assert(eql(objectA, objectB) === true, 'eql(obj, obj) === true');
     });
   });
