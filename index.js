@@ -434,12 +434,8 @@ function objectEqual(leftHandOperand, rightHandOperand, options) {
   var rightHandKeys = getEnumerableKeys(rightHandOperand);
   var leftHandSymbols = getNonEnumerableSymbols(leftHandOperand);
   var rightHandSymbols = getNonEnumerableSymbols(rightHandOperand);
-  if (leftHandSymbols) {
-    leftHandKeys = leftHandKeys.concat(leftHandSymbols);
-  }
-  if (rightHandSymbols) {
-    rightHandKeys = rightHandKeys.concat(rightHandSymbols);
-  }
+  leftHandKeys = leftHandKeys.concat(leftHandSymbols);
+  rightHandKeys = rightHandKeys.concat(rightHandSymbols);
 
   if (leftHandKeys.length && leftHandKeys.length === rightHandKeys.length) {
     if (iterableEqual(mapSymbols(leftHandKeys).sort(), mapSymbols(rightHandKeys).sort()) === false) {
