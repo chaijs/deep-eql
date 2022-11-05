@@ -430,13 +430,16 @@ function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
  * @return {Boolean} result
  */
 function objectEqual(leftHandOperand, rightHandOperand, options) {
-  var leftHandKeys = getEnumerableKeys(leftHandOperand).sort();
-  var rightHandKeys = getEnumerableKeys(rightHandOperand).sort();
-  var leftHandSymbols = getNonEnumerableSymbols(leftHandOperand).sort();
-  var rightHandSymbols = getNonEnumerableSymbols(rightHandOperand).sort();
-
-  leftHandKeys = leftHandKeys.concat(leftHandSymbols);
-  rightHandKeys = rightHandKeys.concat(rightHandSymbols);
+  var leftHandKeys = getEnumerableKeys(leftHandOperand);
+  var rightHandKeys = getEnumerableKeys(rightHandOperand);
+  var leftHandSymbols = getNonEnumerableSymbols(leftHandOperand);
+  var rightHandSymbols = getNonEnumerableSymbols(rightHandOperand);
+  if (leftHandSymbols) {
+    leftHandKeys = leftHandKeys.concat(leftHandSymbols);
+  }
+  if (rightHandSymbols) {
+    rightHandKeys = rightHandKeys.concat(rightHandSymbols);
+  }
 
   if (leftHandKeys.length && leftHandKeys.length === rightHandKeys.length) {
     if (iterableEqual(mapSymbols(leftHandKeys).sort(), mapSymbols(rightHandKeys).sort()) === false) {
@@ -479,7 +482,7 @@ function isPrimitive(value) {
 function mapSymbols(arr) {
   return arr.map(function mapSymbol(entry) {
     if (typeof entry === 'symbol') {
-      return entry.description;
+      return entry.toString();
     }
 
     return entry;
