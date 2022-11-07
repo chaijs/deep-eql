@@ -41,7 +41,7 @@ var fixtures = {
   'regex literal (differing)  ': [ /^abc$/, /^def$/, false ],
   'number literal (differing) ': [ 1, 2, false ],
   'null & undefined           ': [ null, undefined, false ],
-  'buffer (differing)         ': [ Buffer.from(123), Buffer.from(456), false ],
+  'buffer (differing)         ': [ Buffer.from('a'), Buffer.from('b'), false ],
   'date (differing)           ': [ new Date(123), new Date(456), false ],
   'error                      ': [ new Error(''), new Error(''), false ],
   'map (differing)            ': [ new Map().set('a', 1), new Map().set('a', 2), false ],
