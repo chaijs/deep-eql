@@ -1,5 +1,6 @@
 {
   "name": "deep-eql",
+  "version": "0.0.0-development",
   "description": "Improved deep equality testing for Node.js and the browser.",
   "keywords": [
     "chai util",
@@ -7,6 +8,10 @@
     "object equal",
     "testing"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:chaijs/deep-eql.git"
+  },
   "license": "MIT",
   "author": "Jake Luer <jake@alogicalparadox.com>",
   "contributors": [
@@ -19,10 +24,6 @@
     "index.js",
     "deep-eql.js"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:chaijs/deep-eql.git"
-  },
   "scripts": {
     "bench": "node bench",
     "build": "browserify $npm_package_main --standalone deepEqual -o deep-eql.js",
@@ -31,10 +32,10 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",
-    "test:node": "istanbul cover _mocha",
     "test:browser": "karma start --singleRun=true",
-    "watch": "karma start --auto-watch --singleRun=false",
-    "upload-coverage": "lcov-result-merger 'coverage/**/lcov.info' | coveralls; exit 0"
+    "test:node": "istanbul cover _mocha",
+    "upload-coverage": "lcov-result-merger 'coverage/**/lcov.info' | coveralls; exit 0",
+    "watch": "karma start --auto-watch --singleRun=false"
   },
   "eslintConfig": {
     "extends": [
@@ -42,9 +43,9 @@
     ],
     "rules": {
       "complexity": 0,
-      "spaced-comment": 0,
       "no-underscore-dangle": 0,
-      "no-use-before-define": 0
+      "no-use-before-define": 0,
+      "spaced-comment": 0
     }
   },
   "dependencies": {
@@ -74,6 +75,5 @@
   },
   "engines": {
     "node": ">=6"
-  },
-  "version": "0.0.0-development"
+  }
 }
