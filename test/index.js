@@ -444,6 +444,16 @@ describe('Generic', function () {
       objectB = { [symb3]: 'a', [symb2]: 'b' };
       assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
     });
+
+    it('ignores non-enumerable symbols', function () {
+      var symb = Symbol('a');
+      var symb2 = Symbol('b');
+      var objectA = { [symb]: 'a' };
+      Object.defineProperty(objectA, symb2, { value: 'b', enumerable: false });
+      var objectB = { [symb]: 'a' };
+      Object.defineProperty(objectB, symb2, { value: 'c', enumerable: false });
+      assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
+    });
   });
 
 

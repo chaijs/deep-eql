@@ -392,8 +392,15 @@ function getEnumerableKeys(target) {
   return keys;
 }
 
-function getNonEnumerableSymbols(target) {
-  var keys = Object.getOwnPropertySymbols(target);
+function getEnumerableSymbols(target) {
+  var keys = [];
+  var allKeys = Object.getOwnPropertySymbols(target);
+  for (var i = 0; i < allKeys.length; i += 1) {
+    var key = allKeys[i];
+    if (Object.getOwnPropertyDescriptor(target, key).enumerable) {
+      keys.push(key);
+    }
+  }
   return keys;
 }
 
@@ -432,8 +439,8 @@ function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
 function objectEqual(leftHandOperand, rightHandOperand, options) {
   var leftHandKeys = getEnumerableKeys(leftHandOperand);
   var rightHandKeys = getEnumerableKeys(rightHandOperand);
-  var leftHandSymbols = getNonEnumerableSymbols(leftHandOperand);
-  var rightHandSymbols = getNonEnumerableSymbols(rightHandOperand);
+  var leftHandSymbols = getEnumerableSymbols(leftHandOperand);
+  var rightHandSymbols = getEnumerableSymbols(rightHandOperand);
   leftHandKeys = leftHandKeys.concat(leftHandSymbols);
   rightHandKeys = rightHandKeys.concat(rightHandSymbols);
 
