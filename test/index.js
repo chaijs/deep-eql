@@ -381,55 +381,55 @@ describe('Generic', function () {
   describe('Symbols', function () {
 
     it('returns true for same symbols', function () {
-      var symb = Symbol('a');
-      var objectA = { [symb]: 'a' };
-      var objectB = { [symb]: 'a' };
+      const symb = Symbol('a');
+      const objectA = { [symb]: 'a' };
+      const objectB = { [symb]: 'a' };
       assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
     });
 
     it('returns false for different values', function () {
-      var symb = Symbol('a');
-      var objectA = { [symb]: 'a' };
-      var objectB = { [symb]: 'b' };
+      const symb = Symbol('a');
+      const objectA = { [symb]: 'a' };
+      const objectB = { [symb]: 'b' };
       assert(eql(objectA, objectB) === false, 'eql(obj, obj) === false');
     });
 
     it('returns false for different symbols', function () {
-      var symb = Symbol('a');
-      var symb2 = Symbol('b');
-      var objectA = { [symb]: 'a' };
-      var objectB = { [symb2]: 'a' };
+      const symb = Symbol('a');
+      const symb2 = Symbol('b');
+      const objectA = { [symb]: 'a' };
+      const objectB = { [symb2]: 'a' };
       assert(eql(objectA, objectB) === false, 'eql(obj, obj) === false');
     });
 
     it('returns true for same nested symbols', function () {
-      var symb = Symbol('a');
-      var symb2 = Symbol('b');
-      var objectA = { [symb]: { [symb2]: 'a' } };
-      var objectB = { [symb]: { [symb2]: 'a' } };
+      const symb = Symbol('a');
+      const symb2 = Symbol('b');
+      const objectA = { [symb]: { [symb2]: 'a' } };
+      const objectB = { [symb]: { [symb2]: 'a' } };
       assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
     });
 
     it('returns false for different nested symbols', function () {
-      var symb = Symbol('a');
-      var symb2 = Symbol('b');
-      var objectA = { [symb]: { [symb2]: 'a' } };
-      var objectB = { [symb]: { [symb]: 'a' } };
+      const symb = Symbol('a');
+      const symb2 = Symbol('b');
+      const objectA = { [symb]: { [symb2]: 'a' } };
+      const objectB = { [symb]: { [symb]: 'a' } };
       assert(eql(objectA, objectB) === false, 'eql(obj, obj) === false');
     });
 
     it('handles objects that have both symbol keys and string keys', function () {
-      var symb = Symbol('a');
-      var objectA = { [symb]: 'a', b: 2 };
-      var objectB = { [symb]: 'a', b: 2 };
+      const symb = Symbol('a');
+      const objectA = { [symb]: 'a', b: 2 };
+      const objectB = { [symb]: 'a', b: 2 };
       assert(eql(objectA, objectB) === true, 'eql(obj, obj) === true');
     });
 
     it('works for multiple symbols', function () {
-      var symb = Symbol('a');
-      var symb2 = Symbol('a');
-      var objectA = { [symb]: 'a', [symb2]: 'b' };
-      var objectB = { [symb]: 'a', [symb2]: 'b' };
+      const symb = Symbol('a');
+      const symb2 = Symbol('a');
+      let objectA = { [symb]: 'a', [symb2]: 'b' };
+      let objectB = { [symb]: 'a', [symb2]: 'b' };
       assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
 
       objectA = { [symb]: 'a', [symb2]: 'b' };
@@ -440,18 +440,19 @@ describe('Generic', function () {
       objectB = { [symb2]: 'a', [symb]: 'b' };
       assert(eql(objectA, objectB) === false, 'eql(obj, obj) === false');
 
-      var symb3 = Symbol();
+      // eslint-disable-next-line symbol-description
+      const symb3 = Symbol();
       objectA = { [symb3]: 'a', [symb2]: 'b' };
       objectB = { [symb3]: 'a', [symb2]: 'b' };
       assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
     });
 
     it('ignores non-enumerable symbols', function () {
-      var symb = Symbol('a');
-      var symb2 = Symbol('b');
-      var objectA = { [symb]: 'a' };
+      const symb = Symbol('a');
+      const symb2 = Symbol('b');
+      const objectA = { [symb]: 'a' };
       Object.defineProperty(objectA, symb2, { value: 'b', enumerable: false });
-      var objectB = { [symb]: 'a' };
+      const objectB = { [symb]: 'a' };
       Object.defineProperty(objectB, symb2, { value: 'c', enumerable: false });
       assert(eql(objectA, objectB) === true, 'eql(obj, obj)');
     });
