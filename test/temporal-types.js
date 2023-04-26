@@ -1,8 +1,6 @@
-
-
-const assert = require('simple-assert');
-const { Temporal } = require('@js-temporal/polyfill');
-const eql = require('..');
+import assert from 'simple-assert';
+import { Temporal } from '@js-temporal/polyfill';
+import eql from '../index.js';
 
 describe('TC39 Temporal', () => {
   describe('Temporal.PlainDate', () => {
