@@ -1,6 +1,6 @@
-/* eslint-disable no-eval */
 import assert from "simple-assert";
 import eql from "../index.js";
+
 var emptyFunction = Function.prototype;
 var symbolExists = typeof Symbol === "function";
 var setExists = typeof Set === "function";
@@ -9,12 +9,14 @@ var symbolAndMapExist = symbolExists && mapExists;
 var symbolAndSetExist = symbolExists && setExists;
 var supportGenerators = false;
 var supportArrows = false;
+
 try {
   eval("function * foo () {}; foo");
   supportGenerators = true;
 } catch (error) {
   supportGenerators = false;
 }
+
 try {
   eval("() => {}");
   supportArrows = true;
@@ -25,6 +27,7 @@ try {
 function describeIf(condition) {
   return condition ? describe : describe.skip;
 }
+
 describe("ES2015 Specific", function () {
   describeIf(
     symbolExists && typeof String.prototype[Symbol.iterator] === "function"
