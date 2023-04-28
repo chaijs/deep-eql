@@ -1,5 +1,3 @@
-'use strict';
-
 var deepEql = require('../');
 var lodashDeepEql = require('lodash.isequal');
 var assertDeepeql = require('assert').deepEql;
