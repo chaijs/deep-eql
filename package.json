@@ -32,10 +32,10 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",
-    "test:browser": "karma start --singleRun=true",
+    "test:browser": "web-test-runner",
     "test:node": "istanbul cover _mocha",
     "upload-coverage": "lcov-result-merger 'coverage/**/lcov.info' | coveralls; exit 0",
-    "watch": "karma start --auto-watch --singleRun=false"
+    "watch": "web-test-runner --watch"
   },
   "eslintConfig": {
     "extends": [
@@ -52,7 +52,9 @@
     "type-detect": "^4.0.0"
   },
   "devDependencies": {
-    "@js-temporal/polyfill": "^0.4.1",
+    "@js-temporal/polyfill": "^0.4.3",
+    "@rollup/plugin-commonjs": "^24.1.0",
+    "@web/test-runner": "^0.16.1",
     "benchmark": "^2.1.0",
     "browserify": "^17.0.0",
     "browserify-istanbul": "^3.0.1",
