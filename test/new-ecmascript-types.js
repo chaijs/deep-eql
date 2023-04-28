@@ -1,6 +1,6 @@
 /* eslint-disable no-eval */
-var assert = require('simple-assert');
-var eql = require('..');
+import assert from 'simple-assert';
+import eql from '../index.js';
 var emptyFunction = Function.prototype;
 var symbolExists = typeof Symbol === 'function';
 var setExists = typeof Set === 'function';

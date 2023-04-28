@@ -19,17 +19,16 @@
     "dougluce (https://github.com/dougluce)",
     "Lorenz Leutgeb (https://github.com/flowlo)"
   ],
-  "main": "./index",
+  "type": "module",
+  "main": "./index.js",
   "files": [
     "index.js",
     "deep-eql.js"
   ],
   "scripts": {
     "bench": "node bench",
-    "build": "browserify $npm_package_main --standalone deepEqual -o deep-eql.js",
     "lint": "eslint --ignore-path .gitignore .",
-    "prepublish": "npm run build",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "semantic-release": "semantic-release pre && semantic-release post",
     "pretest": "npm run lint",
     "test": "npm run test:node && npm run test:browser",
     "test:browser": "web-test-runner",
@@ -60,8 +59,6 @@
     "@rollup/plugin-commonjs": "^24.1.0",
     "@web/test-runner": "^0.16.1",
     "benchmark": "^2.1.0",
-    "browserify": "^17.0.0",
-    "browserify-istanbul": "^3.0.1",
     "coveralls": "^3.1.1",
     "eslint": "^7.32.0",
     "eslint-config-strict": "^14.0.1",
