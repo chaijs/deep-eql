@@ -46,6 +46,10 @@
       "no-underscore-dangle": 0,
       "no-use-before-define": 0,
       "spaced-comment": 0
+    },
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": 2015
     }
   },
   "dependencies": {
