@@ -1,6 +1,6 @@
 import type from 'type-detect';
 
-/*!
+/**
  * Check to see if the WeakMap has recorded a result of the two operands
  *
  * @param {Mixed} leftHandOperand
@@ -46,12 +46,6 @@ function memoizeSet(leftHandOperand, rightHandOperand, memoizeMap, result) {
   }
 }
 
-/*!
- * Primary Export
- */
-
-export default deepEqual;
-
 /**
  * Assert deeply nested sameValue equality between two objects of any type.
  *
@@ -64,7 +58,7 @@ export default deepEqual;
     references to blow the stack.
  * @return {Boolean} equal match
  */
-function deepEqual(leftHandOperand, rightHandOperand, options) {
+export default function deepEqual(leftHandOperand, rightHandOperand, options) {
   // If we have a comparator, we can't assume anything; so bail to its check first.
   if (options && options.comparator) {
     return extensiveDeepEqual(leftHandOperand, rightHandOperand, options);
