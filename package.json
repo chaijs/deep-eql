@@ -19,7 +19,8 @@
     "dougluce (https://github.com/dougluce)",
     "Lorenz Leutgeb (https://github.com/flowlo)"
   ],
-  "main": "./index",
+  "type": "module",
+  "main": "./index.js",
   "files": [
     "index.js",
     "deep-eql.js"

@@ -1,6 +1,6 @@
-var assert = require('simple-assert');
-var eql = require('..');
-var MemoizeMap = require('..').MemoizeMap;
+import assert from 'simple-assert';
+import eql, { MemoizeMap } from '../index.js';
+
 function describeIf(condition) {
   return condition ? describe : describe.skip;
 }
