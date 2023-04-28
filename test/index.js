@@ -1,5 +1,3 @@
-'use strict';
-
 var assert = require('simple-assert');
 var eql = require('..');
 var MemoizeMap = require('..').MemoizeMap;

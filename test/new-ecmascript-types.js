@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint-disable no-eval */
 var assert = require('simple-assert');
 var eql = require('..');

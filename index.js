@@ -1,4 +1,3 @@
-'use strict';
 /* globals Symbol: false, Uint8Array: false, WeakMap: false */
 /*!
  * deep-eql

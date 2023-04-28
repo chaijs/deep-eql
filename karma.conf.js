@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint-disable no-process-env */
 
 var packageJson = require('./package.json');
