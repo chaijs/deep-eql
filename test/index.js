@@ -1,5 +1,5 @@
 import assert from 'simple-assert';
-import eql, { MemoizeMap } from '../index.js';
+import eql from '../index.js';
 
 function describeIf(condition) {
   return condition ? describe : describe.skip;
@@ -544,9 +544,9 @@ describe('Node Specific', function () {
 
 describe('Memoize', function () {
 
-  it('returns true if MemoizeMap says so', function () {
-    var memoizeMap = new MemoizeMap();
-    var valueAMap = new MemoizeMap();
+  it('returns true if WeakMap says so', function () {
+    var memoizeMap = new WeakMap();
+    var valueAMap = new WeakMap();
     var valueA = {};
     var valueB = { not: 'equal' };
     valueAMap.set(valueB, true);
@@ -555,9 +555,9 @@ describe('Memoize', function () {
       'eql({}, {not:"equal"}, <memoizeMap>) === true');
   });
 
-  it('returns false if MemoizeMap says so', function () {
-    var memoizeMap = new MemoizeMap();
-    var valueAMap = new MemoizeMap();
+  it('returns false if WeakMap says so', function () {
+    var memoizeMap = new WeakMap();
+    var valueAMap = new WeakMap();
     var valueA = {};
     var valueB = {};
     valueAMap.set(valueB, false);
@@ -566,9 +566,9 @@ describe('Memoize', function () {
       'eql({}, {}, <memoizeMap>) === false');
   });
 
-  it('resorts to default behaviour if MemoizeMap has no answer (same objects)', function () {
-    var memoizeMap = new MemoizeMap();
-    var valueAMap = new MemoizeMap();
+  it('resorts to default behaviour if WeakMap has no answer (same objects)', function () {
+    var memoizeMap = new WeakMap();
+    var valueAMap = new WeakMap();
     var valueA = {};
     var valueB = {};
     memoizeMap.set(valueA, valueAMap);
@@ -576,9 +576,9 @@ describe('Memoize', function () {
       'eql({}, {}, <memoizeMap>) === true');
   });
 
-  it('resorts to default behaviour if MemoizeMap has no answer (different objects)', function () {
-    var memoizeMap = new MemoizeMap();
-    var valueAMap = new MemoizeMap();
+  it('resorts to default behaviour if WeakMap has no answer (different objects)', function () {
+    var memoizeMap = new WeakMap();
+    var valueAMap = new WeakMap();
     var valueA = {};
     var valueB = { not: 'equal' };
     memoizeMap.set(valueA, valueAMap);

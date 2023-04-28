@@ -1,37 +1,11 @@
-/* globals Symbol: false, Uint8Array: false, WeakMap: false */
-/*!
- * deep-eql
- * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
 import type from 'type-detect';
 
-function FakeMap() {
-  this._key = 'chai/deep-eql__' + Math.random() + Date.now();
-}
-
-FakeMap.prototype = {
-  get: function get(key) {
-    return key[this._key];
-  },
-  set: function set(key, value) {
-    if (Object.isExtensible(key)) {
-      Object.defineProperty(key, this._key, {
-        value: value,
-        configurable: true,
-      });
-    }
-  },
-};
-
-export var MemoizeMap = typeof WeakMap === 'function' ? WeakMap : FakeMap;
 /*!
- * Check to see if the MemoizeMap has recorded a result of the two operands
+ * Check to see if the WeakMap has recorded a result of the two operands
  *
  * @param {Mixed} leftHandOperand
  * @param {Mixed} rightHandOperand
- * @param {MemoizeMap} memoizeMap
+ * @param {WeakMap} memoizeMap
  * @returns {Boolean|null} result
 */
 function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
@@ -50,11 +24,11 @@ function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
 }
 
 /*!
- * Set the result of the equality into the MemoizeMap
+ * Set the result of the equality into the WeakMap
  *
  * @param {Mixed} leftHandOperand
  * @param {Mixed} rightHandOperand
- * @param {MemoizeMap} memoizeMap
+ * @param {WeakMap} memoizeMap
  * @param {Boolean} result
 */
 function memoizeSet(leftHandOperand, rightHandOperand, memoizeMap, result) {
@@ -66,7 +40,7 @@ function memoizeSet(leftHandOperand, rightHandOperand, memoizeMap, result) {
   if (leftHandMap) {
     leftHandMap.set(rightHandOperand, result);
   } else {
-    leftHandMap = new MemoizeMap();
+    leftHandMap = new WeakMap();
     leftHandMap.set(rightHandOperand, result);
     memoizeMap.set(leftHandOperand, leftHandMap);
   }
@@ -149,7 +123,7 @@ function simpleEqual(leftHandOperand, rightHandOperand) {
 */
 function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
   options = options || {};
-  options.memoize = options.memoize === false ? false : options.memoize || new MemoizeMap();
+  options.memoize = options.memoize === false ? false : options.memoize || new WeakMap();
   var comparator = options && options.comparator;
 
   // Check if a memoized result exists.

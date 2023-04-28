@@ -38,17 +38,14 @@
   },
   "eslintConfig": {
     "extends": [
-      "strict/es5"
+      "eslint:recommended"
     ],
-    "rules": {
-      "complexity": 0,
-      "no-underscore-dangle": 0,
-      "no-use-before-define": 0,
-      "spaced-comment": 0
+    "env": {
+        "es6": true
     },
     "parserOptions": {
       "sourceType": "module",
-      "ecmaVersion": 2015
+      "ecmaVersion": 2020
     }
   },
   "dependencies": {
@@ -71,6 +68,6 @@
     "simple-assert": "^1.0.0"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=14"
   }
 }
