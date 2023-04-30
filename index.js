@@ -1,5 +1,3 @@
-import type from "type-detect";
-
 /**
  * Check to see if the WeakMap has recorded a result of the two operands
  *
@@ -25,6 +23,28 @@ function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
     }
   }
   return null;
+}
+
+/**
+ * Returns the type of the given variable
+ *
+ * @param {Mixed} obj
+ * @returns {string}
+ */
+function type(obj) {
+  const typeofObj = typeof obj;
+  if (typeofObj !== 'object') {
+    return typeofObj;
+  }
+
+  const toStringLeftSliceLength = 8;
+  const toStringRightSliceLength = -1;
+
+  return Object
+    .prototype
+    .toString
+    .call(obj)
+    .slice(toStringLeftSliceLength, toStringRightSliceLength);
 }
 
 /*!
@@ -113,7 +133,7 @@ function simpleEqual(leftHandOperand, rightHandOperand) {
   return null;
 }
 
-/*!
+/**
  * The main logic of the `deepEqual` function.
  *
  * @param {Mixed} leftHandOperand

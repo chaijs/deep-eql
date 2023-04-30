@@ -11,7 +11,7 @@ export default {
   files: [ 'test/*.{js,mjs}' ],
   plugins: [
     commonjs({
-      include: [ './index.js', './test/*.js', './node_modules/simple-assert/**/*', './node_modules/assertion-error/**/*', './node_modules/type-detect/**/*' ],
+      include: [ './index.js', './test/*.js', './node_modules/simple-assert/**/*', './node_modules/assertion-error/**/*'],
     }),
   ],
 };

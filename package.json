@@ -48,9 +48,6 @@
       "ecmaVersion": 2020
     }
   },
-  "dependencies": {
-    "type-detect": "^4.0.0"
-  },
   "devDependencies": {
     "@js-temporal/polyfill": "^0.4.3",
     "@rollup/plugin-commonjs": "^24.1.0",
