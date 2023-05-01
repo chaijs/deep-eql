@@ -37,6 +37,10 @@ function type(obj) {
     return typeofObj;
   }
 
+  if (Symbol.toStringTag in obj) {
+    return obj[Symbol.toStringTag];
+  }
+
   const toStringLeftSliceLength = 8;
   const toStringRightSliceLength = -1;
 
