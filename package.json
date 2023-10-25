@@ -51,9 +51,6 @@
       "ecmaVersion": 2015
     }
   },
-  "dependencies": {
-    "type-detect": "^4.0.0"
-  },
   "devDependencies": {
     "@js-temporal/polyfill": "^0.4.3",
     "@rollup/plugin-commonjs": "^24.1.0",
@@ -68,7 +65,7 @@
     "lcov-result-merger": "^1.0.2",
     "lodash.isequal": "^4.4.0",
     "mocha": "^9.1.1",
-    "simple-assert": "^1.0.0"
+    "simple-assert": "^2.0.0"
   },
   "engines": {
     "node": ">=6"

@@ -1,4 +1,4 @@
-import assert from 'simple-assert';
+import { assert } from 'simple-assert';
 import eql, { MemoizeMap } from '../index.js';
 
 function describeIf(condition) {

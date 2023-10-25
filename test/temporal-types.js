@@ -1,4 +1,4 @@
-import assert from 'simple-assert';
+import { assert } from 'simple-assert';
 import { Temporal } from '@js-temporal/polyfill';
 import eql from '../index.js';
 
