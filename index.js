@@ -5,7 +5,23 @@
  * MIT Licensed
  */
 
-import type from 'type-detect';
+function type(obj) {
+  if (typeof obj === 'undefined') {
+    return 'undefined';
+  }
+
+  if (obj === null) {
+    return 'null';
+  }
+
+  const stringTag = obj[Symbol.toStringTag];
+  if (typeof stringTag === 'string') {
+    return stringTag;
+  }
+  const sliceStart = 8;
+  const sliceEnd = -1;
+  return Object.prototype.toString.call(obj).slice(sliceStart, sliceEnd);
+}
 
 function FakeMap() {
   this._key = 'chai/deep-eql__' + Math.random() + Date.now();
