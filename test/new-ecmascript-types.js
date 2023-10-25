@@ -1,5 +1,5 @@
 /* eslint-disable no-eval */
-import assert from 'simple-assert';
+import { assert } from 'simple-assert';
 import eql from '../index.js';
 var emptyFunction = Function.prototype;
 var symbolExists = typeof Symbol === 'function';
