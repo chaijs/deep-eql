@@ -95,6 +95,13 @@ describe('ES2015 Specific', function () {
       assert(eql(mapA, mapB), 'eql(Map { a => 1, b => 2, c => 3 }, Map { a => 1, b => 2, c => 3 })');
     });
 
+    (setExists ? it : it.skip)('returns false for fake Maps', function () {
+      var maplikeSet = new Set();
+      Object.defineProperty(maplikeSet, 'constructor', { enumerable: false, value: Map });
+
+      assert(eql(maplikeSet, new Map()) === false, 'eql(Set pretending to be a Map, Map { })');
+    });
+
   });
 
   describeIf(symbolAndMapExist && typeof Map.prototype[Symbol.iterator] === 'function')('map iterator', function () {
@@ -236,6 +243,13 @@ describe('ES2015 Specific', function () {
       setA.add(setB);
       setB.add(setA);
       assert(eql(setA, setB) === true, 'eql(Set { -> }, Set { <- }) === true');
+    });
+
+    (mapExists ? it : it.skip)('returns false for fake Sets', function () {
+      var setlikeMap = new Map();
+      Object.defineProperty(setlikeMap, 'constructor', { enumerable: false, value: Set });
+
+      assert(eql(setlikeMap, new Set()) === false, 'eql(Map pretending to be a Set, Set { })');
     });
 
   });
