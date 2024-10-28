@@ -57,7 +57,7 @@ As an example, take the following:
 { a: 1 } !== { a: 1 } // These are two different objects, they hold different references and so are not strictly equal - even though they hold the same values inside
 { a: 1 } != { a: 1 } // They have the same type, meaning loose equality performs the same check as strict equality - they are still not equal.
 
-var deepEql = require("deep-eql");
+import deepEql from "deep-eql";
 deepEql({ a: 1 }, { a: 1 }) === true // deepEql can determine that they share the same keys and those keys share the same values, therefore they are deeply equal!
 ```
 
