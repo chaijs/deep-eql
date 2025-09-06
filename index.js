@@ -259,9 +259,6 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
       return leftHandOperand.equals(rightHandOperand);
     case 'Temporal.Duration':
       return leftHandOperand.total('nanoseconds') === rightHandOperand.total('nanoseconds');
-    case 'Temporal.TimeZone':
-    case 'Temporal.Calendar':
-      return leftHandOperand.toString() === rightHandOperand.toString();
     default:
       return objectEqual(leftHandOperand, rightHandOperand, options);
   }
