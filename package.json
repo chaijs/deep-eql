@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:chaijs/deep-eql.git"
+    "url": "https://github.com/chaijs/deep-eql.git"
   },
   "license": "MIT",
   "author": "Jake Luer <jake@alogicalparadox.com>",
