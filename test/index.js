@@ -277,6 +277,21 @@ describe('Generic', function () {
       assert(eql(new Array(1), new Array(100)) === false, 'eql(new Array(1), new Array(100)) === false');
     });
 
+    it('considers extra own-enumerable properties, not just indices', function () {
+      var withExtraX1 = [ 1, 2, 3 ];
+      withExtraX1.extra = 'x';
+      var withExtraY = [ 1, 2, 3 ];
+      withExtraY.extra = 'y';
+      var withExtraX2 = [ 1, 2, 3 ];
+      withExtraX2.extra = 'x';
+
+      assert(eql(withExtraX1, withExtraY) === false,
+        'arrays with the same indices but different extra properties are not equal');
+      assert(eql(withExtraX1, withExtraX2),
+        'arrays with the same indices and the same extra properties are equal');
+      assert(eql([ 1, 2, 3 ], [ 1, 2, 3 ]), 'arrays with no extra properties are unaffected');
+    });
+
   });
 
   describe('objects', function () {
