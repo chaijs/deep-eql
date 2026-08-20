@@ -309,7 +309,31 @@ function entriesEqual(leftHandOperand, rightHandOperand, options) {
   rightHandOperand.forEach(function gatherEntries(key, value) {
     rightHandItems.push([ key, value ]);
   });
-  return iterableEqual(leftHandItems.sort(), rightHandItems.sort(), options);
+  // Sets and Maps are unordered, so entries cannot be compared position by
+  // position. Array#sort does not help either: every object entry stringifies
+  // to the same value, so the sort leaves them in insertion order. Instead pair
+  // each left entry with an as-yet unclaimed right entry. Deep equality is an
+  // equivalence relation, so claiming the first match is safe.
+  var claimed = [];
+  var leftIndex = -1;
+  while (++leftIndex < leftHandItems.length) {
+    var matched = false;
+    var rightIndex = -1;
+    while (++rightIndex < rightHandItems.length) {
+      if (claimed[rightIndex]) {
+        continue;
+      }
+      if (deepEqual(leftHandItems[leftIndex], rightHandItems[rightIndex], options)) {
+        claimed[rightIndex] = true;
+        matched = true;
+        break;
+      }
+    }
+    if (matched === false) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /*!

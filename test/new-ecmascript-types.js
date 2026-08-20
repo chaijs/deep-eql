@@ -206,6 +206,26 @@ describe('ES2015 Specific', function () {
       assert(eql(setA, setB), 'eql(Set { "a", "b", "c" }, Set { "b", "c", "a" })');
     });
 
+    it('returns true for Sets of objects with same entries in different order', function () {
+      var setA = new Set();
+      var setB = new Set();
+      setA.add({});
+      setA.add({ a: 5 });
+      setB.add({ a: 5 });
+      setB.add({});
+      assert(eql(setA, setB), 'eql(Set { {}, { a: 5 } }, Set { { a: 5 }, {} })');
+    });
+
+    it('returns false for Sets of objects with different entries', function () {
+      var setA = new Set();
+      var setB = new Set();
+      setA.add({ a: 1 });
+      setA.add({ b: 2 });
+      setB.add({ a: 1 });
+      setB.add({ b: 3 });
+      assert(eql(setA, setB) === false, 'eql(Set { { a: 1 }, { b: 2 } }, Set { { a: 1 }, { b: 3 } }) === false');
+    });
+
     it('returns true for Sets with nested entries', function () {
       var setA = new Set();
       var setB = new Set();
