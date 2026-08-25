@@ -309,31 +309,9 @@ function entriesEqual(leftHandOperand, rightHandOperand, options) {
   rightHandOperand.forEach(function gatherEntries(key, value) {
     rightHandItems.push([ key, value ]);
   });
-  // Sets and Maps are unordered, so entries cannot be compared position by
-  // position. Array#sort does not help either: every object entry stringifies
-  // to the same value, so the sort leaves them in insertion order. Instead pair
-  // each left entry with an as-yet unclaimed right entry. Deep equality is an
-  // equivalence relation, so claiming the first match is safe.
-  var claimed = [];
-  var leftIndex = -1;
-  while (++leftIndex < leftHandItems.length) {
-    var matched = false;
-    var rightIndex = -1;
-    while (++rightIndex < rightHandItems.length) {
-      if (claimed[rightIndex]) {
-        continue;
-      }
-      if (deepEqual(leftHandItems[leftIndex], rightHandItems[rightIndex], options)) {
-        claimed[rightIndex] = true;
-        matched = true;
-        break;
-      }
-    }
-    if (matched === false) {
-      return false;
-    }
-  }
-  return true;
+  // Array#sort does not help here: every object entry stringifies to the same
+  // value, so the sort leaves them in insertion order.
+  return iterableEqual(leftHandItems, rightHandItems, options, true);
 }
 
 /*!
@@ -345,12 +323,34 @@ function entriesEqual(leftHandOperand, rightHandOperand, options) {
  * @return {Boolean} result
  */
 
-function iterableEqual(leftHandOperand, rightHandOperand, options) {
+function iterableEqual(leftHandOperand, rightHandOperand, options, unordered) {
   var length = leftHandOperand.length;
   if (length !== rightHandOperand.length) {
     return false;
   }
   if (length === 0) {
+    return true;
+  }
+  if (unordered) {
+    // Sets and Maps have no meaningful order, so entries cannot be compared
+    // position by position. Pair each left entry with an as-yet unclaimed
+    // right one, removing it from the pool by swapping in the last remaining
+    // entry. Deep equality is an equivalence relation, so claiming the first
+    // match is safe.
+    var remaining = rightHandOperand.slice();
+    var leftIndex = -1;
+    outer:
+    while (++leftIndex < length) {
+      var rightIndex = -1;
+      while (++rightIndex < remaining.length) {
+        if (deepEqual(leftHandOperand[leftIndex], remaining[rightIndex], options)) {
+          remaining[rightIndex] = remaining[remaining.length - 1];
+          remaining.length--;
+          continue outer;
+        }
+      }
+      return false;
+    }
     return true;
   }
   var index = -1;
