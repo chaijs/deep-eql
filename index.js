@@ -309,8 +309,6 @@ function entriesEqual(leftHandOperand, rightHandOperand, options) {
   rightHandOperand.forEach(function gatherEntries(key, value) {
     rightHandItems.push([ key, value ]);
   });
-  // Array#sort does not help here: every object entry stringifies to the same
-  // value, so the sort leaves them in insertion order.
   return iterableEqual(leftHandItems, rightHandItems, options, true);
 }
 
@@ -338,11 +336,9 @@ function iterableEqual(leftHandOperand, rightHandOperand, options, unordered) {
     // entry. Deep equality is an equivalence relation, so claiming the first
     // match is safe.
     var remaining = rightHandOperand.slice();
-    var leftIndex = -1;
     outer:
-    while (++leftIndex < length) {
-      var rightIndex = -1;
-      while (++rightIndex < remaining.length) {
+    for (var leftIndex = 0; leftIndex < length; leftIndex++) {
+      for (var rightIndex = 0; rightIndex < remaining.length; rightIndex++) {
         if (deepEqual(leftHandOperand[leftIndex], remaining[rightIndex], options)) {
           remaining[rightIndex] = remaining[remaining.length - 1];
           remaining.length--;
