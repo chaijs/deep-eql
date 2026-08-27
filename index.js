@@ -309,7 +309,7 @@ function entriesEqual(leftHandOperand, rightHandOperand, options) {
   rightHandOperand.forEach(function gatherEntries(key, value) {
     rightHandItems.push([ key, value ]);
   });
-  return iterableEqual(leftHandItems.sort(), rightHandItems.sort(), options);
+  return iterableEqual(leftHandItems, rightHandItems, options, true);
 }
 
 /*!
@@ -321,12 +321,32 @@ function entriesEqual(leftHandOperand, rightHandOperand, options) {
  * @return {Boolean} result
  */
 
-function iterableEqual(leftHandOperand, rightHandOperand, options) {
+function iterableEqual(leftHandOperand, rightHandOperand, options, unordered) {
   var length = leftHandOperand.length;
   if (length !== rightHandOperand.length) {
     return false;
   }
   if (length === 0) {
+    return true;
+  }
+  if (unordered) {
+    // Sets and Maps have no meaningful order, so entries cannot be compared
+    // position by position. Pair each left entry with an as-yet unclaimed
+    // right one, removing it from the pool by swapping in the last remaining
+    // entry. Deep equality is an equivalence relation, so claiming the first
+    // match is safe.
+    var remaining = rightHandOperand.slice();
+    outer:
+    for (var leftIndex = 0; leftIndex < length; leftIndex++) {
+      for (var rightIndex = 0; rightIndex < remaining.length; rightIndex++) {
+        if (deepEqual(leftHandOperand[leftIndex], remaining[rightIndex], options)) {
+          remaining[rightIndex] = remaining[remaining.length - 1];
+          remaining.length--;
+          continue outer;
+        }
+      }
+      return false;
+    }
     return true;
   }
   var index = -1;

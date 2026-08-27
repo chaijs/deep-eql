@@ -206,6 +206,48 @@ describe('ES2015 Specific', function () {
       assert(eql(setA, setB), 'eql(Set { "a", "b", "c" }, Set { "b", "c", "a" })');
     });
 
+    it('returns true for Sets of objects with same entries in different order', function () {
+      var setA = new Set();
+      var setB = new Set();
+      setA.add({});
+      setA.add({ a: 5 });
+      setB.add({ a: 5 });
+      setB.add({});
+      assert(eql(setA, setB), 'eql(Set { {}, { a: 5 } }, Set { { a: 5 }, {} })');
+    });
+
+    it('compares Sets of null-prototype objects without throwing', function () {
+      // https://github.com/chaijs/deep-eql/issues/51 - Array#sort stringifies
+      // entries, and null-prototype objects cannot be converted to primitives,
+      // so this threw a TypeError before entries were paired without sorting.
+      var duckA = Object.create(null);
+      duckA.name = 'duck';
+      var catA = Object.create(null);
+      catA.name = 'cat';
+      var catB = Object.create(null);
+      catB.name = 'cat';
+      var duckB = Object.create(null);
+      duckB.name = 'duck';
+      var setA = new Set();
+      var setB = new Set();
+      setA.add(duckA);
+      setA.add(catA);
+      setB.add(catB);
+      setB.add(duckB);
+      assert(eql(setA, setB) === true,
+        'eql(Set { duck, cat }, Set { cat, duck }) === true (null prototypes)');
+    });
+
+    it('returns false for Sets of objects with different entries', function () {
+      var setA = new Set();
+      var setB = new Set();
+      setA.add({ a: 1 });
+      setA.add({ b: 2 });
+      setB.add({ a: 1 });
+      setB.add({ b: 3 });
+      assert(eql(setA, setB) === false, 'eql(Set { { a: 1 }, { b: 2 } }, Set { { a: 1 }, { b: 3 } }) === false');
+    });
+
     it('returns true for Sets with nested entries', function () {
       var setA = new Set();
       var setB = new Set();
