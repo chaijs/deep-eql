@@ -235,8 +235,10 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Uint32Array':
     case 'Float32Array':
     case 'Float64Array':
-    case 'Array':
       return iterableEqual(leftHandOperand, rightHandOperand, options);
+    case 'Array':
+      return iterableEqual(leftHandOperand, rightHandOperand, options) &&
+        arrayExtraKeysEqual(leftHandOperand, rightHandOperand, options);
     case 'RegExp':
       return regexpEqual(leftHandOperand, rightHandOperand);
     case 'Generator':
@@ -356,6 +358,37 @@ function iterableEqual(leftHandOperand, rightHandOperand, options, unordered) {
     }
   }
   return true;
+}
+
+/*!
+ * `iterableEqual` only compares indices 0..length-1, so an array-index own-enumerable
+ * property (own or inherited, matching `getEnumerableKeys`) is otherwise never noticed --
+ * this checks the rest, per the documented "all own and inherited enumerable properties
+ * are considered" rule.
+ *
+ * @param {Array} leftHandOperand
+ * @param {Array} rightHandOperand
+ * @param {Object} [options] (Optional)
+ * @return {Boolean} result
+ */
+function arrayExtraKeysEqual(leftHandOperand, rightHandOperand, options) {
+  var length = leftHandOperand.length;
+  function isNotArrayIndex(key) {
+    return !(/^(0|[1-9]\d*)$/.test(key) && Number(key) < length);
+  }
+
+  var leftHandKeys = getEnumerableKeys(leftHandOperand).filter(isNotArrayIndex)
+    .concat(getEnumerableSymbols(leftHandOperand));
+  var rightHandKeys = getEnumerableKeys(rightHandOperand).filter(isNotArrayIndex)
+    .concat(getEnumerableSymbols(rightHandOperand));
+
+  if (leftHandKeys.length !== rightHandKeys.length) {
+    return false;
+  }
+  if (iterableEqual(mapSymbols(leftHandKeys).sort(), mapSymbols(rightHandKeys).sort()) === false) {
+    return false;
+  }
+  return keysEqual(leftHandOperand, rightHandOperand, leftHandKeys, options);
 }
 
 /*!
