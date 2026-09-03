@@ -168,6 +168,25 @@ describe('Generic', function () {
 
   });
 
+  describe('dataviews', function () {
+
+    it('returns true given dataviews over different buffers with the same effective bytes', function () {
+      var shortBuffer = new Uint8Array([ 0x01, 0x01 ]).buffer;
+      var longBuffer = new Uint8Array([ 0x00, 0x01, 0x02, 0x03 ]).buffer;
+      var view1 = new DataView(shortBuffer, 0, 1);
+      var view2 = new DataView(longBuffer, 1, 1);
+      assert(eql(view1, view2), 'eql(<DataView [0x01]>, <DataView [0x01]>)');
+    });
+
+    it('returns false given dataviews over the same buffer with different effective bytes', function () {
+      var buffer = new Uint8Array([ 0x00, 0x01, 0x02, 0x03 ]).buffer;
+      var view1 = new DataView(buffer, 0, 2);
+      var view2 = new DataView(buffer, 2, 2);
+      assert(eql(view1, view2) === false, 'eql(<DataView [0x00, 0x01]>, <DataView [0x02, 0x03]>) === false');
+    });
+
+  });
+
   describe('empty types', function () {
 
     it('returns true on two empty objects', function () {
