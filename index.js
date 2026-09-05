@@ -242,7 +242,10 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Generator':
       return generatorEqual(leftHandOperand, rightHandOperand, options);
     case 'DataView':
-      return iterableEqual(new Uint8Array(leftHandOperand.buffer), new Uint8Array(rightHandOperand.buffer), options);
+      return iterableEqual(
+        new Uint8Array(leftHandOperand.buffer, leftHandOperand.byteOffset, leftHandOperand.byteLength),
+        new Uint8Array(rightHandOperand.buffer, rightHandOperand.byteOffset, rightHandOperand.byteLength),
+        options);
     case 'ArrayBuffer':
       return iterableEqual(new Uint8Array(leftHandOperand), new Uint8Array(rightHandOperand), options);
     case 'Set':
