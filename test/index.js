@@ -30,6 +30,14 @@ describe('Generic', function () {
       assert(eql('x', 'y') === false, 'eql("x", "y") === false');
     });
 
+    it('returns false for instances with different own enumerable properties', function () {
+      var strA = new String('x');
+      strA.foo = 1;
+      var strB = new String('x');
+      strB.foo = 2;
+      assert(eql(strA, strB) === false, 'eql(new String("x") {foo:1}, new String("x") {foo:2}) === false');
+    });
+
   });
 
   describe('booleans', function () {
@@ -61,6 +69,14 @@ describe('Generic', function () {
     it('returns false for different values', function () {
       assert(eql(true, false) === false, 'eql(true, false) === false');
       assert(eql(true, Boolean(false)) === false, 'eql(true, Boolean(false)) === false');
+    });
+
+    it('returns false for instances with different own enumerable properties', function () {
+      var boolA = new Boolean(true);
+      boolA.foo = 1;
+      var boolB = new Boolean(true);
+      boolB.foo = 2;
+      assert(eql(boolA, boolB) === false, 'eql(new Boolean(true) {foo:1}, new Boolean(true) {foo:2}) === false');
     });
 
   });
@@ -129,6 +145,14 @@ describe('Generic', function () {
         'eql(new Number(-Infinity), new Number(+Infinity)) === false');
     });
 
+    it('returns false for instances with different own enumerable properties', function () {
+      var numA = new Number(1);
+      numA.foo = 1;
+      var numB = new Number(1);
+      numB.foo = 2;
+      assert(eql(numA, numB) === false, 'eql(new Number(1) {foo:1}, new Number(1) {foo:2}) === false');
+    });
+
   });
 
   describe('dates', function () {
@@ -148,6 +172,14 @@ describe('Generic', function () {
         'eql(dateA, new Date(dateA.getTime() + 1)) === false');
     });
 
+    it('returns false given two dates with different own enumerable properties', function () {
+      var dateA = new Date(0);
+      dateA.foo = 1;
+      var dateB = new Date(0);
+      dateB.foo = 2;
+      assert(eql(dateA, dateB) === false, 'eql(new Date(0) {foo:1}, new Date(0) {foo:2}) === false');
+    });
+
   });
 
   describe('regexp', function () {
@@ -164,6 +196,14 @@ describe('Generic', function () {
 
     it('returns false given two regexes with different flags', function () {
       assert(eql(/^/m, /^/i) === false, 'eql(/^/m, /^/i) === false');
+    });
+
+    it('returns false given two regexes with different own enumerable properties', function () {
+      var regexpA = /x/;
+      regexpA.foo = 1;
+      var regexpB = /x/;
+      regexpB.foo = 2;
+      assert(eql(regexpA, regexpB) === false, 'eql(/x/ {foo:1}, /x/ {foo:2}) === false');
     });
 
   });

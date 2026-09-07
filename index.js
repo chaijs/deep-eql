@@ -215,8 +215,10 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Number':
     case 'Boolean':
     case 'Date':
-      // If these types are their instance types (e.g. `new Number`) then re-deepEqual against their values
-      return deepEqual(leftHandOperand.valueOf(), rightHandOperand.valueOf());
+      // If these types are their instance types (e.g. `new Number`) then re-deepEqual against their values.
+      // Own enumerable properties are still compared so two instances carrying differing data are not equal.
+      return deepEqual(leftHandOperand.valueOf(), rightHandOperand.valueOf()) &&
+        objectEqual(leftHandOperand, rightHandOperand, options);
     case 'Promise':
     case 'Symbol':
     case 'function':
@@ -238,7 +240,9 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Array':
       return iterableEqual(leftHandOperand, rightHandOperand, options);
     case 'RegExp':
-      return regexpEqual(leftHandOperand, rightHandOperand);
+      // Own enumerable properties are still compared so two regexes carrying differing data are not equal.
+      return regexpEqual(leftHandOperand, rightHandOperand) &&
+        objectEqual(leftHandOperand, rightHandOperand, options);
     case 'Generator':
       return generatorEqual(leftHandOperand, rightHandOperand, options);
     case 'DataView':
