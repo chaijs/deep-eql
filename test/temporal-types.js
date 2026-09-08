@@ -106,28 +106,4 @@ describe('TC39 Temporal', function () {
         'eql(new Temporal.Duration(0, 0, 0, 1), new Temporal.Duration(0, 0, 0, 2)) === false');
     });
   });
-
-  describe('Temporal.TimeZone', function () {
-    it('returns true for same time zones', function () {
-      assert(eql(new Temporal.TimeZone('+01:00'), new Temporal.TimeZone('+01:00')),
-        'eql(new Temporal.TimeZone("+01:00"), new Temporal.TimeZone("+01:00"))');
-    });
-
-    it('returns false for different time zones', function () {
-      assert(eql(new Temporal.TimeZone('+01:00'), new Temporal.TimeZone('+02:00')) === false,
-        'eql(new Temporal.TimeZone("+01:00"), new Temporal.TimeZone("+02:00")) === false');
-    });
-  });
-
-  describe('Temporal.Calendar', function () {
-    it('returns true for same calendars', function () {
-      assert(eql(new Temporal.Calendar('gregory'), new Temporal.Calendar('gregory')),
-        'eql(new Temporal.Calendar("gregory"), new Temporal.Calendar("gregory"))');
-    });
-
-    it('returns false for different calendars', function () {
-      assert(eql(new Temporal.Calendar('gregory'), new Temporal.Calendar('iso8601')) === false,
-        'eql(new Temporal.Calendar("gregory"), new Temporal.Calendar("iso8601")) === false');
-    });
-  });
 });

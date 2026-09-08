@@ -52,7 +52,7 @@
     }
   },
   "devDependencies": {
-    "@js-temporal/polyfill": "^0.4.3",
+    "@js-temporal/polyfill": "^0.5.1",
     "@rollup/plugin-commonjs": "^24.1.0",
     "@web/test-runner": "^0.16.1",
     "benchmark": "^2.1.0",
