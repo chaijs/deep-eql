@@ -239,6 +239,8 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
       return iterableEqual(leftHandOperand, rightHandOperand, options);
     case 'RegExp':
       return regexpEqual(leftHandOperand, rightHandOperand);
+    case 'URLSearchParams':
+      return leftHandOperand.toString() === rightHandOperand.toString();
     case 'Generator':
       return generatorEqual(leftHandOperand, rightHandOperand, options);
     case 'DataView':

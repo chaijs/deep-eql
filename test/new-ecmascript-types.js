@@ -27,6 +27,39 @@ function describeIf(condition) {
 }
 describe('ES2015 Specific', function () {
 
+  describeIf(typeof URLSearchParams === 'function')('URLSearchParams', function () {
+    it('returns true for the same parameter entries', function () {
+      assert(eql(new URLSearchParams('a=1&b=2'), new URLSearchParams('a=1&b=2')));
+    });
+
+    it('returns false for different parameter values', function () {
+      assert(eql(new URLSearchParams('a=1'), new URLSearchParams('a=2')) === false);
+    });
+
+    it('returns false for different parameter names', function () {
+      assert(eql(new URLSearchParams('a=1'), new URLSearchParams('b=1')) === false);
+    });
+
+    it('returns false for different numbers of duplicate parameters', function () {
+      assert(eql(new URLSearchParams('a=1&a=1'), new URLSearchParams('a=1')) === false);
+    });
+
+    it('returns false for different duplicate parameter values', function () {
+      assert(eql(new URLSearchParams('a=1&a=2'), new URLSearchParams('a=1&a=3')) === false);
+    });
+
+    it('preserves parameter order', function () {
+      assert(eql(new URLSearchParams('a=1&b=2'), new URLSearchParams('b=2&a=1')) === false);
+      assert(eql(new URLSearchParams('a=1&a=2'), new URLSearchParams('a=2&a=1')) === false);
+    });
+
+    it('compares decoded values rather than the original encoding', function () {
+      assert(eql(new URLSearchParams('a=hello+world'), new URLSearchParams('a=hello%20world')));
+      assert(eql(new URLSearchParams('a'), new URLSearchParams('a=')));
+      assert(eql(new URLSearchParams(), new URLSearchParams('')));
+    });
+  });
+
   describeIf(symbolExists && typeof String.prototype[Symbol.iterator] === 'function')('string iterator', function () {
 
     it('returns true for Strings with same entries', function () {
