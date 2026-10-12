@@ -1,4 +1,3 @@
-/* globals Symbol: false, Uint8Array: false, WeakMap: false */
 /*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
@@ -41,7 +40,7 @@ FakeMap.prototype = {
   },
 };
 
-export var MemoizeMap = typeof WeakMap === 'function' ? WeakMap : FakeMap;
+export const MemoizeMap = typeof WeakMap === 'function' ? WeakMap : FakeMap;
 /*!
  * Check to see if the MemoizeMap has recorded a result of the two operands
  *
@@ -55,9 +54,9 @@ function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
   if (!memoizeMap || isPrimitive(leftHandOperand) || isPrimitive(rightHandOperand)) {
     return null;
   }
-  var leftHandMap = memoizeMap.get(leftHandOperand);
+  const leftHandMap = memoizeMap.get(leftHandOperand);
   if (leftHandMap) {
-    var result = leftHandMap.get(rightHandOperand);
+    const result = leftHandMap.get(rightHandOperand);
     if (typeof result === 'boolean') {
       return result;
     }
@@ -78,7 +77,7 @@ function memoizeSet(leftHandOperand, rightHandOperand, memoizeMap, result) {
   if (!memoizeMap || isPrimitive(leftHandOperand) || isPrimitive(rightHandOperand)) {
     return;
   }
-  var leftHandMap = memoizeMap.get(leftHandOperand);
+  let leftHandMap = memoizeMap.get(leftHandOperand);
   if (leftHandMap) {
     leftHandMap.set(rightHandOperand, result);
   } else {
@@ -112,7 +111,7 @@ function deepEqual(leftHandOperand, rightHandOperand, options) {
     return extensiveDeepEqual(leftHandOperand, rightHandOperand, options);
   }
 
-  var simpleResult = simpleEqual(leftHandOperand, rightHandOperand);
+  const simpleResult = simpleEqual(leftHandOperand, rightHandOperand);
   if (simpleResult !== null) {
     return simpleResult;
   }
@@ -136,8 +135,8 @@ function simpleEqual(leftHandOperand, rightHandOperand) {
 
   // handle NaN cases
   if (
-    leftHandOperand !== leftHandOperand && // eslint-disable-line no-self-compare
-    rightHandOperand !== rightHandOperand // eslint-disable-line no-self-compare
+    leftHandOperand !== leftHandOperand &&
+    rightHandOperand !== rightHandOperand
   ) {
     return true;
   }
@@ -166,21 +165,21 @@ function simpleEqual(leftHandOperand, rightHandOperand) {
 function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
   options = options || {};
   options.memoize = options.memoize === false ? false : options.memoize || new MemoizeMap();
-  var comparator = options && options.comparator;
+  const comparator = options && options.comparator;
 
   // Check if a memoized result exists.
-  var memoizeResultLeft = memoizeCompare(leftHandOperand, rightHandOperand, options.memoize);
+  const memoizeResultLeft = memoizeCompare(leftHandOperand, rightHandOperand, options.memoize);
   if (memoizeResultLeft !== null) {
     return memoizeResultLeft;
   }
-  var memoizeResultRight = memoizeCompare(rightHandOperand, leftHandOperand, options.memoize);
+  const memoizeResultRight = memoizeCompare(rightHandOperand, leftHandOperand, options.memoize);
   if (memoizeResultRight !== null) {
     return memoizeResultRight;
   }
 
   // If a comparator is present, use it.
   if (comparator) {
-    var comparatorResult = comparator(leftHandOperand, rightHandOperand);
+    const comparatorResult = comparator(leftHandOperand, rightHandOperand);
     // Comparators may return null, in which case we want to go back to default behavior.
     if (comparatorResult === false || comparatorResult === true) {
       memoizeSet(leftHandOperand, rightHandOperand, options.memoize, comparatorResult);
@@ -188,14 +187,14 @@ function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
     }
     // To allow comparators to override *any* behavior, we ran them first. Since it didn't decide
     // what to do, we need to make sure to return the basic tests first before we move on.
-    var simpleResult = simpleEqual(leftHandOperand, rightHandOperand);
+    const simpleResult = simpleEqual(leftHandOperand, rightHandOperand);
     if (simpleResult !== null) {
       // Don't memoize this, it takes longer to set/retrieve than to just compare.
       return simpleResult;
     }
   }
 
-  var leftHandType = type(leftHandOperand);
+  const leftHandType = type(leftHandOperand);
   if (leftHandType !== type(rightHandOperand)) {
     memoizeSet(leftHandOperand, rightHandOperand, options.memoize, false);
     return false;
@@ -204,7 +203,7 @@ function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
   // Temporarily set the operands in the memoize object to prevent blowing the stack
   memoizeSet(leftHandOperand, rightHandOperand, options.memoize, true);
 
-  var result = extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandType, options);
+  const result = extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandType, options);
   memoizeSet(leftHandOperand, rightHandOperand, options.memoize, result);
   return result;
 }
@@ -215,6 +214,7 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Number':
     case 'Boolean':
     case 'Date':
+    case 'BigInt':
       // If these types are their instance types (e.g. `new Number`) then re-deepEqual against their values
       return deepEqual(leftHandOperand.valueOf(), rightHandOperand.valueOf());
     case 'Promise':
@@ -242,7 +242,10 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Generator':
       return generatorEqual(leftHandOperand, rightHandOperand, options);
     case 'DataView':
-      return iterableEqual(new Uint8Array(leftHandOperand.buffer), new Uint8Array(rightHandOperand.buffer), options);
+      return iterableEqual(
+        new Uint8Array(leftHandOperand.buffer, leftHandOperand.byteOffset, leftHandOperand.byteLength),
+        new Uint8Array(rightHandOperand.buffer, rightHandOperand.byteOffset, rightHandOperand.byteLength),
+        options);
     case 'ArrayBuffer':
       return iterableEqual(new Uint8Array(leftHandOperand), new Uint8Array(rightHandOperand), options);
     case 'Set':
@@ -294,19 +297,19 @@ function entriesEqual(leftHandOperand, rightHandOperand, options) {
     if (leftHandOperand.size === 0) {
       return true;
     }
-  } catch (sizeError) {
+  } catch (_sizeError) {
     // things that aren't actual Maps or Sets will throw here
     return false;
   }
-  var leftHandItems = [];
-  var rightHandItems = [];
+  const leftHandItems = [];
+  const rightHandItems = [];
   leftHandOperand.forEach(function gatherEntries(key, value) {
     leftHandItems.push([ key, value ]);
   });
   rightHandOperand.forEach(function gatherEntries(key, value) {
     rightHandItems.push([ key, value ]);
   });
-  return iterableEqual(leftHandItems.sort(), rightHandItems.sort(), options);
+  return iterableEqual(leftHandItems, rightHandItems, options, true);
 }
 
 /*!
@@ -318,15 +321,35 @@ function entriesEqual(leftHandOperand, rightHandOperand, options) {
  * @return {Boolean} result
  */
 
-function iterableEqual(leftHandOperand, rightHandOperand, options) {
-  var length = leftHandOperand.length;
+function iterableEqual(leftHandOperand, rightHandOperand, options, unordered) {
+  const length = leftHandOperand.length;
   if (length !== rightHandOperand.length) {
     return false;
   }
   if (length === 0) {
     return true;
   }
-  var index = -1;
+  if (unordered) {
+    // Sets and Maps have no meaningful order, so entries cannot be compared
+    // position by position. Pair each left entry with an as-yet unclaimed
+    // right one, removing it from the pool by swapping in the last remaining
+    // entry. Deep equality is an equivalence relation, so claiming the first
+    // match is safe.
+    const remaining = rightHandOperand.slice();
+    outer:
+    for (let leftIndex = 0; leftIndex < length; leftIndex++) {
+      for (let rightIndex = 0; rightIndex < remaining.length; rightIndex++) {
+        if (deepEqual(leftHandOperand[leftIndex], remaining[rightIndex], options)) {
+          remaining[rightIndex] = remaining[remaining.length - 1];
+          remaining.length--;
+          continue outer;
+        }
+      }
+      return false;
+    }
+    return true;
+  }
+  let index = -1;
   while (++index < length) {
     if (deepEqual(leftHandOperand[index], rightHandOperand[index], options) === false) {
       return false;
@@ -372,7 +395,7 @@ function getIteratorEntries(target) {
   if (hasIteratorFunction(target)) {
     try {
       return getGeneratorEntries(target[Symbol.iterator]());
-    } catch (iteratorError) {
+    } catch (_iteratorError) {
       return [];
     }
   }
@@ -386,8 +409,8 @@ function getIteratorEntries(target) {
  * @returns {Array} an array of entries from the Generator.
  */
 function getGeneratorEntries(generator) {
-  var generatorResult = generator.next();
-  var accumulator = [ generatorResult.value ];
+  let generatorResult = generator.next();
+  let accumulator = [ generatorResult.value ];
   while (generatorResult.done === false) {
     generatorResult = generator.next();
     accumulator.push(generatorResult.value);
@@ -402,18 +425,18 @@ function getGeneratorEntries(generator) {
  * @returns {Array} an array of own and inherited enumerable keys from the target.
  */
 function getEnumerableKeys(target) {
-  var keys = [];
-  for (var key in target) {
+  const keys = [];
+  for (const key in target) {
     keys.push(key);
   }
   return keys;
 }
 
 function getEnumerableSymbols(target) {
-  var keys = [];
-  var allKeys = Object.getOwnPropertySymbols(target);
-  for (var i = 0; i < allKeys.length; i += 1) {
-    var key = allKeys[i];
+  const keys = [];
+  const allKeys = Object.getOwnPropertySymbols(target);
+  for (let i = 0; i < allKeys.length; i += 1) {
+    const key = allKeys[i];
     if (Object.getOwnPropertyDescriptor(target, key).enumerable) {
       keys.push(key);
     }
@@ -432,11 +455,11 @@ function getEnumerableSymbols(target) {
  * @return {Boolean} result
  */
 function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
-  var length = keys.length;
+  const length = keys.length;
   if (length === 0) {
     return true;
   }
-  for (var i = 0; i < length; i += 1) {
+  for (let i = 0; i < length; i += 1) {
     if (deepEqual(leftHandOperand[keys[i]], rightHandOperand[keys[i]], options) === false) {
       return false;
     }
@@ -454,10 +477,10 @@ function keysEqual(leftHandOperand, rightHandOperand, keys, options) {
  * @return {Boolean} result
  */
 function objectEqual(leftHandOperand, rightHandOperand, options) {
-  var leftHandKeys = getEnumerableKeys(leftHandOperand);
-  var rightHandKeys = getEnumerableKeys(rightHandOperand);
-  var leftHandSymbols = getEnumerableSymbols(leftHandOperand);
-  var rightHandSymbols = getEnumerableSymbols(rightHandOperand);
+  let leftHandKeys = getEnumerableKeys(leftHandOperand);
+  let rightHandKeys = getEnumerableKeys(rightHandOperand);
+  const leftHandSymbols = getEnumerableSymbols(leftHandOperand);
+  const rightHandSymbols = getEnumerableSymbols(rightHandOperand);
   leftHandKeys = leftHandKeys.concat(leftHandSymbols);
   rightHandKeys = rightHandKeys.concat(rightHandSymbols);
 
@@ -468,8 +491,8 @@ function objectEqual(leftHandOperand, rightHandOperand, options) {
     return keysEqual(leftHandOperand, rightHandOperand, leftHandKeys, options);
   }
 
-  var leftHandEntries = getIteratorEntries(leftHandOperand);
-  var rightHandEntries = getIteratorEntries(rightHandOperand);
+  const leftHandEntries = getIteratorEntries(leftHandOperand);
+  const rightHandEntries = getIteratorEntries(rightHandOperand);
   if (leftHandEntries.length && leftHandEntries.length === rightHandEntries.length) {
     leftHandEntries.sort();
     rightHandEntries.sort();
