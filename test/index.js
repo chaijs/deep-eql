@@ -131,6 +131,31 @@ describe('Generic', function () {
 
   });
 
+  describe('BigInt', function () {
+
+    it('returns true for same values', function () {
+      assert(eql(BigInt(1), BigInt(1)), 'eql(BigInt(1), BigInt(1))');
+      assert(eql(Object(BigInt(1)), Object(BigInt(1))), 'eql(Object(BigInt(1)), Object(BigInt(1)))');
+    });
+
+    it('returns false for literal vs instance with same value', function () {
+      assert(eql(BigInt(1), Object(BigInt(1))) === false, 'eql(BigInt(1), Object(BigInt(1))) === false');
+    });
+
+    it('returns false on numbers with different signs', function () {
+      assert(eql(BigInt(-1), BigInt(1)) === false, 'eql(BigInt(-1), BigInt(1)) === false');
+    });
+
+    it('returns false on instances with different signs', function () {
+      assert(eql(Object(BigInt(-1)), Object(BigInt(1))) === false, 'eql(Object(BigInt(-1)), Object(BigInt(1))) === false');
+    });
+
+    it('returns false for literal vs number with same value', function () {
+      assert(eql(BigInt(1), 1) === false, 'eql(BigInt(1), 1) === false');
+    });
+
+  });
+
   describe('dates', function () {
 
     it('returns true given two dates with the same time', function () {

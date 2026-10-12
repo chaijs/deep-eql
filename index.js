@@ -214,6 +214,7 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Number':
     case 'Boolean':
     case 'Date':
+    case 'BigInt':
       // If these types are their instance types (e.g. `new Number`) then re-deepEqual against their values
       return deepEqual(leftHandOperand.valueOf(), rightHandOperand.valueOf());
     case 'Promise':
