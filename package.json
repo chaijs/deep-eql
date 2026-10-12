@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@js-temporal/polyfill": "^0.4.3",
+    "@js-temporal/polyfill": "^0.5.1",
     "@web/test-runner": "^1.0.0",
     "benchmark": "^2.1.0",
     "coveralls": "^3.1.1",
