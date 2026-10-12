@@ -1,24 +1,26 @@
-/* eslint-disable no-eval */
 import { assert } from 'simple-assert';
 import eql from '../index.js';
-var emptyFunction = Function.prototype;
-var symbolExists = typeof Symbol === 'function';
-var setExists = typeof Set === 'function';
-var mapExists = typeof Map === 'function';
-var symbolAndMapExist = symbolExists && mapExists;
-var symbolAndSetExist = symbolExists && setExists;
-var supportGenerators = false;
-var supportArrows = false;
+
+const emptyFunction = Function.prototype;
+const symbolExists = typeof Symbol === 'function';
+const setExists = typeof Set === 'function';
+const mapExists = typeof Map === 'function';
+const symbolAndMapExist = symbolExists && mapExists;
+const symbolAndSetExist = symbolExists && setExists;
+let supportGenerators = false;
+let supportArrows = false;
+
 try {
   eval('function * foo () {}; foo');
   supportGenerators = true;
-} catch (error) {
+} catch {
   supportGenerators = false;
 }
+
 try {
   eval('() => {}');
   supportArrows = true;
-} catch (error) {
+} catch {
   supportArrows = false;
 }
 
@@ -72,8 +74,8 @@ describe('ES2015 Specific', function () {
   describeIf(mapExists)('maps', function () {
 
     it('returns true for Maps with same entries', function () {
-      var mapA = new Map();
-      var mapB = new Map();
+      const mapA = new Map();
+      const mapB = new Map();
       mapA.set('a', 1);
       mapA.set('b', 2);
       mapA.set('c', 3);
@@ -84,8 +86,8 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for Maps with different entries', function () {
-      var mapA = new Map();
-      var mapB = new Map();
+      const mapA = new Map();
+      const mapB = new Map();
       mapA.set('a', 1);
       mapB.set('a', 1);
       mapA.set('b', 2);
@@ -96,7 +98,7 @@ describe('ES2015 Specific', function () {
     });
 
     (setExists ? it : it.skip)('returns false for fake Maps', function () {
-      var maplikeSet = new Set();
+      const maplikeSet = new Set();
       Object.defineProperty(maplikeSet, 'constructor', { enumerable: false, value: Map });
 
       assert(eql(maplikeSet, new Map()) === false, 'eql(Set pretending to be a Map, Map { })');
@@ -107,8 +109,8 @@ describe('ES2015 Specific', function () {
   describeIf(symbolAndMapExist && typeof Map.prototype[Symbol.iterator] === 'function')('map iterator', function () {
 
     it('returns true for Map iterators with same entries', function () {
-      var mapA = new Map();
-      var mapB = new Map();
+      const mapA = new Map();
+      const mapB = new Map();
       mapA.set('a', 1);
       mapB.set('a', 1);
       mapA.set('b', 2);
@@ -120,8 +122,8 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for Map iterators with different entries', function () {
-      var mapA = new Map();
-      var mapB = new Map();
+      const mapA = new Map();
+      const mapB = new Map();
       mapA.set('a', 1);
       mapB.set('a', 2);
       mapA.set('b', 3);
@@ -138,8 +140,8 @@ describe('ES2015 Specific', function () {
   describeIf(mapExists && typeof Map.prototype.entries === 'function')('map iterator (entries)', function () {
 
     it('returns true for Map iterators with same entries', function () {
-      var mapA = new Map();
-      var mapB = new Map();
+      const mapA = new Map();
+      const mapB = new Map();
       mapA.set('a', 1);
       mapB.set('a', 1);
       mapA.set('b', 2);
@@ -151,8 +153,8 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for Map iterators with different entries', function () {
-      var mapA = new Map();
-      var mapB = new Map();
+      const mapA = new Map();
+      const mapB = new Map();
       mapA.set('a', 1);
       mapB.set('a', 2);
       mapA.set('b', 3);
@@ -169,7 +171,7 @@ describe('ES2015 Specific', function () {
   describeIf(typeof WeakMap === 'function')('weakmaps', function () {
 
     it('returns true for same WeakMaps', function () {
-      var weakMap = new WeakMap();
+      const weakMap = new WeakMap();
       assert(eql(weakMap, weakMap), 'eql(weakMap, weakMap)');
     });
 
@@ -183,8 +185,8 @@ describe('ES2015 Specific', function () {
   describeIf(setExists)('sets', function () {
 
     it('returns true for Sets with same entries', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add('a');
       setA.add('b');
       setA.add('c');
@@ -195,8 +197,8 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns true for Sets with same entries in different order', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add('a');
       setA.add('b');
       setA.add('c');
@@ -207,8 +209,8 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns true for Sets of objects with same entries in different order', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add({});
       setA.add({ a: 5 });
       setB.add({ a: 5 });
@@ -220,16 +222,16 @@ describe('ES2015 Specific', function () {
       // https://github.com/chaijs/deep-eql/issues/51 - Array#sort stringifies
       // entries, and null-prototype objects cannot be converted to primitives,
       // so this threw a TypeError before entries were paired without sorting.
-      var duckA = Object.create(null);
+      const duckA = Object.create(null);
       duckA.name = 'duck';
-      var catA = Object.create(null);
+      const catA = Object.create(null);
       catA.name = 'cat';
-      var catB = Object.create(null);
+      const catB = Object.create(null);
       catB.name = 'cat';
-      var duckB = Object.create(null);
+      const duckB = Object.create(null);
       duckB.name = 'duck';
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add(duckA);
       setA.add(catA);
       setB.add(catB);
@@ -239,8 +241,8 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for Sets of objects with different entries', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add({ a: 1 });
       setA.add({ b: 2 });
       setB.add({ a: 1 });
@@ -249,17 +251,17 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns true for Sets with nested entries', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add([ [], [], [] ]);
       setB.add([ [], [], [] ]);
       assert(eql(setA, setB) === true, 'eql(Set [ [], [], [] ], Set [ [], [], [] ]) === true');
     });
 
     it('returns true for Sets with same circular references', function () {
-      var setA = new Set();
-      var setB = new Set();
-      var setC = new Set();
+      const setA = new Set();
+      const setB = new Set();
+      const setC = new Set();
       setA.add(setC);
       setB.add(setC);
       setC.add(setA);
@@ -268,8 +270,8 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for Sets with different entries', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add('a');
       setA.add('b');
       setA.add('c');
@@ -280,15 +282,15 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns true for circular Sets', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add(setB);
       setB.add(setA);
       assert(eql(setA, setB) === true, 'eql(Set { -> }, Set { <- }) === true');
     });
 
     (mapExists ? it : it.skip)('returns false for fake Sets', function () {
-      var setlikeMap = new Map();
+      const setlikeMap = new Map();
       Object.defineProperty(setlikeMap, 'constructor', { enumerable: false, value: Set });
 
       assert(eql(setlikeMap, new Set()) === false, 'eql(Map pretending to be a Set, Set { })');
@@ -299,8 +301,8 @@ describe('ES2015 Specific', function () {
   describeIf(symbolAndSetExist && typeof Set.prototype[Symbol.iterator] === 'function')('set iterator', function () {
 
     it('returns true for Sets with same entries', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add('a');
       setA.add('b');
       setA.add('c');
@@ -312,8 +314,8 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for Sets with different entries', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add('a');
       setA.add('b');
       setA.add('c');
@@ -329,8 +331,8 @@ describe('ES2015 Specific', function () {
   describeIf(setExists && typeof Set.prototype.entries === 'function')('set iterator (entries)', function () {
 
     it('returns true for Sets with same entries', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add('a');
       setA.add('b');
       setA.add('c');
@@ -342,8 +344,8 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for Sets with different entries', function () {
-      var setA = new Set();
-      var setB = new Set();
+      const setA = new Set();
+      const setB = new Set();
       setA.add('a');
       setA.add('b');
       setA.add('c');
@@ -359,7 +361,7 @@ describe('ES2015 Specific', function () {
   describeIf(typeof WeakSet === 'function')('weaksets', function () {
 
     it('returns true for same WeakSets', function () {
-      var weakSet = new WeakSet();
+      const weakSet = new WeakSet();
       assert(eql(weakSet, weakSet), 'eql(weakSet, weakSet)');
     });
 
@@ -373,7 +375,7 @@ describe('ES2015 Specific', function () {
   describeIf(typeof Symbol === 'function')('symbol', function () {
 
     it('returns true for the same symbols', function () {
-      var sym = Symbol();
+      const sym = Symbol();
       assert(eql(sym, sym), 'eql(sym, sym)');
       assert(eql(Symbol.iterator, Symbol.iterator), 'eql(Symbol.iterator, Symbol.iterator)');
     });
@@ -387,10 +389,9 @@ describe('ES2015 Specific', function () {
   describeIf(typeof Promise === 'function')('promise', function () {
 
     it('returns true for the same promises', function () {
-      var promiseResolve = Promise.resolve();
-      // eslint-disable-next-line prefer-promise-reject-errors
-      var promiseReject = Promise.reject();
-      var promisePending = new Promise(emptyFunction);
+      const promiseResolve = Promise.resolve();
+      const promiseReject = Promise.reject();
+      const promisePending = new Promise(emptyFunction);
       assert(eql(promiseResolve, promiseResolve), 'eql(promiseResolve, promiseResolve)');
       assert(eql(promiseReject, promiseReject), 'eql(promiseReject, promiseReject)');
       assert(eql(promisePending, promisePending), 'eql(promisePending, promisePending)');
@@ -403,10 +404,8 @@ describe('ES2015 Specific', function () {
       assert(eql(Promise.resolve(), Promise.resolve()) === false,
         'eql(Promise.resolve(), Promise.resolve()) === false');
 
-      // eslint-disable-next-line prefer-promise-reject-errors
-      var promiseRejectA = Promise.reject();
-      // eslint-disable-next-line prefer-promise-reject-errors
-      var promiseRejectB = Promise.reject();
+      const promiseRejectA = Promise.reject();
+      const promiseRejectB = Promise.reject();
       assert(eql(promiseRejectA, promiseRejectB) === false,
         'eql(Promise.reject(), Promise.reject()) === false');
 
@@ -566,12 +565,12 @@ describe('ES2015 Specific', function () {
   describeIf(typeof DataView === 'function')('dataview', function () {
 
     it('returns true for arrays with same values', function () {
-      var dataViewA = new DataView(new ArrayBuffer(4));
+      const dataViewA = new DataView(new ArrayBuffer(4));
       dataViewA.setUint8(0, 1);
       dataViewA.setUint8(1, 2);
       dataViewA.setUint8(2, 3);
       dataViewA.setUint8(3, 4);
-      var dataViewB = new DataView(new ArrayBuffer(4));
+      const dataViewB = new DataView(new ArrayBuffer(4));
       dataViewB.setUint8(0, 1);
       dataViewB.setUint8(1, 2);
       dataViewB.setUint8(2, 3);
@@ -586,12 +585,12 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for arrays with different values', function () {
-      var dataViewA = new DataView(new ArrayBuffer(4));
+      const dataViewA = new DataView(new ArrayBuffer(4));
       dataViewA.setUint8(0, 1);
       dataViewA.setUint8(1, 2);
       dataViewA.setUint8(2, 3);
       dataViewA.setUint8(3, 4);
-      var dataViewB = new DataView(new ArrayBuffer(4));
+      const dataViewB = new DataView(new ArrayBuffer(4));
       dataViewB.setUint8(0, 5);
       dataViewB.setUint8(1, 6);
       dataViewB.setUint8(2, 7);
@@ -615,12 +614,12 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for arrays with different values', function () {
-      var dataViewA = new DataView(new ArrayBuffer(4));
+      const dataViewA = new DataView(new ArrayBuffer(4));
       dataViewA.setUint8(0, 1);
       dataViewA.setUint8(1, 2);
       dataViewA.setUint8(2, 3);
       dataViewA.setUint8(3, 4);
-      var dataViewB = new DataView(new ArrayBuffer(4));
+      const dataViewB = new DataView(new ArrayBuffer(4));
       dataViewB.setUint8(0, 5);
       dataViewB.setUint8(1, 6);
       dataViewB.setUint8(2, 7);
@@ -634,7 +633,7 @@ describe('ES2015 Specific', function () {
   describeIf(supportArrows)('arrow function', function () {
 
     it('returns true for same arrow functions', function () {
-      var arrow = eval('() => {}');
+      const arrow = eval('() => {}');
       assert(eql(arrow, arrow),
         'eql(arrow, arrow)');
     });
@@ -649,7 +648,7 @@ describe('ES2015 Specific', function () {
   describeIf(supportGenerators)('generator function', function () {
 
     it('returns true for same arrow functions', function () {
-      var generator = eval('function * generator() {}; generator');
+      const generator = eval('function * generator() {}; generator');
       assert(eql(generator, generator),
         'eql(generator, generator)');
     });
@@ -664,23 +663,23 @@ describe('ES2015 Specific', function () {
   describeIf(supportGenerators)('generator', function () {
 
     it('returns true for same generator function calls', function () {
-      var generator = eval('function * generator() { yield 1; yield 2; }; generator');
+      const generator = eval('function * generator() { yield 1; yield 2; }; generator');
       assert(eql(generator(), generator()),
         'eql(generator(), generator())');
     });
 
     it('returns true for different generator function calls that return same results', function () {
-      var generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
-      var generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
+      const generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
+      const generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
       assert(eql(generatorA(), generatorB()),
         'eql(generatorA(), generatorB())');
     });
 
     it('returns true for different generator function calls are at level of iteration with same results', function () {
-      var generatorA = eval('function * generatorA() { yield 1; yield 2; yield 3; }; generatorA');
-      var generatorB = eval('function * generatorB() { yield 6; yield 2; yield 3; }; generatorB');
-      var generatorAIterator = generatorA();
-      var generatorBIterator = generatorB();
+      const generatorA = eval('function * generatorA() { yield 1; yield 2; yield 3; }; generatorA');
+      const generatorB = eval('function * generatorB() { yield 6; yield 2; yield 3; }; generatorB');
+      const generatorAIterator = generatorA();
+      const generatorBIterator = generatorB();
       generatorAIterator.next();
       generatorBIterator.next();
       assert(eql(generatorAIterator, generatorBIterator),
@@ -688,24 +687,24 @@ describe('ES2015 Specific', function () {
     });
 
     it('returns false for same generator function calls that return different results', function () {
-      var generator = eval('var set = 0; function * generator() { yield set++; }; generator');
+      const generator = eval('let set = 0; function * generator() { yield set++; }; generator');
       assert(eql(generator(), generator()) === false,
         'eql(generator(), generator()) === false');
     });
 
     it('returns false for generators at different stages of iteration', function () {
-      var generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
-      var generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
-      var generatorBIterator = generatorB();
+      const generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
+      const generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
+      const generatorBIterator = generatorB();
       generatorBIterator.next();
       assert(eql(generatorA(), generatorBIterator) === false,
         'eql(generatorA(), generatorBIterator) === false');
     });
 
     it('returns false for generators if one is done', function () {
-      var generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
-      var generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
-      var generatorBIterator = generatorB();
+      const generatorA = eval('function * generatorA() { yield 1; yield 2; }; generatorA');
+      const generatorB = eval('function * generatorB() { yield 1; yield 2; }; generatorB');
+      const generatorBIterator = generatorB();
       generatorBIterator.next();
       generatorBIterator.next();
       generatorBIterator.next();
