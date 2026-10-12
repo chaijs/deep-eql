@@ -36,7 +36,6 @@ describe('TC39 Temporal', function () {
     it('returns false for different date times', function () {
       assert(eql(new Temporal.PlainDateTime(2022, 1, 1, 12, 0, 0),
         new Temporal.PlainDateTime(2022, 1, 1, 13, 0, 0)) === false,
-      // eslint-disable-next-line max-len
       'eql(new Temporal.PlainDateTime(2022, 1, 1, 12, 0, 0), new Temporal.PlainDateTime(2022, 1, 1, 13, 0, 0)) === false');
     });
   });
@@ -50,7 +49,6 @@ describe('TC39 Temporal', function () {
     it('returns false for different instants', function () {
       assert(eql(Temporal.Instant.from('2022-01-01T12:00:00.000Z'),
         Temporal.Instant.from('2022-01-01T13:00:00.000Z')) === false,
-      // eslint-disable-next-line max-len
       'eql(Temporal.Instant.from("2022-01-01T12:00:00.000Z"), Temporal.Instant.from("2022-01-01T13:00:00.000Z")) === false');
     });
   });
@@ -59,14 +57,12 @@ describe('TC39 Temporal', function () {
     it('returns true for same zoned date times', function () {
       assert(eql(Temporal.ZonedDateTime.from('2022-01-01T12:00:00.000Z[+01:00]'),
         Temporal.ZonedDateTime.from('2022-01-01T12:00:00.000Z[+01:00]')),
-      // eslint-disable-next-line max-len
       'eql(Temporal.ZonedDateTime.from("2022-01-01T12:00:00.000Z[+01:00]"), Temporal.ZonedDateTime.from("2022-01-01T12:00:00.000Z[+01:00]"))');
     });
 
     it('returns false for different zoned date times', function () {
       assert(eql(Temporal.ZonedDateTime.from('2022-01-01T12:00:00.000Z[+01:00]'),
         Temporal.ZonedDateTime.from('2022-01-01T13:00:00.000Z[+01:00]')) === false,
-      // eslint-disable-next-line max-len
       'eql(Temporal.ZonedDateTime.from("2022-01-01T12:00:00.000Z[+01:00]"), Temporal.ZonedDateTime.from("2022-01-01T13:00:00.000Z[+01:00]")) === false');
     });
   });
