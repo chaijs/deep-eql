@@ -91,6 +91,3 @@ The primary export of `deep-eql` is function that can be given two objects to co
 - Arguments are not Arrays:
   - `eql([], arguments).should.be.false;`
   - `eql([], Array.prototype.slice.call(arguments)).should.be.true;`
-- `URLSearchParams` are compared by their serialized query strings, including parameter order and duplicates:
-  - `eql(new URLSearchParams('a=1'), new URLSearchParams('a=2')).should.be.false;`
-  - `eql(new URLSearchParams('a=hello+world'), new URLSearchParams('a=hello%20world')).should.be.true;`
