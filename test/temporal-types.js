@@ -101,5 +101,86 @@ describe('TC39 Temporal', function () {
       assert(eql(new Temporal.Duration(0, 0, 0, 1), new Temporal.Duration(0, 0, 0, 2)) === false,
         'eql(new Temporal.Duration(0, 0, 0, 1), new Temporal.Duration(0, 0, 0, 2)) === false');
     });
+
+    [ 'years', 'months', 'weeks' ].forEach(function (unit) {
+      it('compares equal positive and negative calendar ' + unit, function () {
+        [ 1, -1 ].forEach(function (sign) {
+          const fields = { [unit]: sign, days: sign, hours: sign, nanoseconds: sign };
+          assert(eql(Temporal.Duration.from(fields), Temporal.Duration.from(fields)));
+        });
+      });
+
+      it('rejects different calendar ' + unit + ' with the same time part', function () {
+        assert(eql(Temporal.Duration.from({ [unit]: 1, hours: 1 }),
+          Temporal.Duration.from({ [unit]: 2, hours: 1 })) === false);
+      });
+    });
+
+    it('does not convert calendar units without a relative date', function () {
+      [ [ 'P1Y', 'P12M' ], [ 'P1M', 'P30D' ], [ 'P1W', 'P7D' ] ].forEach(function (pair) {
+        assert(eql(Temporal.Duration.from(pair[0]), Temporal.Duration.from(pair[1])) === false);
+      });
+    });
+
+    it('preserves equivalent day and time units', function () {
+      [ [ 'P1D', 'PT24H' ], [ 'PT1H', 'PT60M' ], [ 'PT0S', 'P0D' ] ]
+        .forEach(function (pair) {
+          assert(eql(Temporal.Duration.from(pair[0]), Temporal.Duration.from(pair[1])));
+        });
+      assert(eql(Temporal.Duration.from({ seconds: 1 }), Temporal.Duration.from({ milliseconds: 1000 })));
+      assert(eql(Temporal.Duration.from('-P1D'), Temporal.Duration.from('-PT24H')));
+      assert(eql(Temporal.Duration.from({ nanoseconds: 9007199254740991 }),
+        Temporal.Duration.from('PT9007199.254740991S')));
+    });
+
+    it('balances time units after matching calendar units', function () {
+      assert(eql(Temporal.Duration.from('P1M1DT1H'), Temporal.Duration.from('P1MT25H')));
+      assert(eql(Temporal.Duration.from('-P1Y1W1DT1H'), Temporal.Duration.from('-P1Y1WT25H')));
+      assert(eql(Temporal.Duration.from('P1MT1H'), Temporal.Duration.from('P1MT2H')) === false);
+    });
+
+    it('distinguishes one nanosecond beyond the safe integer nanosecond range', function () {
+      const left = Temporal.Duration.from('PT9007199.254740992S');
+      const right = Temporal.Duration.from('PT9007199.254740993S');
+      assert(left.total('nanoseconds') === right.total('nanoseconds'));
+      assert(eql(left, right) === false);
+      assert(eql(left.negated(), right.negated()) === false);
+      const nearLimit = Temporal.Duration.from('PT9007199254740990.000000001S');
+      const nextNanosecond = Temporal.Duration.from('PT9007199254740990.000000002S');
+      assert(nearLimit.total('nanoseconds') === nextNanosecond.total('nanoseconds'));
+      assert(eql(nearLimit, nextNanosecond) === false);
+    });
+
+    it('distinguishes one nanosecond alongside calendar units', function () {
+      assert(eql(Temporal.Duration.from('P1MT9007199.254740992S'),
+        Temporal.Duration.from('P1MT9007199.254740993S')) === false);
+    });
+
+    it('compares calendar durations nested in ordinary data structures', function () {
+      const left = { values: [ Temporal.Duration.from('P1M') ], map: new Map([ [ 'year', Temporal.Duration.from('P1Y') ] ]) };
+      const right = { values: [ Temporal.Duration.from('P1M') ], map: new Map([ [ 'year', Temporal.Duration.from('P1Y') ] ]) };
+      assert(eql(left, right));
+      right.values[0] = Temporal.Duration.from('P2M');
+      assert(eql(left, right) === false);
+    });
+
+    it('does not require the duration instance constructor property', function () {
+      [ 'P1M', 'P1D' ].forEach(function (value) {
+        const left = Temporal.Duration.from(value);
+        const right = Temporal.Duration.from(value);
+        Object.defineProperty(left, 'constructor', { value: undefined });
+        Object.defineProperty(right, 'constructor', { value: null });
+        assert(eql(left, right));
+      });
+    });
+
+    it('leaves the original calendar durations unchanged', function () {
+      const left = Temporal.Duration.from('P1Y2M3W4DT5H6M7.987654321S');
+      const right = Temporal.Duration.from(left);
+      const original = left.toString();
+      assert(eql(left, right));
+      assert(left.toString() === original);
+      assert(right.toString() === original);
+    });
   });
 });

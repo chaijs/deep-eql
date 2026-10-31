@@ -263,10 +263,32 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Temporal.PlainMonthDay':
       return leftHandOperand.equals(rightHandOperand);
     case 'Temporal.Duration':
-      return leftHandOperand.total('nanoseconds') === rightHandOperand.total('nanoseconds');
+      return temporalDurationEqual(leftHandOperand, rightHandOperand);
     default:
       return objectEqual(leftHandOperand, rightHandOperand, options);
   }
+}
+
+/*!
+ * Compare calendar fields without choosing a relative date. Normalize the
+ * remaining day/time fields exactly, rather than rounding a nanosecond total
+ * to a Number. Days retain their existing equivalence to 24 hours.
+ */
+function temporalDurationEqual(leftHandOperand, rightHandOperand) {
+  if (leftHandOperand.years !== rightHandOperand.years ||
+      leftHandOperand.months !== rightHandOperand.months ||
+      leftHandOperand.weeks !== rightHandOperand.weeks) {
+    return false;
+  }
+  const calendarFields = { years: 0, months: 0, weeks: 0 };
+  const hasCalendarUnits = leftHandOperand.years || leftHandOperand.months || leftHandOperand.weeks;
+  const roundOptions = { largestUnit: 'second', smallestUnit: 'nanosecond' };
+  const left = (hasCalendarUnits ? leftHandOperand.with(calendarFields) : leftHandOperand).round(roundOptions);
+  const right = (hasCalendarUnits ? rightHandOperand.with(calendarFields) : rightHandOperand).round(roundOptions);
+  return left.seconds === right.seconds &&
+    left.milliseconds === right.milliseconds &&
+    left.microseconds === right.microseconds &&
+    left.nanoseconds === right.nanoseconds;
 }
 
 /*!
