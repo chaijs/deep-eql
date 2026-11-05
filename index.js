@@ -263,10 +263,18 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
     case 'Temporal.PlainMonthDay':
       return leftHandOperand.equals(rightHandOperand);
     case 'Temporal.Duration':
-      return leftHandOperand.total('nanoseconds') === rightHandOperand.total('nanoseconds');
+      return temporalDurationEqual(leftHandOperand, rightHandOperand);
     default:
       return objectEqual(leftHandOperand, rightHandOperand, options);
   }
+}
+
+function temporalDurationEqual(leftHandOperand, rightHandOperand) {
+  const noCalendarUnits = { years: 0, months: 0, weeks: 0 };
+  return leftHandOperand.years === rightHandOperand.years &&
+    leftHandOperand.months === rightHandOperand.months &&
+    leftHandOperand.weeks === rightHandOperand.weeks &&
+    leftHandOperand.with(noCalendarUnits).subtract(rightHandOperand.with(noCalendarUnits)).sign === 0;
 }
 
 /*!

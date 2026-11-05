@@ -101,5 +101,34 @@ describe('TC39 Temporal', function () {
       assert(eql(new Temporal.Duration(0, 0, 0, 1), new Temporal.Duration(0, 0, 0, 2)) === false,
         'eql(new Temporal.Duration(0, 0, 0, 1), new Temporal.Duration(0, 0, 0, 2)) === false');
     });
+
+    it('compares calendar units without a relative date', function () {
+      assert(eql(Temporal.Duration.from('P1Y2M3W'), Temporal.Duration.from('P1Y2M3W')),
+        "eql(Temporal.Duration.from('P1Y2M3W'), Temporal.Duration.from('P1Y2M3W'))");
+      [ [ 'P1Y', 'P2Y' ], [ 'P1M', 'P2M' ], [ 'P1W', 'P2W' ] ].forEach(function (pair) {
+        assert(eql(Temporal.Duration.from(pair[0]), Temporal.Duration.from(pair[1])) === false,
+          `eql(Temporal.Duration.from('${pair[0]}'), Temporal.Duration.from('${pair[1]}')) === false`);
+      });
+    });
+
+    it('does not convert calendar units to days', function () {
+      [ [ 'P1Y', 'P12M' ], [ 'P1M', 'P30D' ], [ 'P1W', 'P7D' ] ].forEach(function (pair) {
+        assert(eql(Temporal.Duration.from(pair[0]), Temporal.Duration.from(pair[1])) === false,
+          `eql(Temporal.Duration.from('${pair[0]}'), Temporal.Duration.from('${pair[1]}')) === false`);
+      });
+    });
+
+    it('balances day and time units', function () {
+      assert(eql(Temporal.Duration.from('P1D'), Temporal.Duration.from('PT24H')),
+        "eql(Temporal.Duration.from('P1D'), Temporal.Duration.from('PT24H'))");
+      assert(eql(Temporal.Duration.from('P1M1DT1H'), Temporal.Duration.from('P1MT25H')),
+        "eql(Temporal.Duration.from('P1M1DT1H'), Temporal.Duration.from('P1MT25H'))");
+    });
+
+    it('distinguishes one nanosecond beyond the safe integer nanosecond range', function () {
+      assert(eql(Temporal.Duration.from('PT9007199.254740992S'),
+        Temporal.Duration.from('PT9007199.254740993S')) === false,
+        "eql(Temporal.Duration.from('PT9007199.254740992S'), Temporal.Duration.from('PT9007199.254740993S')) === false");
+    });
   });
 });
