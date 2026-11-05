@@ -91,8 +91,3 @@ The primary export of `deep-eql` is function that can be given two objects to co
 - Arguments are not Arrays:
   - `eql([], arguments).should.be.false;`
   - `eql([], Array.prototype.slice.call(arguments)).should.be.true;`
-- `Temporal.Duration` values compare their years, months, and weeks separately,
-  without assuming a relative date or calendar. Their remaining day/time fields
-  compare by exact duration, preserving the equivalence of one day and 24 hours
-  and retaining nanosecond precision. For example, one month is not considered
-  equal to 30 days.
