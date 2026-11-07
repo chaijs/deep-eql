@@ -72,6 +72,100 @@ describe('ES2015 Specific', function () {
     });
   });
 
+  describeIf(typeof Headers === 'function')('Headers', function () {
+    it('returns true for the same header entries', function () {
+      assert(eql(new Headers({ a: '1', b: '2' }), new Headers({ a: '1', b: '2' })),
+        'eql(new Headers({ a: "1", b: "2" }), new Headers({ a: "1", b: "2" }))');
+    });
+
+    it('returns false for different header values', function () {
+      assert(eql(new Headers({ a: '1' }), new Headers({ a: '2' })) === false,
+        'eql(new Headers({ a: "1" }), new Headers({ a: "2" })) === false');
+    });
+
+    it('returns false for different header names', function () {
+      assert(eql(new Headers({ a: '1' }), new Headers({ b: '1' })) === false,
+        'eql(new Headers({ a: "1" }), new Headers({ b: "1" })) === false');
+    });
+
+    it('returns false for different numbers of headers', function () {
+      assert(eql(new Headers({ a: '1', b: '2' }), new Headers({ a: '1' })) === false,
+        'eql(new Headers({ a: "1", b: "2" }), new Headers({ a: "1" })) === false');
+    });
+
+    it('returns true for case-insensitive header names', function () {
+      assert(eql(new Headers({ 'Content-Type': 'application/json' }), new Headers({ 'content-type': 'application/json' })),
+        'eql(new Headers({ "Content-Type": "application/json" }), new Headers({ "content-type": "application/json" }))');
+    });
+
+    it('returns true regardless of header insertion order', function () {
+      const h1 = new Headers();
+      h1.append('a', '1');
+      h1.append('b', '2');
+      const h2 = new Headers();
+      h2.append('b', '2');
+      h2.append('a', '1');
+      assert(eql(h1, h2), 'eql(h1, h2)');
+    });
+
+    it('returns true for empty headers', function () {
+      assert(eql(new Headers(), new Headers()),
+        'eql(new Headers(), new Headers())');
+    });
+  });
+
+  describeIf(typeof FormData === 'function')('FormData', function () {
+    it('returns true for the same form entries', function () {
+      const f1 = new FormData();
+      f1.append('a', '1');
+      f1.append('b', '2');
+      const f2 = new FormData();
+      f2.append('a', '1');
+      f2.append('b', '2');
+      assert(eql(f1, f2), 'eql(f1, f2)');
+    });
+
+    it('returns false for different entry values', function () {
+      const f1 = new FormData();
+      f1.append('a', '1');
+      const f2 = new FormData();
+      f2.append('a', '2');
+      assert(eql(f1, f2) === false, 'eql(f1, f2) === false');
+    });
+
+    it('returns false for different entry names', function () {
+      const f1 = new FormData();
+      f1.append('a', '1');
+      const f2 = new FormData();
+      f2.append('b', '1');
+      assert(eql(f1, f2) === false, 'eql(f1, f2) === false');
+    });
+
+    it('returns false for different numbers of duplicate entries', function () {
+      const f1 = new FormData();
+      f1.append('a', '1');
+      f1.append('a', '2');
+      const f2 = new FormData();
+      f2.append('a', '1');
+      assert(eql(f1, f2) === false, 'eql(f1, f2) === false');
+    });
+
+    it('preserves entry order', function () {
+      const f1 = new FormData();
+      f1.append('a', '1');
+      f1.append('b', '2');
+      const f2 = new FormData();
+      f2.append('b', '2');
+      f2.append('a', '1');
+      assert(eql(f1, f2) === false, 'eql(f1, f2) === false');
+    });
+
+    it('returns true for empty FormData', function () {
+      assert(eql(new FormData(), new FormData()),
+        'eql(new FormData(), new FormData())');
+    });
+  });
+
   describeIf(symbolExists && typeof String.prototype[Symbol.iterator] === 'function')('string iterator', function () {
 
     it('returns true for Strings with same entries', function () {
