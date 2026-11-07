@@ -241,6 +241,9 @@ function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandTyp
       return regexpEqual(leftHandOperand, rightHandOperand);
     case 'URLSearchParams':
       return leftHandOperand.toString() === rightHandOperand.toString();
+    case 'Headers':
+    case 'FormData':
+      return iterableEqual(Array.from(leftHandOperand), Array.from(rightHandOperand), options);
     case 'Generator':
       return generatorEqual(leftHandOperand, rightHandOperand, options);
     case 'DataView':
